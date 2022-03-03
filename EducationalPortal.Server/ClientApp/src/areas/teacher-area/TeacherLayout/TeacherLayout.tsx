@@ -6,6 +6,7 @@ import {AppBreadcrumb} from '../components/AppBreadcrumb/AppBreadcrumb';
 import {EducationalYearsLayout} from '../modules/educationalYears/EducationalYearsLayout/EducationalYearsLayout';
 import {Error} from '../../../components/Error/Error';
 import s from './TeacherLayout.module.css';
+import {SubjectsLayout} from '../modules/subjects/SubjectsLayout/SubjectsLayout';
 
 const {Content} = Layout;
 
@@ -19,6 +20,7 @@ export const TeacherLayout: FC = () => {
                     <div className={s.siteLayoutBackground}>
                         <Routes>
                             <Route path={'educational-years/*'} element={<EducationalYearsLayout/>}/>
+                            <Route path={'subjects/*'} element={<SubjectsLayout/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
                     </div>

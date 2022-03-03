@@ -1,5 +1,7 @@
 .wrapperMenu {
     overflow-y: scroll;
+    scrollbar-color: #3498db #001529;
+    scrollbar-width: thin;
 }
 
 .wrapperMenu::-webkit-scrollbar {

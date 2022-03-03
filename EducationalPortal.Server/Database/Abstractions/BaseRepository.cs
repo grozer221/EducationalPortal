@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.Database.Abstractions
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
         private readonly AppDbContext _context;
 
@@ -19,7 +19,7 @@ namespace EducationalPortal.Server.Database.Abstractions
 
         public virtual async Task<T> GetByIdAsync(Guid? id)
         {
-            T? entity = await _context.Set<T>().FindAsync(id);
+            T? entity = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
             if (entity == null)
                 throw new Exception("Не знайдено");
             return entity;

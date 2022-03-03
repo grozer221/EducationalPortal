@@ -24,8 +24,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 {
                     SubjectModel subject = context.GetArgument<SubjectModel>("CreateSubjectInputType");
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    Guid educationalYearId = educationalYearRepository.GetCurrent().Id;
-                    return await subjectsRepository.CreateAsync(subject, currentUserId, educationalYearId);
+                    return await subjectsRepository.CreateAsync(subject, currentUserId);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -34,9 +33,12 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .Argument<NonNullGraphType<UpdateSubjectInputType>, SubjectModel>("UpdateSubjectInputType", "Argument for update Subject")
                 .ResolveAsync(async (context) =>
                 {
-                    SubjectModel subject = context.GetArgument<SubjectModel>("UpdateSubjectInputType");
+                    SubjectModel newSubject = context.GetArgument<SubjectModel>("UpdateSubjectInputType");
+                    SubjectModel oldSubject = await subjectsRepository.GetByIdAsync(newSubject.Id);
+                    newSubject.TeacherId = oldSubject.TeacherId;
+                    newSubject.EducationalYearId = oldSubject.EducationalYearId;
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    return await subjectsRepository.UpdateAsync(subject, currentUserId);
+                    return await subjectsRepository.UpdateAsync(newSubject, currentUserId);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -46,7 +48,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .ResolveAsync(async (context) =>
                {
                    Guid id = context.GetArgument<Guid>("Id");
-                   await subjectsRepository.RemoveAsync(id);
+                   Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                   await subjectsRepository.RemoveAsync(id, currentUserId);
                    return true;
                })
                .AuthorizeWith(AuthPolicies.Teacher);

@@ -1,6 +1,6 @@
 ﻿namespace EducationalPortal.Server.Database.Abstractions
 {
-    public class GetEntitiesResponse<T> where T : class
+    public class GetEntitiesResponse<T> where T : BaseModel
     {
         public IEnumerable<T> Entities { get; set; }
         public int Total { get; set; }

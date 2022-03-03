@@ -27,11 +27,15 @@ namespace EducationalPortal.Server.Database.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<SubjectModel> CreateAsync(SubjectModel subject, Guid teacherId, Guid educationalYearId)
+        public async Task<SubjectModel> CreateAsync(SubjectModel subject, Guid currentTeacherId)
         {
-            subject.TeacherId = teacherId;
-            subject.EducationalYearId = educationalYearId;
-            await base.UpdateAsync(subject);
+            UserModel currentTeacher = await _usersRepository.GetByIdAsync(currentTeacherId);
+            if (currentTeacher?.Role == UserRoleEnum.Student)
+                throw new Exception("Ви не маєте прав на створення данного предмету");
+            subject.TeacherId = currentTeacherId;
+            Guid currentEducationalYearId = _educationalYearRepository.GetCurrent().Id;
+            subject.EducationalYearId = currentEducationalYearId;
+            await base.CreateAsync(subject);
             return subject;
         }
         
@@ -40,11 +44,12 @@ namespace EducationalPortal.Server.Database.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<SubjectModel> UpdateAsync(SubjectModel subject, Guid teacherId)
+        public async Task<SubjectModel> UpdateAsync(SubjectModel subject, Guid currentTeacherId)
         {
-            UserModel teacher = await _usersRepository.GetByIdAsync(teacherId);
-            if (subject.TeacherId != teacher.Id && teacher.Role != UserRoleEnum.Administrator)
-                throw new Exception("Ви не маєте прав на редагування данного предмету");
+            UserModel? currentTeacher = await _usersRepository.GetByIdAsync(currentTeacherId);
+            if (currentTeacher?.Id != subject.TeacherId || currentTeacher?.Role == UserRoleEnum.Student)
+                if(currentTeacher?.Role != UserRoleEnum.Administrator)
+                    throw new Exception("Ви не маєте прав на редагування данного предмету");
             await base.UpdateAsync(subject);
             return subject;
         }
@@ -54,12 +59,13 @@ namespace EducationalPortal.Server.Database.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<SubjectModel> RemoveAsync(Guid subjectId, Guid teacherId)
+        public async Task<SubjectModel> RemoveAsync(Guid subjectId, Guid currentTeacherId)
         {
             SubjectModel subject = await GetByIdAsync(subjectId);
-            UserModel teacher = await _usersRepository.GetByIdAsync(teacherId);
-            if (subject.TeacherId != teacher.Id && teacher.Role != UserRoleEnum.Administrator)
-                throw new Exception("Ви не маєте прав на редагування данного предмету");
+            UserModel currentTeacher = await _usersRepository.GetByIdAsync(currentTeacherId);
+            if (currentTeacher?.Id != subject.TeacherId || currentTeacher?.Role == UserRoleEnum.Student)
+                if(currentTeacher?.Role != UserRoleEnum.Administrator)
+                    throw new Exception("Ви не маєте прав на видалення данного предмету");
             await base.RemoveAsync(subjectId);
             return subject;
         }

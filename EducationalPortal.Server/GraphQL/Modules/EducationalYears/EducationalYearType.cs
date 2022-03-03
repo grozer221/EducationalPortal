@@ -12,23 +12,23 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
     {
         public EducationalYearType()
         {
-            Field<IdGraphType>()
+            Field<NonNullGraphType<IdGraphType>>()
                .Name("Id")
                .Resolve(context => context.Source.Id);
 
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("DateStart")
                .Resolve(context => context.Source.DateStart);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("DateEnd")
                .Resolve(context => context.Source.DateEnd);
             
-            Field<BooleanGraphType>()
+            Field<NonNullGraphType<BooleanGraphType>>()
                .Name("IsCurrent")
                .Resolve(context => context.Source.IsCurrent);
             
@@ -37,11 +37,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
             //   .Resolve(context => context.Source.Subjects);
 
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("CreatedAt")
                .Resolve(context => context.Source.CreatedAt);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("UpdatedAt")
                .Resolve(context => context.Source.UpdatedAt);
         }

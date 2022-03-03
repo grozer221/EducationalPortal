@@ -13,25 +13,25 @@ export const schema = gql`
             Argument for get Educational years
             """
             page: Int! = 0
-        ): GetSubjectsResponseType!
+        ): GetEducationalYearsResponseType!
         getEducationalYear(
             """
             Argument for get Educational year
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): EducationalYearType!
-        getSubjects(
-            """
-            Argument for get Subjects
-            """
-            page: Int! = 0
-        ): GetSubjectsResponseType!
         getSubject(
             """
             Argument for get Subject
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): SubjectType!
+        getSubjects(
+            """
+            Argument for get Subjects
+            """
+            page: Int! = 0
+        ): GetSubjectsResponseType!
         getUsers(
             """
             Argument for get Users
@@ -76,7 +76,7 @@ export const schema = gql`
         ADMINISTRATOR
     }
 
-    type GetSubjectsResponseType {
+    type GetEducationalYearsResponseType {
         entities: [EducationalYearType]!
         total: Int!
     }
@@ -101,6 +101,11 @@ export const schema = gql`
         educationalYear: EducationalYearType
         createdAt: DateTime!
         updatedAt: DateTime!
+    }
+
+    type GetSubjectsResponseType {
+        entities: [SubjectType]!
+        total: Int!
     }
 
     type GetUsersResponseType {
@@ -139,12 +144,6 @@ export const schema = gql`
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): Boolean!
-        setCurrentEducationalYear(
-            """
-            Argument for set current Educational year
-            """
-            id: ID! = "00000000-0000-0000-0000-000000000000"
-        ): EducationalYearType!
         createSubject(
             """
             Argument for create new Subject
@@ -185,8 +184,10 @@ export const schema = gql`
     input UpdateEducationalYearInputType {
         id: ID
         name: String
+        isCurrent: Boolean
         dateStart: DateTime
         dateEnd: DateTime
+        createdAt: DateTime
     }
 
     input CreateSubjectInputType {
@@ -196,7 +197,8 @@ export const schema = gql`
     input UpdateSubjectInputType {
         id: ID!
         name: String!
-        link: String!
+        link: String
+        createdAt: DateTime
     }
 
     input CreateUserInputType {

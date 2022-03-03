@@ -4,6 +4,7 @@ using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO;
+using EducationalPortal.Server.GraphQL.Modules.Subjects.DTO;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -17,16 +18,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
     {
         public SubjectsQueries(SubjectsRepository subjectsRepository)
         {
-            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<SubjectModel>>()
-                .Name("GetSubjects")
-                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
-                .Resolve(context =>
-                {
-                    int page = context.GetArgument<int>("Page");
-                    return subjectsRepository.Get(s => s.CreatedAt, true, page);
-                })
-               .AuthorizeWith(AuthPolicies.Teacher);
-
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("GetSubject")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get Subject")
@@ -35,7 +26,17 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     Guid id = context.GetArgument<Guid>("Id");
                     return await subjectsRepository.GetByIdAsync(id);
                 })
-                .AuthorizeWith(AuthPolicies.Teacher);
+                .AuthorizeWith(AuthPolicies.Authenticated);
+
+            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<SubjectModel>>()
+                .Name("GetSubjects")
+                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
+                .Resolve(context =>
+                {
+                    int page = context.GetArgument<int>("Page");
+                    return subjectsRepository.Get(s => s.CreatedAt, true, page);
+                })
+               .AuthorizeWith(AuthPolicies.Authenticated);
         }
     }
 }

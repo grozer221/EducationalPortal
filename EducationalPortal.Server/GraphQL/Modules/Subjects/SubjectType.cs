@@ -14,11 +14,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
     {
         public SubjectType(UsersRepository usersRepository, EducationalYearRepository educationalYearRepository)
         {
-            Field<IdGraphType, Guid>()
+            Field<NonNullGraphType<IdGraphType>, Guid>()
                .Name("Id")
                .Resolve(context => context.Source.Id);
 
-            Field<StringGraphType, string>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
 
@@ -34,28 +34,27 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
             //   .Name("GradesHaveAccessRead")
             //   .Resolve(context => context.Source.GradesHaveAccessRead);
 
-            Field<IdGraphType, Guid?>()
+            Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("TeacherId")
                .Resolve(context => context.Source.TeacherId);
 
-            Field<UserType, UserModel>()
+            Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
                .ResolveAsync(async context => 
                {
                    return await usersRepository.GetByIdAsync(context.Source.TeacherId);
                });
             
-            Field<IdGraphType, Guid?>()
+            Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("EducationalYearId")
                .Resolve(context => context.Source.EducationalYearId);
 
-            Field<EducationalYearType, EducationalYearModel>()
+            Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                .Name("EducationalYear")
                .ResolveAsync(async context => 
                {
                    return await educationalYearRepository.GetByIdAsync(context.Source.EducationalYearId);
                });
-
 
             Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("CreatedAt")

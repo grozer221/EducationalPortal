@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.Database.Abstractions
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T> where T : BaseModel
     {
         Task<T> GetByIdAsync(Guid? id);
         //IEnumerable<T> Get(Func<T, object> predicate, bool reverse);

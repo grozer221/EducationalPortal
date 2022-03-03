@@ -17,7 +17,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
     {
         public EducationalYearsQueries(EducationalYearRepository educationalYearRepository)
         {
-            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<EducationalYearModel>>()
+            Field<NonNullGraphType<GetEducationalYearsResponseType>, GetEntitiesResponse<EducationalYearModel>>()
                 .Name("GetEducationalYears")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Educational years")
                 .Resolve(context => 

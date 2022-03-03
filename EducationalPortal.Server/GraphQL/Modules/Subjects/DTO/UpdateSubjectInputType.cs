@@ -19,9 +19,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
                .Name("Name")
                .Resolve(context => context.Source.Name);
             
-            Field<NonNullGraphType<StringGraphType>, string>()
+            Field<StringGraphType, string>()
                .Name("Link")
                .Resolve(context => context.Source.Link);
+
+            Field<DateTimeGraphType>()
+                .Name("CreatedAt")
+                .Resolve(context => context.Source.CreatedAt);
         }
     }
 }

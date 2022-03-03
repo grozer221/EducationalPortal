@@ -47,16 +47,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
                })
                .AuthorizeWith(AuthPolicies.Administrator);
 
-            Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
-               .Name("SetCurrentEducationalYear")
-               .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for set current Educational year")
-               .ResolveAsync(async (context) =>
-               {
-                   Guid id = context.GetArgument<Guid>("Id");
-                   return await educationalYearRepository.SetCurrentEducationalYearAsync(id);
-               })
-               .AuthorizeWith(AuthPolicies.Administrator);
-
+            //Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
+            //   .Name("SetCurrentEducationalYear")
+            //   .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for set current Educational year")
+            //   .ResolveAsync(async (context) =>
+            //   {
+            //       Guid id = context.GetArgument<Guid>("Id");
+            //       return await educationalYearRepository.SetCurrentEducationalYearAsync(id);
+            //   })
+            //   .AuthorizeWith(AuthPolicies.Administrator);
         }
     }
 }

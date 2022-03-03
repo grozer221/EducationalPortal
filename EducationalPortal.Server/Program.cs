@@ -29,11 +29,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(GetConnectionString(), new MySqlServerVersion(new Version(8, 0, 27))));
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-builder.Services.AddScoped<EducationalYearRepository>();
-builder.Services.AddScoped<SubjectsRepository>();
-builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseMySql(GetConnectionString(), new MySqlServerVersion(new Version(8, 0, 27))), 
+    ServiceLifetime.Transient);
+builder.Services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddTransient<EducationalYearRepository>();
+builder.Services.AddTransient<SubjectsRepository>();
+builder.Services.AddTransient<UsersRepository>();
 
 builder.Services.AddAuthentication(options =>
 {

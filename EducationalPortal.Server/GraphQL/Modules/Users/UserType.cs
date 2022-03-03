@@ -12,7 +12,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
     {
         public UserType()
         {
-            Field<IdGraphType>()
+            Field<NonNullGraphType<IdGraphType>>()
                .Name("Id")
                .Resolve(context => context.Source.Id);
 
@@ -28,7 +28,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("MiddleName")
                .Resolve(context => context.Source.MiddleName);
             
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>>()
                .Name("Login")
                .Resolve(context => context.Source.Login);
             
@@ -44,15 +44,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("DateOfBirth")
                .Resolve(context => context.Source.DateOfBirth);
 
-            Field<UserRoleType>()
+            Field<NonNullGraphType<UserRoleType>>()
                .Name("Role")
                .Resolve(context => context.Source.Role);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("CreatedAt")
                .Resolve(context => context.Source.CreatedAt);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>>()
                .Name("UpdatedAt")
                .Resolve(context => context.Source.UpdatedAt);
             
