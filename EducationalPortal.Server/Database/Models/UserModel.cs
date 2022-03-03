@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Enums;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Models
+namespace EducationalPortal.Server.Database.Models
 {
     public class UserModel : BaseModel
     {

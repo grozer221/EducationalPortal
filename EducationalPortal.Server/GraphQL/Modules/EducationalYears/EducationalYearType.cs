@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using GraphQL.Types;
 using System;

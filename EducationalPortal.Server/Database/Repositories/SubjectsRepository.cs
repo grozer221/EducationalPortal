@@ -1,6 +1,6 @@
-﻿using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Enums;
-using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Repositories
+namespace EducationalPortal.Server.Database.Repositories
 {
     public class SubjectsRepository : BaseRepository<SubjectModel>
     {

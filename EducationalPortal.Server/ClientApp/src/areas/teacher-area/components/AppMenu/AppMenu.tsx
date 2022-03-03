@@ -1,11 +1,11 @@
 import React, {FC, useState} from 'react';
 import {Layout, Menu, Tag} from 'antd';
 import {
-    AppstoreAddOutlined,
+    AppstoreAddOutlined, BookOutlined,
     LineChartOutlined,
     LogoutOutlined,
     QuestionOutlined,
-    SettingOutlined,
+    SettingOutlined, ShopOutlined,
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
@@ -43,9 +43,20 @@ export const AppMenu: FC = () => {
                     <Menu.Item key="sub1_1" icon={<QuestionOutlined/>}>Модуль 1</Menu.Item>
                     <Menu.Item key="sub1_2" icon={<QuestionOutlined/>}>Модуль 2</Menu.Item>
                 </SubMenu>
-                <Menu.Item key="90" icon={<TeamOutlined/>}>
-                    <Link to={'users'}>Користувачі</Link>
-                </Menu.Item>
+                <SubMenu key="sub2" icon={<ShopOutlined/>} title="Портал">
+                    <Menu.Item key="sub2_10" icon={<BookOutlined/>}>
+                        <Link to={'subjects'}>Предмети</Link>
+                    </Menu.Item>
+                    <Menu.Item key="sub2_20" icon={<TeamOutlined/>}>
+                        <Link to={'students'}>Учні</Link>
+                    </Menu.Item>
+                    <Menu.Item key="sub2_30" icon={<TeamOutlined/>}>
+                        <Link to={'grades'}>Класи</Link>
+                    </Menu.Item>
+                    <Menu.Item key="sub2_100" icon={<TeamOutlined/>}>
+                        <Link to={'educational-years'}>Навчальні роки</Link>
+                    </Menu.Item>
+                </SubMenu>
                 <Menu.Item key="120" icon={<SettingOutlined/>}>
                     <Link to={'settings'}>Налаштування</Link>
                 </Menu.Item>

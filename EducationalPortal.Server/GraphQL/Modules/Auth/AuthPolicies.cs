@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Database.Enums;
+﻿using EducationalPortal.Server.Database.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

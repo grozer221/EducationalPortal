@@ -1,7 +1,9 @@
-﻿using EducationalPortal.Database.Models;
-using EducationalPortal.Database.Repositories;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
+using EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -15,19 +17,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
     {
         public EducationalYearsQueries(EducationalYearRepository educationalYearRepository)
         {
-            Field<NonNullGraphType<ListGraphType<EducationalYearType>>, IEnumerable<EducationalYearModel>>()
+            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<EducationalYearModel>>()
                 .Name("GetEducationalYears")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Educational years")
                 .Resolve(context => 
                 {
                     int page = context.GetArgument<int>("Page");
-                    return educationalYearRepository.Get(page);
+                    return educationalYearRepository.Get(y => y.CreatedAt, true, page);
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                 .Name("GetEducationalYear")
-                .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for set current Educational year")
+                .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get Educational year")
                 .ResolveAsync(async context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");

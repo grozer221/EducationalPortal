@@ -1,7 +1,7 @@
-using EducationalPortal.Database;
-using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Enums;
-using EducationalPortal.Database.Repositories;
+using EducationalPortal.Server.Database;
+using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;

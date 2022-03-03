@@ -13,10 +13,10 @@ export const schema = gql`
             Argument for get Educational years
             """
             page: Int! = 0
-        ): [EducationalYearType]!
+        ): GetSubjectsResponseType!
         getEducationalYear(
             """
-            Argument for set current Educational year
+            Argument for get Educational year
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): EducationalYearType!
@@ -25,7 +25,7 @@ export const schema = gql`
             Argument for get Subjects
             """
             page: Int! = 0
-        ): [SubjectType]!
+        ): GetSubjectsResponseType!
         getSubject(
             """
             Argument for get Subject
@@ -37,7 +37,7 @@ export const schema = gql`
             Argument for get Users
             """
             page: Int! = 0
-        ): [UserType]!
+        ): GetUsersResponseType!
         getUser(
             """
             Argument for get User
@@ -76,6 +76,11 @@ export const schema = gql`
         ADMINISTRATOR
     }
 
+    type GetSubjectsResponseType {
+        entities: [EducationalYearType]!
+        total: Int!
+    }
+
     type EducationalYearType {
         id: ID
         name: String
@@ -90,12 +95,17 @@ export const schema = gql`
         id: ID
         name: String
         link: String
-        teacherId: ID!
-        teacher: UserType!
-        educationalYearId: ID!
-        educationalYear: EducationalYearType!
+        teacherId: ID
+        teacher: UserType
+        educationalYearId: ID
+        educationalYear: EducationalYearType
         createdAt: DateTime!
         updatedAt: DateTime!
+    }
+
+    type GetUsersResponseType {
+        entities: [UserType]!
+        total: Int!
     }
 
     type Mutations {
@@ -162,7 +172,7 @@ export const schema = gql`
     }
 
     input LoginAuthInputType {
-        email: String
+        login: String
         password: String
     }
 

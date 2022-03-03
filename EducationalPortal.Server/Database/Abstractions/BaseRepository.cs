@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Abstractions
+namespace EducationalPortal.Server.Database.Abstractions
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
@@ -17,24 +17,6 @@ namespace EducationalPortal.Database.Abstractions
             _context = context;
         }
 
-        public virtual IEnumerable<T> Get()
-        {
-            IEnumerable<T>? entities = _context.Set<T>();
-            if (entities == null)
-                throw new Exception("Не знайдено");
-            return entities;
-        }
-        
-        public virtual IEnumerable<T> Get(int page = 1)
-        {
-            int take = 20;
-            int skip = (page - 1) * take;
-            IEnumerable<T>? entities = _context.Set<T>().Skip(skip).Take(take);
-            if(entities == null)
-                throw new Exception("Не знайдено");
-            return entities;
-        }
-
         public virtual async Task<T> GetByIdAsync(Guid? id)
         {
             T? entity = await _context.Set<T>().FindAsync(id);
@@ -43,16 +25,51 @@ namespace EducationalPortal.Database.Abstractions
             return entity;
         }
 
+        public virtual IEnumerable<T> Get()
+        {
+            IEnumerable<T> entities = _context.Set<T>().AsNoTracking();
+            if (entities == null)
+                throw new Exception("Не знайдено");
+            return entities;
+        }
+        
         public virtual IEnumerable<T> Get(Func<T, bool> condition)
         {
-            IEnumerable<T>? entities = _context.Set<T>().Where(condition);
+            IEnumerable<T> entities = _context.Set<T>().AsNoTracking().Where(condition);
             if (entities == null)
                 throw new Exception("Не знайдено");
             return entities;
         }
 
+        public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
+        {
+            
+            IEnumerable<T> entities = descending
+                ? _context.Set<T>().AsNoTracking().OrderByDescending(predicate)
+                : _context.Set<T>().AsNoTracking().OrderBy(predicate);
+
+            if (condition != null)
+                entities = entities.Where(condition);
+
+            int total = entities.Count();
+
+            int take = 20;
+            int skip = (page - 1) * take;
+            entities = entities.Skip(skip).Take(take);
+
+            if (entities == null)
+                throw new Exception("Не знайдено");
+
+            return new GetEntitiesResponse<T>
+            {
+                Entities = entities,
+                Total = total,
+            };
+        }
+
         public virtual async Task<T> CreateAsync(T entity)
         {
+            _context.Entry(entity).State = EntityState.Added;
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;

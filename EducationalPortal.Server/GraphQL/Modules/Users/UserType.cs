@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Database.Enums;
-using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
 using GraphQL.Types;
 using System;
 using System.Collections.Generic;

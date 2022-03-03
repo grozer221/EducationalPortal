@@ -1,6 +1,7 @@
-﻿using EducationalPortal.Database.Enums;
-using EducationalPortal.Database.Models;
-using EducationalPortal.Database.Repositories;
+﻿using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.Database.Repositories;
+using EducationalPortal.Server.Database.Enums;
 using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
 using GraphQL;
 using Microsoft.IdentityModel.Tokens;
@@ -25,7 +26,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
 
         public string Authenticate(LoginAuthInput loginAuthInput)
         {
-            UserModel user = _usersRepository.GetByLoginOrDefault(loginAuthInput.Login);
+            UserModel? user = _usersRepository.GetByLoginOrDefault(loginAuthInput.Login);
             if (user == null || user.Password != loginAuthInput.Password)
                 throw new Exception("Не правильний логін або пароль");
             return GenerateAccessToken(user.Id, user.Login, user.Role);

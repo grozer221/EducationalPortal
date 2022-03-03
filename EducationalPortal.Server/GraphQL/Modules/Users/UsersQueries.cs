@@ -1,6 +1,8 @@
-﻿using EducationalPortal.Database.Models;
-using EducationalPortal.Database.Repositories;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
+using EducationalPortal.Server.GraphQL.Modules.Users.DTO;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -14,13 +16,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
     {
         public UsersQueries(UsersRepository usersRepository)
         {
-            Field<NonNullGraphType<ListGraphType<UserType>>, IEnumerable<UserModel>>()
+            Field<NonNullGraphType<GetUsersResponseType>, GetEntitiesResponse<UserModel>>()
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
                 .Resolve(context => 
                 {
                     int page = context.GetArgument<int>("Page");
-                    return usersRepository.Get(page);
+                    return usersRepository.Get(u => u.CreatedAt, false, page);
                 });
             
             Field<NonNullGraphType<UserType>, UserModel>()

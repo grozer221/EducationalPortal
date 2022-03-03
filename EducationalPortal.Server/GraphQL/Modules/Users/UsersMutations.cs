@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Database.Models;
-using EducationalPortal.Database.Repositories;
+﻿using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Users.DTO;

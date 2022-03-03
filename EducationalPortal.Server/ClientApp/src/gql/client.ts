@@ -34,7 +34,7 @@ const splitLink = split(
 
 export const client = new ApolloClient({
     link: splitLink,
-    cache: new InMemoryCache({addTypename: false}),
+    cache: new InMemoryCache(),
     defaultOptions: {
         watchQuery: {
             // fetchPolicy: 'network-only',

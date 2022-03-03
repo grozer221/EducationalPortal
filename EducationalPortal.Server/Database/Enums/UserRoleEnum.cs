@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Enums
+namespace EducationalPortal.Server.Database.Enums
 {
     public enum UserRoleEnum
     {

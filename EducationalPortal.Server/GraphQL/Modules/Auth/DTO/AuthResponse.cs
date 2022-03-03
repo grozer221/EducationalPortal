@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
-﻿using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Enums;
-using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
@@ -8,15 +8,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database
+namespace EducationalPortal.Server.Database
 {
     public class AppDbContext : DbContext
     {
-        //public AppDBContext() : base()
-        //{
-        //    Database.Migrate();
-        //}
-
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

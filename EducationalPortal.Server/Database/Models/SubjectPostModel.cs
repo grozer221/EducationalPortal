@@ -1,12 +1,12 @@
-﻿using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Enums;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Models
+namespace EducationalPortal.Server.Database.Models
 {
     public class SubjectPostModel : BaseModel
     {

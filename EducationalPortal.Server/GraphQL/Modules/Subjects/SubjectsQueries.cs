@@ -1,7 +1,9 @@
-﻿using EducationalPortal.Database.Models;
-using EducationalPortal.Database.Repositories;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
+using EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO;
 using GraphQL;
 using GraphQL.Types;
 using System;
@@ -15,13 +17,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
     {
         public SubjectsQueries(SubjectsRepository subjectsRepository)
         {
-            Field<NonNullGraphType<ListGraphType<SubjectType>>, IEnumerable<SubjectModel>>()
+            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<SubjectModel>>()
                 .Name("GetSubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
-                    return subjectsRepository.Get(page);
+                    return subjectsRepository.Get(s => s.CreatedAt, true, page);
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 

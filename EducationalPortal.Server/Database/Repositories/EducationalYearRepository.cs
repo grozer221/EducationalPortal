@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Database.Abstractions;
-using EducationalPortal.Database.Models;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationalPortal.Database.Repositories
+namespace EducationalPortal.Server.Database.Repositories
 {
     public class EducationalYearRepository : BaseRepository<EducationalYearModel>
     {
@@ -29,9 +29,18 @@ namespace EducationalPortal.Database.Repositories
         
         public override async Task<EducationalYearModel> UpdateAsync(EducationalYearModel entity)
         {
-            List<EducationalYearModel> checkUniqeYear = Get(e => e.Name == entity.Name).ToList();
-            if (checkUniqeYear.Count > 0)
+            List<EducationalYearModel>? checkUniqeYear = Get(e => e.Name == entity.Name && e.Id != entity.Id).ToList();
+            if (checkUniqeYear.Count > 0 && checkUniqeYear[0].Id != entity.Id)
                 throw new Exception("Навчальний рік з данним ім'ям уже існує");
+            if (entity.IsCurrent)
+            {
+                List<EducationalYearModel>? currentYears = Get(y => y.IsCurrent == true && y.Id != entity.Id).ToList();
+                foreach(var currentYear in currentYears)
+                {
+                    currentYear.IsCurrent = false;
+                    await base.UpdateAsync(currentYear);
+                }
+            }
             await base.UpdateAsync(entity);
             return entity;
         }
