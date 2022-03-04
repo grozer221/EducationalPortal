@@ -8,7 +8,7 @@ namespace EducationalPortal.Server.Database.Enums
 {
     public enum PostType
     {
-        Informational,
+        Info,
         Homework,
     }
 }

@@ -30,10 +30,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                 .Name("GetEducationalYear")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get Educational year")
-                .ResolveAsync(async context =>
+                .Resolve(context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return await educationalYearRepository.GetByIdAsync(id);
+                    return educationalYearRepository.GetById(id);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
         }

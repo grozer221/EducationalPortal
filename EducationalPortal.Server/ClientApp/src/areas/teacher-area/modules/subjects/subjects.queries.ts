@@ -1,5 +1,5 @@
 import {gql} from '@apollo/client';
-import {SUBJECT_FRAGMENT} from './subjects.fragments';
+import {SUBJECT_FRAGMENT, SUBJECT_WITH_POSTS_FRAGMENT} from './subjects.fragments';
 import {Subject} from './subjects.types';
 
 export type GetSubjectsData = { getSubjects: getSubjectsType }
@@ -30,5 +30,16 @@ export const GET_SUBJECT_QUERY = gql`
             ...SubjectFragment
         }
     }
+`;
 
+export type GetSubjectWithPostsData = { getSubject: Subject }
+export type GetSubjectWithPostsVars = { id: string, postsPage: number }
+
+export const GET_SUBJECT_WITH_POSTS_QUERY = gql`
+    ${SUBJECT_WITH_POSTS_FRAGMENT}
+    query GetSubject($id: ID!, $postsPage: Int!) {
+        getSubject(id: $id) {
+            ...SubjectWithPostsFragment
+        }
+    }
 `;

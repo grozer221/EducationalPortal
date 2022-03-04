@@ -16,15 +16,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsQueries : ObjectGraphType, IQueryMarker
     {
-        public SubjectsQueries(SubjectsRepository subjectsRepository)
+        public SubjectsQueries(SubjectRepository subjectsRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("GetSubject")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get Subject")
-                .ResolveAsync(async context =>
+                .Resolve(context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return await subjectsRepository.GetByIdAsync(id);
+                    return subjectsRepository.GetById(id);
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 

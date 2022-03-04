@@ -14,7 +14,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UsersMutations : ObjectGraphType, IMutationMarker
     {
-        public UsersMutations(UsersRepository usersRepository)
+        public UsersMutations(UserRepository usersRepository)
         {
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("CreateUser")

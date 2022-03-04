@@ -44,6 +44,7 @@ namespace EducationalPortal.Server.Database
             //builder.Entity<PermisionTeacherEditSubjectModel>().HasOne(p => p.Teacher).WithMany(t => t.PermisionTeachersEditSubject).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SubjectModel>().HasOne(s => s.EducationalYear).WithMany(y => y.Subjects).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<SubjectModel>().HasMany(s => s.Posts).WithOne(y => y.Subject).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UserModel>(u => u.HasIndex(e => e.Login).IsUnique());
             builder.Entity<UserModel>(u => u.HasIndex(e => e.Email).IsUnique());
@@ -80,7 +81,5 @@ namespace EducationalPortal.Server.Database
                 ((BaseModel)entity.Entity).UpdatedAt = now;
             }
         }
-
-     
     }
 }

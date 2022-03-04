@@ -21,7 +21,7 @@ export const CREATE_SUBJECT_MUTATION = gql`
 export type UpdateSubjectData = { updateSubject: Subject }
 
 export type UpdateSubjectVars = { updateSubjectInputType: updateSubjectInputType }
-export type updateSubjectInputType = createSubjectInputType & { id: string, link: string, createdAt: string }
+export type updateSubjectInputType = createSubjectInputType & { id: string, link: string }
 
 export const UPDATE_SUBJECT_MUTATION = gql`
     ${SUBJECT_FRAGMENT}

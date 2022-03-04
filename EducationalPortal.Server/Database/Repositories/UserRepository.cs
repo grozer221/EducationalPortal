@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.Database.Repositories
 {
-    public class UsersRepository : BaseRepository<UserModel>
+    public class UserRepository : BaseRepository<UserModel>
     {
         private readonly AppDbContext _context;
-        public UsersRepository(AppDbContext context) : base(context)
+        public UserRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }

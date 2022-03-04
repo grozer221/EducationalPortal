@@ -1,7 +1,11 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Server.Database.Abstractions;
+using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears;
+using EducationalPortal.Server.GraphQL.Modules.SubjectPosts;
+using EducationalPortal.Server.GraphQL.Modules.SubjectPosts.DTO;
 using EducationalPortal.Server.GraphQL.Modules.Users;
+using GraphQL;
 using GraphQL.Types;
 using System;
 using System.Collections.Generic;
@@ -12,7 +16,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectType : ObjectGraphType<SubjectModel>
     {
-        public SubjectType(UsersRepository usersRepository, EducationalYearRepository educationalYearRepository)
+        public SubjectType(UserRepository usersRepository, EducationalYearRepository educationalYearRepository, SubjectPostRepository subjectPostRepository)
         {
             Field<NonNullGraphType<IdGraphType>, Guid>()
                .Name("Id")
@@ -26,9 +30,22 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("Link")
                .Resolve(context => context.Source.Link);
 
-            //Field<NonNullGraphType<ListGraphType<SubjectPostType>>, IEnumerable<SubjectPostModel>>()
-            //   .Name("Posts")
-            //   .Resolve(context => context.Source.Posts);
+            Field<GetSubjectPostsResponseType, GetEntitiesResponse<SubjectPostModel>>()
+               .Name("Posts")
+               .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects Posts")
+               .Resolve(context =>
+               {
+                   int page = context.GetArgument<int>("Page");
+                   try
+                   {
+                       Guid subjectId = context.Source.Id;
+                       return subjectPostRepository.Get(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
+                   }
+                   catch
+                   {
+                       return new GetEntitiesResponse<SubjectPostModel>();
+                   }
+               });
 
             //Field<NonNullGraphType<ListGraphType<GradeType>>, IEnumerable<GradeModel>>()
             //   .Name("GradesHaveAccessRead")
@@ -40,9 +57,9 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .ResolveAsync(async context => 
+               .Resolve(context => 
                {
-                   return await usersRepository.GetByIdAsync(context.Source.TeacherId);
+                   return usersRepository.GetById(context.Source.TeacherId);
                });
             
             Field<NonNullGraphType<IdGraphType>, Guid?>()
@@ -51,9 +68,9 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                .Name("EducationalYear")
-               .ResolveAsync(async context => 
+               .Resolve(context => 
                {
-                   return await educationalYearRepository.GetByIdAsync(context.Source.EducationalYearId);
+                   return educationalYearRepository.GetById(context.Source.EducationalYearId);
                });
 
             Field<NonNullGraphType<DateTimeGraphType>>()

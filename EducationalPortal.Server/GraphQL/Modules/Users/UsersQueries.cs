@@ -14,7 +14,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UsersQueries : ObjectGraphType, IQueryMarker
     {
-        public UsersQueries(UsersRepository usersRepository)
+        public UsersQueries(UserRepository usersRepository)
         {
             Field<NonNullGraphType<GetUsersResponseType>, GetEntitiesResponse<UserModel>>()
                 .Name("GetUsers")
@@ -28,10 +28,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("GetUser")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get User")
-                .ResolveAsync(async context => 
+                .Resolve(context => 
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return await usersRepository.GetByIdAsync(id);
+                    return usersRepository.GetById(id);
                 });
         }
     }

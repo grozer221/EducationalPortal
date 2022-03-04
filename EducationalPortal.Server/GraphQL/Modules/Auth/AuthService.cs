@@ -17,9 +17,9 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
 {
     public class AuthService
     {
-        private readonly UsersRepository _usersRepository;
+        private readonly UserRepository _usersRepository;
 
-        public AuthService(UsersRepository usersRepository)
+        public AuthService(UserRepository usersRepository)
         {
             _usersRepository = usersRepository;
         }

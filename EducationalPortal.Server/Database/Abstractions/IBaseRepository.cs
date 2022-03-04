@@ -8,7 +8,7 @@ namespace EducationalPortal.Server.Database.Abstractions
 {
     public interface IBaseRepository<T> where T : BaseModel
     {
-        Task<T> GetByIdAsync(Guid? id);
+        T GetById(Guid? id);
         //IEnumerable<T> Get(Func<T, object> predicate, bool reverse);
         //GetEntitiesResponse<T> Get(int page, Func<T, object> predicate, bool reverse);
         //IEnumerable<T> Get(Func<T, bool> condition, Func<T, object> predicate, bool reverse);

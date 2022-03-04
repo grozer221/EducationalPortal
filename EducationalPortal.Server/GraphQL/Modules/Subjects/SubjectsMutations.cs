@@ -15,7 +15,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsMutations : ObjectGraphType, IMutationMarker
     {
-        public SubjectsMutations(SubjectsRepository subjectsRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
+        public SubjectsMutations(SubjectRepository subjectsRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("CreateSubject")
@@ -34,9 +34,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .ResolveAsync(async (context) =>
                 {
                     SubjectModel newSubject = context.GetArgument<SubjectModel>("UpdateSubjectInputType");
-                    SubjectModel oldSubject = await subjectsRepository.GetByIdAsync(newSubject.Id);
-                    newSubject.TeacherId = oldSubject.TeacherId;
-                    newSubject.EducationalYearId = oldSubject.EducationalYearId;
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
                     return await subjectsRepository.UpdateAsync(newSubject, currentUserId);
                 })

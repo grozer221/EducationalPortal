@@ -8,7 +8,7 @@ import {
 import {ColumnsType} from 'antd/es/table';
 import {EducationalYear} from '../../educationalYears.types';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Table, Tag} from 'antd';
+import {message, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link, useNavigate} from 'react-router-dom';
 import {
@@ -75,14 +75,14 @@ export const EducationalYearsIndex = () => {
     ];
 
     return (
-        <div>
+        <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Link to={'create'}>
                 <ButtonCreate/>
             </Link>
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}
-                loading={getEducationalYearsQuery.loading}
+                loading={getEducationalYearsQuery.loading || removeEducationalYearsMutationOptions.loading}
                 dataSource={getEducationalYearsQuery.data?.getEducationalYears.entities}
                 columns={columns}
                 pagination={{
@@ -95,6 +95,6 @@ export const EducationalYearsIndex = () => {
                     },
                 }}
             />
-        </div>
+        </Space>
     );
 };

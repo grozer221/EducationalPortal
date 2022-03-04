@@ -17,9 +17,9 @@ namespace EducationalPortal.Server.Database.Abstractions
             _context = context;
         }
 
-        public virtual async Task<T> GetByIdAsync(Guid? id)
+        public virtual T GetById(Guid? id)
         {
-            T? entity = await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+            T? entity = _context.Set<T>().AsNoTracking().FirstOrDefault(e => e.Id == id);
             if (entity == null)
                 throw new Exception("Не знайдено");
             return entity;
@@ -85,7 +85,7 @@ namespace EducationalPortal.Server.Database.Abstractions
 
         public virtual async Task RemoveAsync(Guid id)
         {
-            T entity = await GetByIdAsync(id);
+            T entity = GetById(id);
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }

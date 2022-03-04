@@ -24,7 +24,7 @@ export const CREATE_EDUCATIONAL_YEAR_MUTATION = gql`
 export type UpdateEducationalYearData = { updateEducationalYear: EducationalYear }
 
 export type UpdateEducationalYearVars = { updateEducationalYearInputType: updateEducationalYearInputType }
-export type updateEducationalYearInputType = createEducationalYearInputType & { id: string, isCurrent: boolean, createdAt: string }
+export type updateEducationalYearInputType = createEducationalYearInputType & { id: string, isCurrent: boolean }
 
 export const UPDATE_EDUCATIONAL_YEAR_MUTATION = gql`
     ${EDUCATIONAL_YEAR_FRAGMENT}

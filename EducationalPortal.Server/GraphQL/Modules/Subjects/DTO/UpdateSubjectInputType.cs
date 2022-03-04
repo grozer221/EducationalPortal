@@ -22,10 +22,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
             Field<StringGraphType, string>()
                .Name("Link")
                .Resolve(context => context.Source.Link);
-
-            Field<DateTimeGraphType>()
-                .Name("CreatedAt")
-                .Resolve(context => context.Source.CreatedAt);
         }
     }
 }

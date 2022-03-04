@@ -30,10 +30,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO
             Field<DateTimeGraphType>()
                .Name("DateEnd")
                .Resolve(context => context.Source.DateEnd);
-
-            Field<DateTimeGraphType>()
-               .Name("CreatedAt")
-               .Resolve(context => context.Source.CreatedAt);
         }
     }
 }

@@ -52,17 +52,17 @@ export const schema = gql`
     }
 
     type UserType {
-        id: ID
+        id: ID!
         firstName: String
         lastName: String
         middleName: String
-        login: String
+        login: String!
         email: String
         phoneNumber: String
         dateOfBirth: DateTime
-        role: UserRoleEnum
-        createdAt: DateTime
-        updatedAt: DateTime
+        role: UserRoleEnum!
+        createdAt: DateTime!
+        updatedAt: DateTime!
     }
 
     """
@@ -82,25 +82,50 @@ export const schema = gql`
     }
 
     type EducationalYearType {
-        id: ID
-        name: String
-        dateStart: DateTime
-        dateEnd: DateTime
-        isCurrent: Boolean
-        createdAt: DateTime
-        updatedAt: DateTime
+        id: ID!
+        name: String!
+        dateStart: DateTime!
+        dateEnd: DateTime!
+        isCurrent: Boolean!
+        createdAt: DateTime!
+        updatedAt: DateTime!
     }
 
     type SubjectType {
-        id: ID
-        name: String
+        id: ID!
+        name: String!
         link: String
-        teacherId: ID
-        teacher: UserType
-        educationalYearId: ID
-        educationalYear: EducationalYearType
+        posts(
+            """
+            Argument for get Subjects Posts
+            """
+            page: Int! = 0
+        ): GetSubjectPostsResponseType
+        teacherId: ID!
+        teacher: UserType!
+        educationalYearId: ID!
+        educationalYear: EducationalYearType!
         createdAt: DateTime!
         updatedAt: DateTime!
+    }
+
+    type GetSubjectPostsResponseType {
+        entities: [SubjectPostType]!
+        total: Int!
+    }
+
+    type SubjectPostType {
+        id: ID!
+        title: String!
+        text: String
+        type: PostType!
+        teacherId: ID!
+        teacher: UserType!
+    }
+
+    enum PostType {
+        INFO
+        HOMEWORK
     }
 
     type GetSubjectsResponseType {
@@ -144,6 +169,12 @@ export const schema = gql`
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): Boolean!
+        createSubjectPost(
+            """
+            Argument for create new Subject Post
+            """
+            createSubjectPostInputType: CreateSubjectPostInputType!
+        ): SubjectPostType!
         createSubject(
             """
             Argument for create new Subject
@@ -187,7 +218,13 @@ export const schema = gql`
         isCurrent: Boolean
         dateStart: DateTime
         dateEnd: DateTime
-        createdAt: DateTime
+    }
+
+    input CreateSubjectPostInputType {
+        title: String!
+        text: String
+        type: PostType!
+        subjectId: ID!
     }
 
     input CreateSubjectInputType {
@@ -198,7 +235,6 @@ export const schema = gql`
         id: ID!
         name: String!
         link: String
-        createdAt: DateTime
     }
 
     input CreateUserInputType {

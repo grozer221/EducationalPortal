@@ -12,7 +12,6 @@ type FormValues = {
     id: string,
     name: string,
     link: string,
-    createdAt: string,
 }
 
 export const SubjectsUpdate = () => {
@@ -26,9 +25,9 @@ export const SubjectsUpdate = () => {
     const navigate = useNavigate();
 
 
-    const onFinish = async (values: FormValues) => {
+    const onFinish = async ({id, name, link}: FormValues) => {
         updateSubjectMutation({
-            variables: {updateSubjectInputType: {...values}},
+            variables: {updateSubjectInputType: {id, name, link}},
         })
             .then(response => {
                 navigate('../');
@@ -55,14 +54,10 @@ export const SubjectsUpdate = () => {
                 id: subject?.id,
                 name: subject?.name,
                 link: subject?.link,
-                createdAt: subject?.createdAt,
             }}
             {...sizeFormItem}
         >
             <Form.Item name="id" style={{display: 'none'}}>
-                <Input type={'hidden'}/>
-            </Form.Item>
-            <Form.Item name="createdAt" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>
             <Form.Item

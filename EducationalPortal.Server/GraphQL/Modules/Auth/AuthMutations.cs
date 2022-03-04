@@ -14,7 +14,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
 {
     public class AuthMutations : ObjectGraphType, IMutationMarker
     {
-        public AuthMutations(UsersRepository usersRepository, AuthService authService)
+        public AuthMutations(UserRepository usersRepository, AuthService authService)
         {
             Field<NonNullGraphType<AuthResponseType>, AuthResponse>()
                 .Name("Login")

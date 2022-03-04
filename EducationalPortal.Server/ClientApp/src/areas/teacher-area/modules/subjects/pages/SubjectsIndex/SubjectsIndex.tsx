@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Table} from 'antd';
+import {message, Space, Table} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link} from 'react-router-dom';
 import {GET_SUBJECTS_QUERY, GetSubjectsData, GetSubjectsVars} from '../../subjects.queries';
@@ -36,34 +36,34 @@ export const SubjectsIndex = () => {
             title: 'Викладач',
             dataIndex: 'teacher',
             key: 'teacher',
-            render: (text, subject) => <>{subject.teacher?.firstName} {subject.teacher?.middleName} {subject.teacher?.lastName}</>,
+            render: (text, subject) => <>{subject?.teacher?.firstName} {subject?.teacher?.middleName} {subject?.teacher?.lastName}</>,
         },
         {
             title: 'Навчальний рік',
             dataIndex: 'educationalYear',
             key: 'educationalYear',
-            render: (text, subject) => <>{subject.educationalYear?.name}</>,
+            render: (text, subject) => <>{subject?.educationalYear?.name}</>,
         },
         {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
             render: (text: string, subject: Subject) => (
-                <ButtonsVUR viewUrl={`${subject.id}`} updateUrl={`update/${subject.id}`}
-                            onRemove={() => onRemove(subject.id)}/>
+                <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
+                            onRemove={() => onRemove(subject?.id)}/>
             ),
         },
     ];
 
     return (
-        <div>
+        <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Link to={'create'}>
                 <ButtonCreate/>
             </Link>
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}
-                loading={getSubjectsQuery.loading}
+                loading={getSubjectsQuery.loading || removeSubjectMutationOptions.loading}
                 dataSource={getSubjectsQuery.data?.getSubjects.entities}
                 columns={columns}
                 pagination={{
@@ -74,6 +74,6 @@ export const SubjectsIndex = () => {
                     },
                 }}
             />
-        </div>
+        </Space>
     );
 };

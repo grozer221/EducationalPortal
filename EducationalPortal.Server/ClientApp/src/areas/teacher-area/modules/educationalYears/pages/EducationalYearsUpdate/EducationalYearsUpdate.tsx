@@ -24,7 +24,6 @@ const {RangePicker} = DatePicker;
 type FormValues = {
     id: string,
     name: string,
-    createdAt: string,
 }
 
 export const EducationalYearsUpdate = () => {
@@ -48,13 +47,14 @@ export const EducationalYearsUpdate = () => {
         setIsCurrent(educationalYear?.isCurrent || false);
     }, [getEducationalYearQuery.data]);
 
-    const onFinish = async (values: FormValues) => {
+    const onFinish = async ({id, name}: FormValues) => {
         const dateStart = new Date(dateStartAndEnd[0]._d.setHours(12)).toISOString();
         const dateEnd = new Date(dateStartAndEnd[1]._d.setHours(12)).toISOString();
         updateEducationalYearMutation({
             variables: {
                 updateEducationalYearInputType: {
-                    ...values,
+                    id,
+                    name,
                     isCurrent,
                     dateStart,
                     dateEnd,
@@ -85,7 +85,6 @@ export const EducationalYearsUpdate = () => {
             initialValues={{
                 id: educationalYear?.id,
                 name: educationalYear?.name,
-                createdAt: educationalYear?.createdAt,
                 dateStartAndEnd: [
                     moment(educationalYear?.dateStart.split('T')[0], 'YYYY-MM-DD'),
                     moment(educationalYear?.dateEnd.split('T')[0], 'YYYY-MM-DD'),
@@ -94,9 +93,6 @@ export const EducationalYearsUpdate = () => {
             {...sizeFormItem}
         >
             <Form.Item name="id" style={{display: 'none'}}>
-                <Input type={'hidden'}/>
-            </Form.Item>
-            <Form.Item name="createdAt" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>
             <Form.Item
