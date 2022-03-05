@@ -7,6 +7,8 @@ import {EducationalYearsLayout} from '../modules/educationalYears/EducationalYea
 import {Error} from '../../../components/Error/Error';
 import s from './TeacherLayout.module.css';
 import {SubjectsLayout} from '../modules/subjects/SubjectsLayout/SubjectsLayout';
+import {GradesLayout} from '../modules/grades/GradesLayout/GradesLayout';
+import {StudentsLayout} from '../modules/users/StudentsLayout/StudentsLayout';
 
 const {Content} = Layout;
 
@@ -21,6 +23,8 @@ export const TeacherLayout: FC = () => {
                         <Routes>
                             <Route path={'educational-years/*'} element={<EducationalYearsLayout/>}/>
                             <Route path={'subjects/*'} element={<SubjectsLayout/>}/>
+                            <Route path={'grades/*'} element={<GradesLayout/>}/>
+                            <Route path={'students/*'} element={<StudentsLayout/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
                     </div>

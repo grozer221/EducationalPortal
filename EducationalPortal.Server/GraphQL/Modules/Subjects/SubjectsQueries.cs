@@ -28,7 +28,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 
-            Field<NonNullGraphType<GetSubjectsResponseType>, GetEntitiesResponse<SubjectModel>>()
+            Field<NonNullGraphType<GetEntitiesResponseType<SubjectType, SubjectModel>>, GetEntitiesResponse<SubjectModel>>()
                 .Name("GetSubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                 .Resolve(context =>

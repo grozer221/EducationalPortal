@@ -26,6 +26,28 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                     return user;
                 })
                 .AuthorizeWith(AuthPolicies.Administrator);
+            
+            Field<NonNullGraphType<UserType>, UserModel>()
+                .Name("UpdateUser")
+                .Argument<NonNullGraphType<UpdateUserInputType>, UserModel>("UpdateUserInputType", "Argument for update User")
+                .ResolveAsync(async context =>
+                {
+                    UserModel user = context.GetArgument<UserModel>("UpdateUserInputType");
+                    await usersRepository.UpdateAsync(user);
+                    return user;
+                })
+                .AuthorizeWith(AuthPolicies.Administrator);
+           
+            Field<NonNullGraphType<BooleanGraphType>, bool>()
+                .Name("RemoveUser")
+                .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for remove User")
+                .ResolveAsync(async (context) =>
+                {
+                    Guid id = context.GetArgument<Guid>("Id");
+                    await usersRepository.RemoveAsync(id);
+                    return true;
+                })
+                .AuthorizeWith(AuthPolicies.Administrator);
         }
     }
 }

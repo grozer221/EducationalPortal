@@ -39,12 +39,12 @@ namespace EducationalPortal.Server.Database.Repositories
         {
             if (!string.IsNullOrEmpty(entity.Email))
             {
-                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == entity.Email).ToList();
+                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == entity.Email && e.Id != entity.Id).ToList();
                 if (checkUniqeUserEmail.Count > 0)
                     throw new Exception("Користувач з введеним Email уже існує");
             }
             
-            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == entity.Login).ToList();
+            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == entity.Login && e.Id != entity.Id).ToList();
             if (checkUniqeUserLogin.Count > 0)
                 throw new Exception("Користувач з введеним Логіном уже існує");
 

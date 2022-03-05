@@ -1,6 +1,7 @@
 ﻿using EducationalPortal.Server.Database.Abstractions;
 using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
+using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears;
 using EducationalPortal.Server.GraphQL.Modules.SubjectPosts;
 using EducationalPortal.Server.GraphQL.Modules.SubjectPosts.DTO;
@@ -30,21 +31,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("Link")
                .Resolve(context => context.Source.Link);
 
-            Field<GetSubjectPostsResponseType, GetEntitiesResponse<SubjectPostModel>>()
+            Field<GetEntitiesResponseType<SubjectPostType, SubjectPostModel>, GetEntitiesResponse<SubjectPostModel>>()
                .Name("Posts")
                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects Posts")
                .Resolve(context =>
                {
                    int page = context.GetArgument<int>("Page");
-                   try
-                   {
-                       Guid subjectId = context.Source.Id;
-                       return subjectPostRepository.Get(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
-                   }
-                   catch
-                   {
-                       return new GetEntitiesResponse<SubjectPostModel>();
-                   }
+                   Guid subjectId = context.Source.Id;
+                   return subjectPostRepository.Get(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
                });
 
             //Field<NonNullGraphType<ListGraphType<GradeType>>, IEnumerable<GradeModel>>()

@@ -8,6 +8,7 @@ import {useMutation} from '@apollo/client';
 import {REMOVE_SUBJECT_POST_MUTATION, RemoveSubjectPostData, RemoveSubjectPostVars} from '../../subjectPosts.mutations';
 import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost} from '../../subjectPosts.types';
+import {subjectPostTypeToTag} from '../../../../../../convertors/enumToBadgeConvertor';
 
 type Props = {
     subject: Subject,
@@ -51,7 +52,7 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     <Card
                         key={post.id}
                         type={'inner'}
-                        title={<><strong>{post.title}</strong> {post.type}</>}
+                        title={<><strong>{post.title}</strong> {subjectPostTypeToTag(post.type)}</>}
                         extra={
                             <ButtonsVUR
                                 onUpdate={() => onPostUpdate(post)}

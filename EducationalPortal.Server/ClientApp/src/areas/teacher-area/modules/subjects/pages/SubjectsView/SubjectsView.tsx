@@ -4,6 +4,8 @@ import {Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {GET_SUBJECT_WITH_POSTS_QUERY, GetSubjectWithPostsData, GetSubjectWithPostsVars} from '../../subjects.queries';
 import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIndex/SubjectPostsIndex';
+import {Space} from 'antd';
+import Title from 'antd/es/typography/Title';
 
 export const SubjectsView = () => {
     const params = useParams();
@@ -26,15 +28,10 @@ export const SubjectsView = () => {
 
     const subject = getSubjectQuery.data?.getSubject;
     return (
-        <>
+        <Space direction={'vertical'} size={20}>
+            <Title>{subject?.name}</Title>
             <table className="infoTable">
                 <tbody>
-                <tr>
-                    <td>Назва:</td>
-                    <td>
-                        <span>{subject?.name}</span>
-                    </td>
-                </tr>
                 <tr>
                     <td>Викладач:</td>
                     <td>
@@ -62,6 +59,6 @@ export const SubjectsView = () => {
                 postsPage={postsPage}
                 setPostsPage={setPostsPage}
             />}
-        </>
+        </Space>
     );
 };

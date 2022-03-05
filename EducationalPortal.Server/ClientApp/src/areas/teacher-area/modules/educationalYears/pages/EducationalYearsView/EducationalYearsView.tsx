@@ -7,7 +7,8 @@ import {
 } from '../../educationalYears.queries';
 import {Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {Tag} from 'antd';
+import {Space, Tag} from 'antd';
+import Title from 'antd/es/typography/Title';
 
 export const EducationalYearsView = () => {
     const params = useParams();
@@ -25,15 +26,10 @@ export const EducationalYearsView = () => {
 
     const educationalYear = getEducationalYearQuery.data?.getEducationalYear;
     return (
-        <div>
+        <Space direction={'vertical'} size={20}>
+            <Title>{educationalYear?.name}</Title>
             <table className="infoTable">
                 <tbody>
-                <tr>
-                    <td>Назва:</td>
-                    <td>
-                        <span>{educationalYear?.name}</span>
-                    </td>
-                </tr>
                 <tr>
                     <td>Поточний:</td>
                     <td>
@@ -57,6 +53,6 @@ export const EducationalYearsView = () => {
                 </tr>
                 </tbody>
             </table>
-        </div>
+        </Space>
     );
 };

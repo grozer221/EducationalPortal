@@ -57,9 +57,6 @@ namespace EducationalPortal.Server.Database.Abstractions
             int skip = (page - 1) * take;
             entities = entities.Skip(skip).Take(take);
 
-            if (entities == null)
-                throw new Exception("Не знайдено");
-
             return new GetEntitiesResponse<T>
             {
                 Entities = entities,

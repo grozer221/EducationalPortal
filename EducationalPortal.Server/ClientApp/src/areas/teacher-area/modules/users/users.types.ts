@@ -1,3 +1,6 @@
+import {Grade} from '../grades/grades.types';
+import {getSubjectsType} from '../subjects/subjects.queries';
+
 export enum Role {
     Student = 'STUDENT',
     Teacher = 'TEACHER',
@@ -15,8 +18,8 @@ export type User = {
     dateOfBirth: string,
     role: Role,
     gradeId: string,
-    // grade: Grade,
-    // subjects: Subject[],
+    grade: Grade,
+    subjects: getSubjectsType[],
     createdAt: string,
     updatedAt: string,
 }

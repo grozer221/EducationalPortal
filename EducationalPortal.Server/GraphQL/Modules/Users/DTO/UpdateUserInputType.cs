@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
 {
-    public class CreateUserInputType : InputObjectGraphType<UserModel>
+    public class UpdateUserInputType : InputObjectGraphType<UserModel>
     {
-        public CreateUserInputType()
+        public UpdateUserInputType()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("FirstName")
@@ -27,7 +27,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Login")
                .Resolve(context => context.Source.Login);
-
+            
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Password")
                .Resolve(context => context.Source.Password);

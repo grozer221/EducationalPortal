@@ -1,10 +1,10 @@
 import React, {FC, useState} from 'react';
 import {Layout, Menu, Tag} from 'antd';
 import {
-    AppstoreAddOutlined, BookOutlined,
+    AppstoreAddOutlined, BookOutlined, BoxPlotOutlined,
     LineChartOutlined,
     LogoutOutlined,
-    QuestionOutlined,
+    QuestionOutlined, ScheduleOutlined,
     SettingOutlined, ShopOutlined,
     TeamOutlined,
     UserOutlined,
@@ -13,6 +13,8 @@ import s from './AppMenu.module.css';
 import {Link} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../../../store/store';
 import {authActions} from '../../../../store/auth/auth.slice';
+import {SubjectPostType} from '../../modules/subjectPosts/subjectPosts.types';
+import {Role} from '../../modules/users/users.types';
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -32,7 +34,7 @@ export const AppMenu: FC = () => {
                     <span className={s.name}>{me?.user.lastName}</span>
                 </div>
                 <div className={s.roles}>
-                    <Tag color={'green'}>{me?.user.role}</Tag>
+                    <Tag color={'green'}>{me?.user?.role && Object.keys(Role)[Object.values(Role).indexOf(me.user.role)]}</Tag>
                 </div>
             </div>
             <Menu theme="dark" /*defaultSelectedKeys={['1']}*/ mode="inline">
@@ -47,13 +49,18 @@ export const AppMenu: FC = () => {
                     <Menu.Item key="sub2_10" icon={<BookOutlined/>}>
                         <Link to={'subjects'}>Предмети</Link>
                     </Menu.Item>
-                    <Menu.Item key="sub2_20" icon={<TeamOutlined/>}>
-                        <Link to={'students'}>Учні</Link>
-                    </Menu.Item>
-                    <Menu.Item key="sub2_30" icon={<TeamOutlined/>}>
+                    <Menu.Item key="sub2_20" icon={<BoxPlotOutlined/>}>
                         <Link to={'grades'}>Класи</Link>
                     </Menu.Item>
-                    <Menu.Item key="sub2_100" icon={<TeamOutlined/>}>
+                    <SubMenu key="sub3" icon={<TeamOutlined/>} title="Користувачі">
+                        <Menu.Item key="sub3_10" icon={<UserOutlined/>}>
+                            <Link to={'students'}>Учні</Link>
+                        </Menu.Item>
+                        <Menu.Item key="sub3_20" icon={<UserOutlined/>}>
+                            <Link to={'teachers'}>Викладачі</Link>
+                        </Menu.Item>
+                    </SubMenu>
+                    <Menu.Item key="sub2_100" icon={<ScheduleOutlined/>}>
                         <Link to={'educational-years'}>Навчальні роки</Link>
                     </Menu.Item>
                 </SubMenu>

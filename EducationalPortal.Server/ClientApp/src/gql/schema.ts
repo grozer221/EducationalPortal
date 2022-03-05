@@ -13,13 +13,25 @@ export const schema = gql`
             Argument for get Educational years
             """
             page: Int! = 0
-        ): GetEducationalYearsResponseType!
+        ): GetEducationalYearResponseType!
         getEducationalYear(
             """
             Argument for get Educational year
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): EducationalYearType!
+        getGrades(
+            """
+            Argument for get Grades
+            """
+            page: Int! = 0
+        ): GetGradeResponseType!
+        getGrade(
+            """
+            Argument for get Grade
+            """
+            id: ID! = "00000000-0000-0000-0000-000000000000"
+        ): GradeType!
         getSubject(
             """
             Argument for get Subject
@@ -31,13 +43,18 @@ export const schema = gql`
             Argument for get Subjects
             """
             page: Int! = 0
-        ): GetSubjectsResponseType!
+        ): GetSubjectResponseType!
         getUsers(
             """
             Argument for get Users
             """
             page: Int! = 0
-        ): GetUsersResponseType!
+
+            """
+            Argument for get Users
+            """
+            role: UserRoleEnum
+        ): GetUserResponseType!
         getUser(
             """
             Argument for get User
@@ -63,6 +80,14 @@ export const schema = gql`
         role: UserRoleEnum!
         createdAt: DateTime!
         updatedAt: DateTime!
+        gradeId: ID
+        grade: GradeType
+        subjects(
+            """
+            Argument for get Subjects Posts
+            """
+            page: Int! = 0
+        ): GetSubjectResponseType
     }
 
     """
@@ -76,19 +101,27 @@ export const schema = gql`
         ADMINISTRATOR
     }
 
-    type GetEducationalYearsResponseType {
-        entities: [EducationalYearType]!
+    type GradeType {
+        id: ID!
+        name: String!
+        students(
+            """
+            Argument for get Subjects Posts
+            """
+            page: Int! = 0
+        ): GetUserResponseType!
+        createdAt: DateTime!
+        updatedAt: DateTime!
+    }
+
+    type GetUserResponseType {
+        entities: [UserType]!
         total: Int!
     }
 
-    type EducationalYearType {
-        id: ID!
-        name: String!
-        dateStart: DateTime!
-        dateEnd: DateTime!
-        isCurrent: Boolean!
-        createdAt: DateTime!
-        updatedAt: DateTime!
+    type GetSubjectResponseType {
+        entities: [SubjectType]!
+        total: Int!
     }
 
     type SubjectType {
@@ -100,7 +133,7 @@ export const schema = gql`
             Argument for get Subjects Posts
             """
             page: Int! = 0
-        ): GetSubjectPostsResponseType
+        ): GetSubjectPostResponseType
         teacherId: ID!
         teacher: UserType!
         educationalYearId: ID!
@@ -109,7 +142,7 @@ export const schema = gql`
         updatedAt: DateTime!
     }
 
-    type GetSubjectPostsResponseType {
+    type GetSubjectPostResponseType {
         entities: [SubjectPostType]!
         total: Int!
     }
@@ -128,13 +161,23 @@ export const schema = gql`
         HOMEWORK
     }
 
-    type GetSubjectsResponseType {
-        entities: [SubjectType]!
+    type EducationalYearType {
+        id: ID!
+        name: String!
+        dateStart: DateTime!
+        dateEnd: DateTime!
+        isCurrent: Boolean!
+        createdAt: DateTime!
+        updatedAt: DateTime!
+    }
+
+    type GetEducationalYearResponseType {
+        entities: [EducationalYearType]!
         total: Int!
     }
 
-    type GetUsersResponseType {
-        entities: [UserType]!
+    type GetGradeResponseType {
+        entities: [GradeType]!
         total: Int!
     }
 
@@ -169,12 +212,42 @@ export const schema = gql`
             """
             id: ID! = "00000000-0000-0000-0000-000000000000"
         ): Boolean!
+        createGrade(
+            """
+            Argument for create new Grade
+            """
+            createGradeInputType: CreateGradeInputType!
+        ): GradeType!
+        updateGrade(
+            """
+            Argument for update Grade
+            """
+            updateGradeInputType: UpdateGradeInputType!
+        ): GradeType!
+        removeGrade(
+            """
+            Argument for remove Grade
+            """
+            id: ID! = "00000000-0000-0000-0000-000000000000"
+        ): Boolean!
         createSubjectPost(
             """
             Argument for create new Subject Post
             """
             createSubjectPostInputType: CreateSubjectPostInputType!
         ): SubjectPostType!
+        updateSubjectPost(
+            """
+            Argument for update Subject Post
+            """
+            updateSubjectPostInputType: UpdateSubjectPostInputType!
+        ): SubjectPostType!
+        removeSubjectPost(
+            """
+            Argument for remove Subject Post
+            """
+            id: ID! = "00000000-0000-0000-0000-000000000000"
+        ): Boolean!
         createSubject(
             """
             Argument for create new Subject
@@ -199,6 +272,18 @@ export const schema = gql`
             """
             createUserInputType: CreateUserInputType!
         ): UserType!
+        updateUser(
+            """
+            Argument for update User
+            """
+            updateUserInputType: UpdateUserInputType!
+        ): UserType!
+        removeUser(
+            """
+            Argument for remove User
+            """
+            id: ID! = "00000000-0000-0000-0000-000000000000"
+        ): Boolean!
     }
 
     input LoginAuthInputType {
@@ -220,11 +305,27 @@ export const schema = gql`
         dateEnd: DateTime
     }
 
+    input CreateGradeInputType {
+        name: String!
+    }
+
+    input UpdateGradeInputType {
+        id: ID!
+        name: String!
+    }
+
     input CreateSubjectPostInputType {
         title: String!
         text: String
         type: PostType!
         subjectId: ID!
+    }
+
+    input UpdateSubjectPostInputType {
+        id: ID!
+        title: String!
+        text: String
+        type: PostType!
     }
 
     input CreateSubjectInputType {
@@ -238,15 +339,28 @@ export const schema = gql`
     }
 
     input CreateUserInputType {
-        firstName: String
-        lastName: String
-        middleName: String
-        login: String
+        firstName: String!
+        lastName: String!
+        middleName: String!
+        login: String!
+        password: String!
         email: String
-        isEmailConfirmed: Boolean
         phoneNumber: String
-        dateOfBirth: DateTime
-        role: UserRoleEnum
+        dateOfBirth: DateTime!
+        role: UserRoleEnum!
+        gradeId: ID
+    }
+
+    input UpdateUserInputType {
+        firstName: String!
+        lastName: String!
+        middleName: String!
+        login: String!
+        password: String!
+        email: String
+        phoneNumber: String
+        dateOfBirth: DateTime!
+        role: UserRoleEnum!
         gradeId: ID
     }
 `
