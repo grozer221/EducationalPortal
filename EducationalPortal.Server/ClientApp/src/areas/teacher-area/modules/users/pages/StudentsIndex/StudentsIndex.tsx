@@ -32,14 +32,15 @@ export const StudentsIndex = () => {
             title: 'Учень',
             dataIndex: 'student',
             key: 'student',
-            render: (text, student) => <>{student?.firstName} {student?.lastName}</>,
+            render: (text, student) => <>{student?.lastName} {student?.firstName}</>,
         },
         {
             title: 'Клас',
             dataIndex: 'grade',
             key: 'grade',
-            render: (text, student) => student.grade &&
-                <Link to={`../../grades/${student.gradeId}`}>{student.grade?.name}</Link>,
+            render: (text, student) => student?.grade
+                ? <Link to={`../../grades/${student.gradeId}`}>{student.grade?.name}</Link>
+                : '--',
         },
         {
             title: 'Дії',

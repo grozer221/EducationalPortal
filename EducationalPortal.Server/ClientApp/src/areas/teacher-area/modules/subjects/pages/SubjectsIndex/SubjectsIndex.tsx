@@ -36,13 +36,13 @@ export const SubjectsIndex = () => {
             title: 'Викладач',
             dataIndex: 'teacher',
             key: 'teacher',
-            render: (text, subject) => <>{subject?.teacher?.firstName} {subject?.teacher?.middleName} {subject?.teacher?.lastName}</>,
+            render: (text, subject) => <Link to={`../../teachers/${subject?.teacherId}`}>{subject?.teacher?.firstName} {subject?.teacher?.middleName} {subject?.teacher?.lastName}</Link>,
         },
         {
             title: 'Навчальний рік',
             dataIndex: 'educationalYear',
             key: 'educationalYear',
-            render: (text, subject) => <>{subject?.educationalYear?.name}</>,
+            render: (text, subject) => <Link to={`../../educational-years/${subject?.educationalYearId}`}>{subject?.educationalYear?.name}</Link>,
         },
         {
             title: 'Дії',

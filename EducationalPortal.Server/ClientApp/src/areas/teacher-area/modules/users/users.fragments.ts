@@ -28,3 +28,17 @@ export const USER_WITH_GRADE_FRAGMENT = gql`
         }
     }
 `;
+
+export const GRADE_WITH_STUDENTS_FRAGMENT = gql`
+    ${GRADE_FRAGMENT}
+    ${USER_FRAGMENT}
+    fragment GradeWithStudentsFragment on GradeType {
+        ...GradeFragment
+        students(page: $studentsPage) {
+            entities {
+                ...UserFragment
+            }
+            total
+        }
+    }
+`;

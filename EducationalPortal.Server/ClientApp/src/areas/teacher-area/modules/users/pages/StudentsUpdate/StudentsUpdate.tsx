@@ -1,34 +1,38 @@
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
+import {Navigate, useNavigate, useParams} from 'react-router-dom';
+import {Loading} from '../../../../../../components/Loading/Loading';
 import {AutoComplete, DatePicker, Form, Input, message} from 'antd';
-import {useNavigate} from 'react-router-dom';
-import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
+import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {CREATE_USER_MUTATION, CreateUserData, CreateUserVars} from '../../users.mutations';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
-import CyrillicToTranslit from 'cyrillic-to-translit-js';
-import Search from 'antd/es/input/Search';
-import debounce from 'lodash.debounce';
-import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
-import {UserOutlined} from '@ant-design/icons';
+import {UPDATE_USER_MUTATION, UpdateUserData, UpdateUserVars} from '../../users.mutations';
+import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../users.queries';
+import moment from 'moment';
 import {Role} from '../../users.types';
-
-const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
+import Search from 'antd/es/input/Search';
+import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
+import debounce from 'lodash.debounce';
 
 type FormValues = {
+    id: string,
     firstName: string,
     lastName: string,
     middleName: string,
     login: string,
-    password: string,
     email: string,
     phoneNumber: string,
     dateOfBirth: any,
-    gradeName: string | null,
+    gradeName: string,
 }
 
-export const StudentsCreate = () => {
+export const StudentsUpdate = () => {
+    const params = useParams();
+    const id = params.id as string;
+    const [updateStudentMutation, updateStudentMutationOption] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER_MUTATION);
+    const [form] = Form.useForm();
+    const getStudentQuery = useQuery<GetUserWithGradeData, GetUserWithGradeVars>(GET_USER_WITH_GRADE_QUERY,
+        {variables: {id: id}},
+    );
     const [gradePage, setGradePage] = useState(1);
     const getGradeQuery = useQuery<GetGradesData, GetGradesVars>(GET_GRADES_QUERY, {
         variables: {
@@ -36,25 +40,29 @@ export const StudentsCreate = () => {
             like: '',
         },
     });
-    const [createStudentMutation, createStudentMutationOption] = useMutation<CreateUserData, CreateUserVars>(CREATE_USER_MUTATION);
-    const [form] = Form.useForm();
     const navigate = useNavigate();
 
+
+
     const onFinish = async (values: FormValues) => {
-        console.log(getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id);
-        createStudentMutation({
+        console.log(getStudentQuery.data);
+        const gradeId = getStudentQuery.data?.getUser?.grade?.name === values.gradeName
+            ? getStudentQuery.data?.getUser.gradeId
+            : getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id;
+
+        updateStudentMutation({
             variables: {
-                createUserInputType: {
+                updateUserInputType: {
+                    id: values.id,
                     firstName: values.firstName,
                     lastName: values.lastName,
                     middleName: values.middleName,
                     login: values.login,
-                    password: values.password,
                     email: values.email,
                     phoneNumber: values.phoneNumber,
                     dateOfBirth: new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
                     role: Role.Student,
-                    gradeId: getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id,
+                    gradeId: gradeId,
                 },
             },
         })
@@ -66,22 +74,7 @@ export const StudentsCreate = () => {
             });
     };
 
-    const changeLogin = () => {
-        const lastName: string = form.getFieldValue('lastName') || '';
-        const lastName1Letter = lastName.length ? lastName[0] : '';
-        const firstName: string = form.getFieldValue('firstName') || '';
-        const firstName1Letter = firstName.length ? firstName[0] : '';
-        const middleName: string = form.getFieldValue('middleName') || '';
-        const middleName1Letter = middleName.length ? middleName[0] : '';
-        const dateOfBorn: Date | null = form.getFieldValue('dateOfBirth')?._d;
-        const yearOfBorn = dateOfBorn?.getFullYear() || '';
-        form.setFieldsValue({
-            login: cyrillicToTranslit.transform(`${yearOfBorn}_${lastName1Letter}${firstName1Letter}${middleName1Letter}`).toLowerCase(),
-        });
-    };
-
     const onSearchGradesHandler = async (value: string) => {
-        console.log(value);
         const response = await getGradeQuery.refetch({
             page: 1,
             like: value,
@@ -98,50 +91,54 @@ export const StudentsCreate = () => {
     const debouncedSearchGradesHandler = useCallback(debounce(nextValue => onSearchGradesHandler(nextValue), 500), []);
     const searchGradesHandler = (value: string) => debouncedSearchGradesHandler(value);
 
-    const renderItem = (title: string, count: number) => ({
-        value: title,
-        label: (
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                }}
-            >
-                {title}<span><UserOutlined/> {count}</span>
-            </div>
-        ),
-    });
+    if (!id)
+        return <Navigate to={'/error'}/>;
 
+    if (getStudentQuery.loading)
+        return <Loading/>;
+
+    const student = getStudentQuery.data?.getUser;
     return (
         <Form
-            name="StudentsCreateForm"
+            name="StudentsUpdateForm"
             onFinish={onFinish}
             form={form}
             initialValues={{
-                password: (Math.random() + 1).toString(36).substring(6),
+                id: student?.id,
+                firstName: student?.firstName,
+                middleName: student?.middleName,
+                lastName: student?.lastName,
+                login: student?.login,
+                email: student?.email,
+                phoneNumber: student?.phoneNumber,
+                dateOfBirth: moment(student?.dateOfBirth.split('T')[0], 'YYYY-MM-DD'),
+                gradeName: student?.grade?.name
             }}
             {...sizeFormItem}
         >
-            <Form.Item
-                name="lastName"
-                label="Прізвище"
-                rules={[{required: true, message: 'Введіть Прізвище!'}]}
-            >
-                <Input placeholder="Прізвище" onChange={() => changeLogin()}/>
+            <Form.Item name="id" style={{display: 'none'}}>
+                <Input type={'hidden'}/>
             </Form.Item>
             <Form.Item
                 name="firstName"
                 label="Ім'я"
                 rules={[{required: true, message: 'Введіть Ім\'я!'}]}
             >
-                <Input placeholder="Ім'я" onChange={() => changeLogin()}/>
+                <Input placeholder="Ім'я"/>
             </Form.Item>
             <Form.Item
                 name="middleName"
                 label="По-батькові"
                 rules={[{required: true, message: 'Введіть По-батькові!'}]}
             >
-                <Input placeholder="По-батькові" onChange={() => changeLogin()}/>
+                <Input placeholder="По-батькові"/>
+            </Form.Item>
+            <Form.Item
+                name="lastName"
+                label="Прізвище"
+                rules={[{required: true, message: 'Введіть Прізвище!'}]}
+            >
+                <Input placeholder="Прізвище"/>
             </Form.Item>
             <Form.Item
                 name="login"
@@ -149,13 +146,6 @@ export const StudentsCreate = () => {
                 rules={[{required: true, message: 'Введіть Логін!'}]}
             >
                 <Input placeholder="Логін"/>
-            </Form.Item>
-            <Form.Item
-                name="password"
-                label="Пароль"
-                rules={[{required: true, message: 'Введіть Пароль!'}]}
-            >
-                <Input placeholder="Пароль"/>
             </Form.Item>
             <Form.Item
                 name="email"
@@ -174,7 +164,7 @@ export const StudentsCreate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} onChange={() => changeLogin()}/>
+                <DatePicker/>
             </Form.Item>
             <Form.Item
                 name="gradeName"
@@ -192,7 +182,7 @@ export const StudentsCreate = () => {
                 </AutoComplete>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
-                <ButtonCreate loading={createStudentMutationOption.loading} isSubmit={true}/>
+                <ButtonUpdate loading={updateStudentMutationOption.loading} isSubmit={true}/>
             </Form.Item>
         </Form>
     );

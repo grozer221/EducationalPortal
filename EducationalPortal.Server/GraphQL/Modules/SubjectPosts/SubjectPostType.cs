@@ -1,20 +1,17 @@
 ﻿using EducationalPortal.Server.Database.Enums;
 using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
+using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Subjects;
 using EducationalPortal.Server.GraphQL.Modules.Users;
 using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 {
-    public class SubjectPostType : ObjectGraphType<SubjectPostModel>
+    public class SubjectPostType : BaseType<SubjectPostModel>
     {
-        public SubjectPostType(UserRepository usersRepository, SubjectRepository subjectRepository)
+        public SubjectPostType(UserRepository usersRepository, SubjectRepository subjectRepository) : base()
         {
-            Field<NonNullGraphType<IdGraphType>, Guid>()
-               .Name("Id")
-               .Resolve(context => context.Source.Id);
-            
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Title")
                .Resolve(context => context.Source.Title);

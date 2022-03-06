@@ -17,12 +17,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
             Field<NonNullGraphType<GetEntitiesResponseType<GradeType, GradeModel>>, GetEntitiesResponse<GradeModel>>()
                 .Name("GetGrades")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Grades")
+                .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Grades")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
-                    return gradeRepository.Get(y => y.CreatedAt, true, page);
+                    string like = context.GetArgument<string>("Like");
+                    return gradeRepository.Get(y => y.Name, false, page, g => g.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
                 })
-               .AuthorizeWith(AuthPolicies.Teacher);
+                .AuthorizeWith(AuthPolicies.Teacher);
 
             Field<NonNullGraphType<GradeType>, GradeModel>()
                 .Name("GetGrade")

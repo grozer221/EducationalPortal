@@ -30,7 +30,7 @@ export const GradesView = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text, user) => (
-                <ButtonsVUR viewUrl={`../../users/${user.id}`}/>
+                <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
             ),
         },
     ];

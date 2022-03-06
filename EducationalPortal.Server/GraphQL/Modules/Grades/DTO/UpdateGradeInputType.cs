@@ -7,17 +7,13 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Grades.DTO
 {
-    public class UpdateGradeInputType : InputObjectGraphType<GradeModel>
+    public class UpdateGradeInputType : CreateGradeInputType
     {
-        public UpdateGradeInputType()
+        public UpdateGradeInputType() : base()
         {
             Field<NonNullGraphType<IdGraphType>, Guid>()
                 .Name("Id")
                 .Resolve(context => context.Source.Id);
-
-            Field<NonNullGraphType<StringGraphType>, string>()
-               .Name("Name")
-               .Resolve(context => context.Source.Name);
         }
     }
 }

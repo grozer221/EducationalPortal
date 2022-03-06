@@ -11,8 +11,9 @@ import {REMOVE_GRADE_MUTATION, RemoveGradeData, RemoveGradeVars} from '../../gra
 
 export const GradesIndex = () => {
     const [page, setPage] = useState(1);
+    const [like, setLike] = useState('');
     const getGradesQuery = useQuery<GetGradesData, GetGradesVars>(GET_GRADES_QUERY,
-        {variables: {page: page}, fetchPolicy: 'network-only'},
+        {variables: {page: page, like: like}, fetchPolicy: 'network-only'},
     );
     const [removeGradeMutation, removeGradeMutationOptions] = useMutation<RemoveGradeData, RemoveGradeVars>(REMOVE_GRADE_MUTATION);
 

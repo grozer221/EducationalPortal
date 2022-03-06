@@ -15,7 +15,7 @@ export type createUserInputType = {
     phoneNumber: string,
     dateOfBirth: string,
     role: Role,
-    gradeId: string | null,
+    gradeId: string | undefined,
 }
 
 export const CREATE_USER_MUTATION = gql`
@@ -31,7 +31,7 @@ export const CREATE_USER_MUTATION = gql`
 export type UpdateUserData = { updateUser: User }
 
 export type UpdateUserVars = { updateUserInputType: updateUserInputType }
-export type updateUserInputType = createUserInputType & { id: string }
+export type updateUserInputType = Omit<createUserInputType & { id: string }, 'password'>
 
 export const UPDATE_USER_MUTATION = gql`
     ${USER_FRAGMENT}

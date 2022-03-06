@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
 {
-    public class UpdateSubjectInputType : InputObjectGraphType<SubjectModel>
+    public class UpdateSubjectInputType : CreateSubjectInputType
     {
-        public UpdateSubjectInputType()
+        public UpdateSubjectInputType() : base()
         {
             Field<NonNullGraphType<IdGraphType>, Guid>()
                .Name("Id")
                .Resolve(context => context.Source.Id);
 
-            Field<NonNullGraphType<StringGraphType>, string>()
-               .Name("Name")
-               .Resolve(context => context.Source.Name);
-            
             Field<StringGraphType, string>()
                .Name("Link")
                .Resolve(context => context.Source.Link);

@@ -2,10 +2,10 @@ import {gql} from '@apollo/client';
 import {Role, User} from './users.types';
 import {USER_WITH_GRADE_FRAGMENT} from './users.fragments';
 
-export type GetUserWithGradData = { getUser: User }
+export type GetUserWithGradeData = { getUser: User }
 export type GetUserWithGradeVars = { id: string }
 
-export const GET_USER_QUERY = gql`
+export const GET_USER_WITH_GRADE_QUERY = gql`
     ${USER_WITH_GRADE_FRAGMENT}
     query GetUser($id: ID!) {
         getUser(id: $id) {

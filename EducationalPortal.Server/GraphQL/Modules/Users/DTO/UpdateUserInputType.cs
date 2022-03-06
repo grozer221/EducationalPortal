@@ -12,6 +12,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
     {
         public UpdateUserInputType()
         {
+            Field<NonNullGraphType<IdGraphType>, Guid>()
+                .Name("Id")
+                .Resolve(context => context.Source.Id);
+
             Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("FirstName")
                 .Resolve(context => context.Source.FirstName);
@@ -28,10 +32,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
                .Name("Login")
                .Resolve(context => context.Source.Login);
             
-            Field<NonNullGraphType<StringGraphType>, string>()
-               .Name("Password")
-               .Resolve(context => context.Source.Password);
-
             Field<StringGraphType, string>()
                .Name("Email")
                .Resolve(context => context.Source.Email);

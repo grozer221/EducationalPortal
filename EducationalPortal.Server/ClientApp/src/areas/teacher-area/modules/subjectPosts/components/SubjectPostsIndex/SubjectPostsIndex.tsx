@@ -9,6 +9,7 @@ import {REMOVE_SUBJECT_POST_MUTATION, RemoveSubjectPostData, RemoveSubjectPostVa
 import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost} from '../../subjectPosts.types';
 import {subjectPostTypeToTag} from '../../../../../../convertors/enumToBadgeConvertor';
+import Title from 'antd/es/typography/Title';
 
 type Props = {
     subject: Subject,
@@ -52,7 +53,8 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     <Card
                         key={post.id}
                         type={'inner'}
-                        title={<><strong>{post.title}</strong> {subjectPostTypeToTag(post.type)}</>}
+                        title={<Space size={1}>{subjectPostTypeToTag(post.type)}<Title
+                            level={4}>{post.title}</Title></Space>}
                         extra={
                             <ButtonsVUR
                                 onUpdate={() => onPostUpdate(post)}
@@ -64,7 +66,8 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     </Card>
                 ))}
                 {subject?.posts?.total > 0 &&
-                <Pagination defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>}
+                <Pagination defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>
+                }
             </Space>
             <SubjectPostsCreate
                 isModalPostCreateVisible={isModalPostCreateVisible}

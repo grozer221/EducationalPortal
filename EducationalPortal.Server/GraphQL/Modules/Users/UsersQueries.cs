@@ -22,21 +22,21 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
                 .Argument<UserRoleType, UserRoleEnum?>("Role", "Argument for get Users")
-                .Resolve(context => 
+                .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     UserRoleEnum? role = context.GetArgument<UserRoleEnum?>("Role");
                     if (role == null)
-                        return usersRepository.Get(u => u.CreatedAt, true, page);
+                        return usersRepository.Get(u => u.LastName, false, page);
                     else
-                        return usersRepository.Get(u => u.CreatedAt, true, page, u => u.Role == role);
+                        return usersRepository.Get(u => u.LastName, false, page, u => u.Role == role);
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
-            
+
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("GetUser")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get User")
-                .Resolve(context => 
+                .Resolve(context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
                     return usersRepository.GetById(id);

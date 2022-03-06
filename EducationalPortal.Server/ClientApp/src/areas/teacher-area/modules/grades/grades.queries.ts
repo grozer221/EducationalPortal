@@ -1,17 +1,17 @@
 import {gql} from '@apollo/client';
-import {SUBJECT_FRAGMENT} from '../subjects/subjects.fragments';
-import {GRADE_FRAGMENT, GRADE_WITH_STUDENTS_FRAGMENT} from './grades.fragments';
+import {GRADE_FRAGMENT} from './grades.fragments';
 import {Grade} from './grades.types';
+import {GRADE_WITH_STUDENTS_FRAGMENT} from '../users/users.fragments';
 
 export type GetGradesData = { getGrades: getGrades }
 export type getGrades = { entities: Grade[], total: number }
 
-export type GetGradesVars = { page: number }
+export type GetGradesVars = { page: number, like: string }
 
 export const GET_GRADES_QUERY = gql`
     ${GRADE_FRAGMENT}
-    query GetGrades($page: Int!) {
-        getGrades(page: $page) {
+    query GetGrades($page: Int!, $like: String!) {
+        getGrades(page: $page, like: $like) {
             entities {
                 ...GradeFragment
             }

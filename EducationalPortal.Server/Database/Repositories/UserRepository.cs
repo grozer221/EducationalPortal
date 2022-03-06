@@ -35,21 +35,25 @@ namespace EducationalPortal.Server.Database.Repositories
             return entity;
         }
         
-        public override async Task<UserModel> UpdateAsync(UserModel entity)
+        public override async Task<UserModel> UpdateAsync(UserModel newUser)
         {
-            if (!string.IsNullOrEmpty(entity.Email))
+            if (!string.IsNullOrEmpty(newUser.Email))
             {
-                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == entity.Email && e.Id != entity.Id).ToList();
+                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == newUser.Email && e.Id != newUser.Id).ToList();
                 if (checkUniqeUserEmail.Count > 0)
                     throw new Exception("Користувач з введеним Email уже існує");
             }
             
-            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == entity.Login && e.Id != entity.Id).ToList();
+            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == newUser.Login && e.Id != newUser.Id).ToList();
             if (checkUniqeUserLogin.Count > 0)
                 throw new Exception("Користувач з введеним Логіном уже існує");
 
-            await base.UpdateAsync(entity);
-            return entity;
+            UserModel oldUser = GetById(newUser.Id);
+            newUser.CreatedAt = oldUser.CreatedAt;
+            newUser.Password = oldUser.Password;
+            newUser.IsEmailConfirmed = oldUser.IsEmailConfirmed;
+            await base.UpdateAsync(newUser);
+            return newUser;
         }
 
         public UserModel GetByLogin(string login)

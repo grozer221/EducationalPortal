@@ -12,5 +12,7 @@ export const SUBJECT_POST_FRAGMENT = gql`
         teacher {
             ...UserFragment
         }
+        createdAt
+        updatedAt
     }
 `;

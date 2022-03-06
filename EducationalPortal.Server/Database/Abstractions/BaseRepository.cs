@@ -43,7 +43,6 @@ namespace EducationalPortal.Server.Database.Abstractions
 
         public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
         {
-            
             IEnumerable<T> entities = descending
                 ? _context.Set<T>().AsNoTracking().OrderByDescending(predicate)
                 : _context.Set<T>().AsNoTracking().OrderBy(predicate);

@@ -28,7 +28,7 @@ export const SubjectsView = () => {
 
     const subject = getSubjectQuery.data?.getSubject;
     return (
-        <Space direction={'vertical'} size={20}>
+        <Space direction={'vertical'} size={20} style={{width: '100%'}}>
             <Title>{subject?.name}</Title>
             <table className="infoTable">
                 <tbody>

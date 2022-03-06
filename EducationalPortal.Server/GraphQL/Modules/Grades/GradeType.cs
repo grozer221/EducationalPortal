@@ -8,14 +8,10 @@ using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Grades
 {
-    public class GradeType : ObjectGraphType<GradeModel>
+    public class GradeType : BaseType<GradeModel>
     {
-        public GradeType(UserRepository userRepository)
+        public GradeType(UserRepository userRepository) : base()
         {
-            Field<NonNullGraphType<IdGraphType>, Guid>()
-               .Name("Id")
-               .Resolve(context => context.Source.Id);
-
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
@@ -29,14 +25,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
                    Guid gradeId = context.Source.Id;
                    return userRepository.Get(s => s.CreatedAt, true, page, p => p.GradeId == gradeId);
                });
-
-            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
-               .Name("CreatedAt")
-               .Resolve(context => context.Source.CreatedAt);
-
-            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
-               .Name("UpdatedAt")
-               .Resolve(context => context.Source.UpdatedAt);
         }
     }
 }

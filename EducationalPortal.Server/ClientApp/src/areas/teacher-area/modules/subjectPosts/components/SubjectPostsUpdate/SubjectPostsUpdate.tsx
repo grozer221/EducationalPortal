@@ -74,7 +74,9 @@ export const SubjectPostsUpdate: FC<Props> = ({
             title="Оновити пост"
             visible={isModalPostUpdateVisible}
             onOk={handleOk}
+            okText={'Створити'}
             onCancel={handleCancel}
+            cancelText={'Відміна'}
             width={'70%'}
         >
             <Form

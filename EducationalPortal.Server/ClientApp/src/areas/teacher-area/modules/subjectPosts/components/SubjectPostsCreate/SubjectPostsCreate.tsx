@@ -54,6 +54,7 @@ export const SubjectPostsCreate: FC<Props> = ({
 
     const handleCancel = () => {
         setIsModalPostCreateVisible(false);
+        form.resetFields();
     };
 
     return (
@@ -62,7 +63,9 @@ export const SubjectPostsCreate: FC<Props> = ({
             title="Створити пост"
             visible={isModalPostCreateVisible}
             onOk={handleOk}
+            okText={'Створити'}
             onCancel={handleCancel}
+            cancelText={'Відміна'}
             width={'70%'}
         >
             <Form

@@ -15,14 +15,10 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
-    public class SubjectType : ObjectGraphType<SubjectModel>
+    public class SubjectType : BaseType<SubjectModel>
     {
-        public SubjectType(UserRepository usersRepository, EducationalYearRepository educationalYearRepository, SubjectPostRepository subjectPostRepository)
+        public SubjectType(UserRepository usersRepository, EducationalYearRepository educationalYearRepository, SubjectPostRepository subjectPostRepository) : base()
         {
-            Field<NonNullGraphType<IdGraphType>, Guid>()
-               .Name("Id")
-               .Resolve(context => context.Source.Id);
-
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
@@ -66,14 +62,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                {
                    return educationalYearRepository.GetById(context.Source.EducationalYearId);
                });
-
-            Field<NonNullGraphType<DateTimeGraphType>>()
-               .Name("CreatedAt")
-               .Resolve(context => context.Source.CreatedAt);
-
-            Field<NonNullGraphType<DateTimeGraphType>>()
-               .Name("UpdatedAt")
-               .Resolve(context => context.Source.UpdatedAt);
         }
     }
 }

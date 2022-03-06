@@ -15,14 +15,10 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
-    public class UserType : ObjectGraphType<UserModel>
+    public class UserType : BaseType<UserModel>
     {
-        public UserType(GradeRepository gradeRepository, SubjectRepository subjectRepository)
+        public UserType(GradeRepository gradeRepository, SubjectRepository subjectRepository) : base()
         {
-            Field<NonNullGraphType<IdGraphType>, Guid>()
-               .Name("Id")
-               .Resolve(context => context.Source.Id);
-
             Field<StringGraphType, string>()
                .Name("FirstName")
                .Resolve(context => context.Source.FirstName);
@@ -55,14 +51,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("Role")
                .Resolve(context => context.Source.Role);
 
-            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
-               .Name("CreatedAt")
-               .Resolve(context => context.Source.CreatedAt);
-
-            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
-               .Name("UpdatedAt")
-               .Resolve(context => context.Source.UpdatedAt);
-
             Field<IdGraphType, Guid?>()
                .Name("GradeId")
                .Resolve(context => context.Source.GradeId);
@@ -77,7 +65,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 
             Field<GetEntitiesResponseType<SubjectType, SubjectModel>, GetEntitiesResponse<SubjectModel>>()
                .Name("Subjects")
-               .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects Posts")
+               .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                .Resolve(context =>
                { 
                    int page = context.GetArgument<int>("Page");

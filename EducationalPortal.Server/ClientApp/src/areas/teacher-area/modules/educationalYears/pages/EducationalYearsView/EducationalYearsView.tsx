@@ -42,13 +42,13 @@ export const EducationalYearsView = () => {
                 <tr>
                     <td>Дата початку:</td>
                     <td>
-                        <span>{educationalYear?.dateStart}</span>
+                        <span>{educationalYear?.dateStart.split('T')[0]}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Дата кінця:</td>
                     <td>
-                        <span>{educationalYear?.dateEnd}</span>
+                        <span>{educationalYear?.dateEnd.split('T')[0]}</span>
                     </td>
                 </tr>
                 </tbody>

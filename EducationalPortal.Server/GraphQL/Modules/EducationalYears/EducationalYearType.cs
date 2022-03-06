@@ -8,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
 {
-    public class EducationalYearType : ObjectGraphType<EducationalYearModel>
+    public class EducationalYearType : BaseType<EducationalYearModel>
     {
-        public EducationalYearType()
+        public EducationalYearType() : base()
         {
-            Field<NonNullGraphType<IdGraphType>>()
-               .Name("Id")
-               .Resolve(context => context.Source.Id);
-
             Field<NonNullGraphType<StringGraphType>>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
@@ -35,15 +31,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
             //Field<ListGraphType<SubjectType>()
             //   .Name("Subjects")
             //   .Resolve(context => context.Source.Subjects);
-
-
-            Field<NonNullGraphType<DateTimeGraphType>>()
-               .Name("CreatedAt")
-               .Resolve(context => context.Source.CreatedAt);
-
-            Field<NonNullGraphType<DateTimeGraphType>>()
-               .Name("UpdatedAt")
-               .Resolve(context => context.Source.UpdatedAt);
         }
     }
 }
