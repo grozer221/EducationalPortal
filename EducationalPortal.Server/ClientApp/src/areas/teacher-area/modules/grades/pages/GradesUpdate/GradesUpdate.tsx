@@ -7,6 +7,7 @@ import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpda
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {UPDATE_GRADE_MUTATION, UpdateGradeData, UpdateGradeVars} from '../../grades.mutations';
 import {GET_GRADE_QUERY, GetGradeData, GetGradeVars} from '../../grades.queries';
+import Title from 'antd/es/typography/Title';
 
 type FormValues = {
     id: string,
@@ -55,6 +56,7 @@ export const GradesUpdate = () => {
             }}
             {...sizeFormItem}
         >
+            <Title level={2}>Редагування класу</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>

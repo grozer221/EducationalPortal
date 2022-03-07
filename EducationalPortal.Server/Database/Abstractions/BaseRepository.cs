@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.Database.Abstractions
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
+    public class BaseRepository<T> where T : BaseModel
     {
         private readonly AppDbContext _context;
 
@@ -19,29 +19,52 @@ namespace EducationalPortal.Server.Database.Abstractions
 
         public virtual T GetById(Guid? id)
         {
-            T? entity = _context.Set<T>().AsNoTracking().FirstOrDefault(e => e.Id == id);
+            T? entity = GetByIdOrDefault(id);
             if (entity == null)
-                throw new Exception("Не знайдено");
+                throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entity;
+        }
+        
+        public virtual T GetByIdOrDefault(Guid? id)
+        {
+            return _context.Set<T>().AsNoTracking().FirstOrDefault(e => e.Id == id);
         }
 
         public virtual IEnumerable<T> Get()
         {
-            IEnumerable<T> entities = _context.Set<T>().AsNoTracking();
+            IEnumerable<T> entities = GetOrDefault();
             if (entities == null)
-                throw new Exception("Не знайдено");
+                throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
+        }
+        
+        public virtual IEnumerable<T> GetOrDefault()
+        {
+            return _context.Set<T>().AsNoTracking();
         }
         
         public virtual IEnumerable<T> Get(Func<T, bool> condition)
         {
-            IEnumerable<T> entities = _context.Set<T>().AsNoTracking().Where(condition);
-            if (entities == null)
-                throw new Exception("Не знайдено");
+            IEnumerable<T> entities = GetOrDefault(condition);
+            if (entities == null || entities.Count() == 0)
+                throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
+        }
+        
+        public virtual IEnumerable<T> GetOrDefault(Func<T, bool> condition)
+        {
+            return _context.Set<T>().AsNoTracking().Where(condition); 
         }
 
         public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
+        {
+            GetEntitiesResponse<T> getEntitiesResponse = GetOrDefault(predicate, descending, page, condition);
+            if (getEntitiesResponse == null || getEntitiesResponse.Total == 0)
+                throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
+            return getEntitiesResponse;
+        }
+        
+        public virtual GetEntitiesResponse<T> GetOrDefault(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
         {
             IEnumerable<T> entities = descending
                 ? _context.Set<T>().AsNoTracking().OrderByDescending(predicate)

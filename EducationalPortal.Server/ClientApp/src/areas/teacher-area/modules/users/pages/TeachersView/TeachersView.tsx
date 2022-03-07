@@ -4,63 +4,52 @@ import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space} from 'antd';
 import Title from 'antd/es/typography/Title';
-import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../users.queries';
+import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../users.queries';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 
-export const StudentsView = () => {
+export const TeachersView = () => {
     const params = useParams();
     const id = params.id as string;
-    const getStudentQuery = useQuery<GetUserWithGradeData, GetUserWithGradeVars>(GET_USER_WITH_GRADE_QUERY,
+    const getTeacher = useQuery<GetUserData, GetUserVars>(GET_USER_QUERY,
         {variables: {id: id}},
     );
 
     if (!id)
         return <Navigate to={'/error'}/>;
 
-    if (getStudentQuery.loading)
+    if (getTeacher.loading)
         return <Loading/>;
 
-    const student = getStudentQuery.data?.getUser;
+    const teacher = getTeacher.data?.getUser;
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
-            <Title level={2}>Перегляд учня</Title>
-            <Title level={3}>{student?.lastName} {student?.firstName}</Title>
+            <Title level={2}>Перегляд вчителя</Title>
+            <Title level={3}>{teacher?.lastName} {teacher?.firstName}</Title>
             <table className="infoTable">
                 <tbody>
                 <tr>
                     <td>Логін:</td>
                     <td>
-                        <span>{student?.login}</span>
+                        <span>{teacher?.login}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Email:</td>
                     <td>
-                        <span>{student?.email}</span>
+                        <span>{teacher?.email}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Номер телефону:</td>
                     <td>
-                        <span>{student?.phoneNumber}</span>
+                        <span>{teacher?.phoneNumber}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Дата нарождення:</td>
                     <td>
-                        <span>{student?.dateOfBirth && stringToUkraineDate(student.dateOfBirth)}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Клас:</td>
-                    <td>
-                        <span>
-                            {student?.grade
-                                ? <Link to={`../../grades/${student?.grade?.id}`}>{student?.grade?.name}</Link>
-                                : '--'
-                            }
-                        </span>
+                        <span>{teacher?.dateOfBirth && stringToUkraineDate(teacher.dateOfBirth)}</span>
                     </td>
                 </tr>
                 </tbody>

@@ -20,7 +20,7 @@ namespace EducationalPortal.Server.Database.Repositories
 
         public override async Task<EducationalYearModel> CreateAsync(EducationalYearModel entity)
         {
-            List<EducationalYearModel> checkUniqueYear = Get(e => e.Name == entity.Name).ToList();
+            List<EducationalYearModel> checkUniqueYear = GetOrDefault(e => e.Name == entity.Name).ToList();
             if (checkUniqueYear.Count > 0)
                 throw new Exception("Навчальний рік з данним ім'ям уже існує");
             await base.CreateAsync(entity);
@@ -29,7 +29,7 @@ namespace EducationalPortal.Server.Database.Repositories
         
         public override async Task<EducationalYearModel> UpdateAsync(EducationalYearModel newEducationalYear)
         {
-            List<EducationalYearModel>? checkUniqeYear = Get(e => e.Name == newEducationalYear.Name && e.Id != newEducationalYear.Id).ToList();
+            List<EducationalYearModel>? checkUniqeYear = GetOrDefault(e => e.Name == newEducationalYear.Name && e.Id != newEducationalYear.Id).ToList();
             if (checkUniqeYear.Count > 0 && checkUniqeYear[0].Id != newEducationalYear.Id)
                 throw new Exception("Навчальний рік з данним ім'ям уже існує");
 
@@ -37,7 +37,7 @@ namespace EducationalPortal.Server.Database.Repositories
             newEducationalYear.CreatedAt = oldEducationalYear.CreatedAt;
             if (newEducationalYear.IsCurrent)
             {
-                List<EducationalYearModel>? currentYears = Get(y => y.IsCurrent == true && y.Id != newEducationalYear.Id).ToList();
+                List<EducationalYearModel>? currentYears = GetOrDefault(y => y.IsCurrent == true && y.Id != newEducationalYear.Id).ToList();
                 foreach(var currentYear in currentYears)
                 {
                     currentYear.IsCurrent = false;
@@ -48,22 +48,6 @@ namespace EducationalPortal.Server.Database.Repositories
             return newEducationalYear;
         }
 
-        public async Task<EducationalYearModel> SetCurrentEducationalYearAsync(Guid yearId)
-        {
-            EducationalYearModel year = GetById(yearId);
-            if (year == null)
-                throw new Exception("Навчального року за даним Id не існує");
-            List<EducationalYearModel> educationalYears = Get(y => y.IsCurrent == true).ToList();
-            foreach(var educationalYear in educationalYears)
-            {
-                educationalYear.IsCurrent = false;
-                await UpdateAsync(educationalYear);
-            }
-            year.IsCurrent = true;
-            await UpdateAsync(year);
-            return year;
-        }
-        
         public EducationalYearModel GetCurrent()
         {
             List<EducationalYearModel> currentYears = Get(y => y.IsCurrent == true).ToList();

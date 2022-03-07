@@ -8,6 +8,8 @@ import {Link} from 'react-router-dom';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../grades.queries';
 import {Grade} from '../../grades.types';
 import {REMOVE_GRADE_MUTATION, RemoveGradeData, RemoveGradeVars} from '../../grades.mutations';
+import Title from 'antd/es/typography/Title';
+import {isAdministrator} from '../../../../../../utils/permissions';
 
 export const GradesIndex = () => {
     const [page, setPage] = useState(1);
@@ -38,17 +40,21 @@ export const GradesIndex = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text, grade) => (
-                <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
-                            onRemove={() => onRemove(grade?.id)}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
+                                  onRemove={() => onRemove(grade?.id)}/>
+                    : <ButtonsVUR viewUrl={`${grade?.id}`}/>
             ),
         },
     ];
 
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
+            <Title level={2}>Класи</Title>
+            {isAdministrator() &&
             <Link to={'create'}>
                 <ButtonCreate/>
-            </Link>
+            </Link>}
             <Table
                 rowKey={'id'}
                 loading={getGradesQuery.loading || removeGradeMutationOptions.loading}

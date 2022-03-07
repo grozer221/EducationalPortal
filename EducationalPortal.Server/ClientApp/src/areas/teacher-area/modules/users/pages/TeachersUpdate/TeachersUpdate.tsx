@@ -1,17 +1,22 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {AutoComplete, DatePicker, Form, Input, message} from 'antd';
+import {DatePicker, Form, Input, message} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {UPDATE_USER_MUTATION, UpdateUserData, UpdateUserVars} from '../../users.mutations';
-import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../users.queries';
+import {
+    GET_USER_QUERY,
+    GET_USER_WITH_GRADE_QUERY,
+    GetUserData,
+    GetUserVars,
+    GetUserWithGradeData,
+    GetUserWithGradeVars,
+} from '../../users.queries';
 import moment from 'moment';
 import {Role} from '../../users.types';
-import Search from 'antd/es/input/Search';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
-import debounce from 'lodash.debounce';
 import Title from 'antd/es/typography/Title';
 
 type FormValues = {
@@ -23,35 +28,20 @@ type FormValues = {
     email: string,
     phoneNumber: string,
     dateOfBirth: any,
-    gradeName: string,
 }
 
-export const StudentsUpdate = () => {
+export const TeachersUpdate = () => {
     const params = useParams();
     const id = params.id as string;
-    const [updateStudentMutation, updateStudentMutationOption] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER_MUTATION);
+    const [updateStudent, updateStudentOptions] = useMutation<UpdateUserData, UpdateUserVars>(UPDATE_USER_MUTATION);
     const [form] = Form.useForm();
-    const getStudentQuery = useQuery<GetUserWithGradeData, GetUserWithGradeVars>(GET_USER_WITH_GRADE_QUERY,
+    const getTeacher = useQuery<GetUserData, GetUserVars>(GET_USER_QUERY,
         {variables: {id: id}},
     );
-    const [gradePage, setGradePage] = useState(1);
-    const getGradeQuery = useQuery<GetGradesData, GetGradesVars>(GET_GRADES_QUERY, {
-        variables: {
-            page: gradePage,
-            like: '',
-        },
-    });
     const navigate = useNavigate();
 
-
-
     const onFinish = async (values: FormValues) => {
-        console.log(getStudentQuery.data);
-        const gradeId = getStudentQuery.data?.getUser?.grade?.name === values.gradeName
-            ? getStudentQuery.data?.getUser.gradeId
-            : getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id;
-
-        updateStudentMutation({
+        updateStudent({
             variables: {
                 updateUserInputType: {
                     id: values.id,
@@ -62,8 +52,8 @@ export const StudentsUpdate = () => {
                     email: values.email,
                     phoneNumber: values.phoneNumber,
                     dateOfBirth: new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
-                    role: Role.Student,
-                    gradeId: gradeId,
+                    role: Role.Teacher,
+                    gradeId: undefined,
                 },
             },
         })
@@ -75,33 +65,16 @@ export const StudentsUpdate = () => {
             });
     };
 
-    const onSearchGradesHandler = async (value: string) => {
-        const response = await getGradeQuery.refetch({
-            page: 1,
-            like: value,
-        });
-        if (!response.errors) {
-            if (!response.data.getGrades.entities.length) {
-                message.warning('Класів з даною назвою не знайдено');
-            }
-        } else {
-            response.errors?.forEach(error => message.error(error.message));
-        }
-    };
-
-    const debouncedSearchGradesHandler = useCallback(debounce(nextValue => onSearchGradesHandler(nextValue), 500), []);
-    const searchGradesHandler = (value: string) => debouncedSearchGradesHandler(value);
-
     if (!id)
         return <Navigate to={'/error'}/>;
 
-    if (getStudentQuery.loading)
+    if (getTeacher.loading)
         return <Loading/>;
 
-    const student = getStudentQuery.data?.getUser;
+    const student = getTeacher.data?.getUser;
     return (
         <Form
-            name="StudentsUpdateForm"
+            name="TeachersUpdateForm"
             onFinish={onFinish}
             form={form}
             initialValues={{
@@ -113,7 +86,6 @@ export const StudentsUpdate = () => {
                 email: student?.email,
                 phoneNumber: student?.phoneNumber,
                 dateOfBirth: moment(student?.dateOfBirth.split('T')[0], 'YYYY-MM-DD'),
-                gradeName: student?.grade?.name
             }}
             {...sizeFormItem}
         >
@@ -168,23 +140,8 @@ export const StudentsUpdate = () => {
             >
                 <DatePicker/>
             </Form.Item>
-            <Form.Item
-                name="gradeName"
-                label="Клас"
-            >
-                <AutoComplete
-                    options={getGradeQuery.data?.getGrades.entities.map(grade => ({value: grade.name}))}
-                    onSearch={searchGradesHandler}
-                >
-                    <Search
-                        placeholder="Клас"
-                        enterButton
-                        loading={getGradeQuery.loading}
-                    />
-                </AutoComplete>
-            </Form.Item>
             <Form.Item {...sizeButtonItem}>
-                <ButtonUpdate loading={updateStudentMutationOption.loading} isSubmit={true}/>
+                <ButtonUpdate loading={updateStudentOptions.loading} isSubmit={true}/>
             </Form.Item>
         </Form>
     );

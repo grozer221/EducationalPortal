@@ -8,6 +8,8 @@ import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {User} from '../../../users/users.types';
 import Title from 'antd/es/typography/Title';
+import '../../../../../../styles/table.css';
+import {isAdministrator} from '../../../../../../utils/permissions';
 
 export const GradesView = () => {
     const params = useParams();
@@ -23,14 +25,16 @@ export const GradesView = () => {
             title: 'Учень',
             dataIndex: 'student',
             key: 'student',
-            render: (text, user) => (<>{user.firstName} {user.lastName}</>),
+            render: (text, user) => <>{user.lastName} {user.firstName}</>,
         },
         {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
             render: (text, user) => (
-                <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
+                    : <ButtonsVUR viewUrl={`../../students/${user.id}`}/>
             ),
         },
     ];
@@ -44,7 +48,8 @@ export const GradesView = () => {
     const grade = getGradeQuery.data?.getGrade;
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
-            <Title>{grade?.name}</Title>
+            <Title level={2}>Перегляд класу</Title>
+            <Title level={3}>{grade?.name}</Title>
             <table className="infoTable">
                 <tbody>
                 <tr>

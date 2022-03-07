@@ -1,6 +1,6 @@
-import React, {useCallback, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
-import {AutoComplete, DatePicker, Form, Input, message} from 'antd';
+import React from 'react';
+import {useMutation} from '@apollo/client';
+import {DatePicker, Form, Input, message} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
@@ -8,10 +8,6 @@ import {CREATE_USER_MUTATION, CreateUserData, CreateUserVars} from '../../users.
 import locale from 'antd/es/date-picker/locale/uk_UA';
 import 'moment/locale/uk';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
-import Search from 'antd/es/input/Search';
-import debounce from 'lodash.debounce';
-import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
-import {UserOutlined} from '@ant-design/icons';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
 
@@ -26,23 +22,14 @@ type FormValues = {
     email: string,
     phoneNumber: string,
     dateOfBirth: any,
-    gradeName: string | null,
 }
 
-export const StudentsCreate = () => {
-    const [gradePage, setGradePage] = useState(1);
-    const getGradeQuery = useQuery<GetGradesData, GetGradesVars>(GET_GRADES_QUERY, {
-        variables: {
-            page: gradePage,
-            like: '',
-        },
-    });
+export const TeachersCreate = () => {
     const [createStudentMutation, createStudentMutationOption] = useMutation<CreateUserData, CreateUserVars>(CREATE_USER_MUTATION);
     const [form] = Form.useForm();
     const navigate = useNavigate();
 
     const onFinish = async (values: FormValues) => {
-        console.log(getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id);
         createStudentMutation({
             variables: {
                 createUserInputType: {
@@ -54,8 +41,8 @@ export const StudentsCreate = () => {
                     email: values.email,
                     phoneNumber: values.phoneNumber,
                     dateOfBirth: new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
-                    role: Role.Student,
-                    gradeId: getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id,
+                    role: Role.Teacher,
+                    gradeId: undefined,
                 },
             },
         })
@@ -81,27 +68,9 @@ export const StudentsCreate = () => {
         });
     };
 
-    const onSearchGradesHandler = async (value: string) => {
-        console.log(value);
-        const response = await getGradeQuery.refetch({
-            page: 1,
-            like: value,
-        });
-        if (!response.errors) {
-            if (!response.data.getGrades.entities.length) {
-                message.warning('Класів з даною назвою не знайдено');
-            }
-        } else {
-            response.errors?.forEach(error => message.error(error.message));
-        }
-    };
-
-    const debouncedSearchGradesHandler = useCallback(debounce(nextValue => onSearchGradesHandler(nextValue), 500), []);
-    const searchGradesHandler = (value: string) => debouncedSearchGradesHandler(value);
-
     return (
         <Form
-            name="StudentsCreateForm"
+            name="TeachersCreateForm"
             onFinish={onFinish}
             form={form}
             initialValues={{
@@ -109,7 +78,7 @@ export const StudentsCreate = () => {
             }}
             {...sizeFormItem}
         >
-            <Title level={2}>Створити учня</Title>
+            <Title level={2}>Створити вчителя</Title>
             <Form.Item
                 name="lastName"
                 label="Прізвище"
@@ -163,21 +132,6 @@ export const StudentsCreate = () => {
                 label="Дата народження"
             >
                 <DatePicker locale={locale} onChange={() => changeLogin()}/>
-            </Form.Item>
-            <Form.Item
-                name="gradeName"
-                label="Клас"
-            >
-                <AutoComplete
-                    options={getGradeQuery.data?.getGrades.entities.map(grade => ({value: grade.name}))}
-                    onSearch={searchGradesHandler}
-                >
-                    <Search
-                        placeholder="Клас"
-                        enterButton
-                        loading={getGradeQuery.loading}
-                    />
-                </AutoComplete>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createStudentMutationOption.loading} isSubmit={true}/>

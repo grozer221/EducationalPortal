@@ -17,6 +17,7 @@ import {
 import moment from 'moment';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
+import Title from 'antd/es/typography/Title';
 
 const {RangePicker} = DatePicker;
 
@@ -92,6 +93,7 @@ export const EducationalYearsUpdate = () => {
             }}
             {...sizeFormItem}
         >
+            <Title level={2}>Оновити навчальний рік</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>

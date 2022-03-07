@@ -9,6 +9,7 @@ import s from './TeacherLayout.module.css';
 import {SubjectsLayout} from '../modules/subjects/SubjectsLayout/SubjectsLayout';
 import {GradesLayout} from '../modules/grades/GradesLayout/GradesLayout';
 import {StudentsLayout} from '../modules/users/StudentsLayout/StudentsLayout';
+import {TeachersLayout} from '../modules/users/TeachersLayout/TeachersLayout';
 
 const {Content} = Layout;
 
@@ -25,6 +26,7 @@ export const TeacherLayout: FC = () => {
                             <Route path={'subjects/*'} element={<SubjectsLayout/>}/>
                             <Route path={'grades/*'} element={<GradesLayout/>}/>
                             <Route path={'students/*'} element={<StudentsLayout/>}/>
+                            <Route path={'teachers/*'} element={<TeachersLayout/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
                     </div>

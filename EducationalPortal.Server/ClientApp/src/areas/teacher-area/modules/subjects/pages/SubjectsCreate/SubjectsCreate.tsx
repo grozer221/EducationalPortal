@@ -6,6 +6,7 @@ import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCrea
 import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {CREATE_SUBJECT_MUTATION, CreateSubjectData, CreateSubjectVars} from '../../subjects.mutations';
+import Title from 'antd/es/typography/Title';
 
 type FormValues = {
     name: string,
@@ -34,6 +35,7 @@ export const SubjectsCreate = () => {
             form={form}
             {...sizeFormItem}
         >
+            <Title level={2}>Створити предмет</Title>
             <Form.Item
                 name="name"
                 label="Назва"

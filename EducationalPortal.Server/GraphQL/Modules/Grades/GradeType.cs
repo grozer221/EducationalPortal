@@ -23,7 +23,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
                {
                    int page = context.GetArgument<int>("Page");
                    Guid gradeId = context.Source.Id;
-                   return userRepository.Get(s => s.CreatedAt, true, page, p => p.GradeId == gradeId);
+                   return userRepository.GetOrDefault(s => s.CreatedAt, true, page, p => p.GradeId == gradeId);
                });
         }
     }

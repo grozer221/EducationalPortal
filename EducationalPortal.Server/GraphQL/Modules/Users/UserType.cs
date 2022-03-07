@@ -59,8 +59,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("Grade")
                .Resolve(context =>
                {
-                   try { return gradeRepository.GetById(context.Source.GradeId); }
-                   catch { return null; }
+                   return gradeRepository.GetByIdOrDefault(context.Source.GradeId);
                });
 
             Field<GetEntitiesResponseType<SubjectType, SubjectModel>, GetEntitiesResponse<SubjectModel>>()
@@ -70,7 +69,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                { 
                    int page = context.GetArgument<int>("Page");
                    Guid userId = context.Source.Id;
-                   return subjectRepository.Get(s => s.CreatedAt, true, page, s => s.TeacherId == userId);
+                   return subjectRepository.GetOrDefault(s => s.CreatedAt, true, page, s => s.TeacherId == userId);
                });
         }
     }

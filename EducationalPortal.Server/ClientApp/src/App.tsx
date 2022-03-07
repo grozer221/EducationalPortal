@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Route, Routes} from 'react-router-dom';
+import {Navigate, Route, Routes} from 'react-router-dom';
 import {authActions} from './store/auth/auth.slice';
 import {Loading} from './components/Loading/Loading';
 import {TeacherLayout} from './areas/teacher-area/TeacherLayout/TeacherLayout';
 import {LoginPage} from './pages/LoginPage/LoginPage';
 import {useAppDispatch} from './store/store';
-import {WithTeacherRole} from './hocs/WithTeacherRole';
+import {WithTeacherRoleOrRender} from './hocs/WithTeacherRoleOrRender';
 import {ClientLayout} from './areas/client-area/ClientLayout/ClientLayout';
 import {useQuery} from '@apollo/client';
 import {ME_QUERY, MeData, MeVars} from './gql/auth/auth.queries';
@@ -33,7 +33,11 @@ export const App = () => {
     return (
         <Routes>
             <Route path="login" element={<LoginPage/>}/>
-            <Route path="teacher/*" element={<WithTeacherRole element={<TeacherLayout/>}/>}/>
+            <Route path="teacher/*" element={
+                <WithTeacherRoleOrRender render={<Navigate to={'/login'}/>}>
+                    <TeacherLayout/>
+                </WithTeacherRoleOrRender>
+            }/>
             <Route path="student/*" element={<div>StudentLayout</div>}/>
             <Route path="/*" element={<ClientLayout/>}/>
         </Routes>

@@ -6,6 +6,7 @@ import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCrea
 import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {CREATE_GRADE_MUTATION, CreateGradeData, CreateGradeVars} from '../../grades.mutations';
+import Title from 'antd/es/typography/Title';
 
 type FormValues = {
     name: string,
@@ -34,6 +35,7 @@ export const GradesCreate = () => {
             form={form}
             {...sizeFormItem}
         >
+            <Title level={2}>Створити клас</Title>
             <Form.Item
                 name="name"
                 label="Назва"

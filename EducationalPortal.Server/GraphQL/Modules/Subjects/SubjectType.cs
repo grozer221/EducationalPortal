@@ -34,7 +34,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                {
                    int page = context.GetArgument<int>("Page");
                    Guid subjectId = context.Source.Id;
-                   return subjectPostRepository.Get(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
+                   return subjectPostRepository.GetOrDefault(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
                });
 
             //Field<NonNullGraphType<ListGraphType<GradeType>>, IEnumerable<GradeModel>>()
@@ -49,7 +49,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("Teacher")
                .Resolve(context => 
                {
-                   return usersRepository.GetById(context.Source.TeacherId);
+                   return usersRepository.GetByIdOrDefault(context.Source.TeacherId);
                });
             
             Field<NonNullGraphType<IdGraphType>, Guid?>()
@@ -60,7 +60,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("EducationalYear")
                .Resolve(context => 
                {
-                   return educationalYearRepository.GetById(context.Source.EducationalYearId);
+                   return educationalYearRepository.GetByIdOrDefault(context.Source.EducationalYearId);
                });
         }
     }

@@ -7,6 +7,7 @@ import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpda
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {GET_SUBJECT_QUERY, GetSubjectData, GetSubjectVars} from '../../subjects.queries';
 import {UPDATE_SUBJECT_MUTATION, UpdateSubjectData, UpdateSubjectVars} from '../../subjects.mutations';
+import Title from 'antd/es/typography/Title';
 
 type FormValues = {
     id: string,
@@ -57,6 +58,7 @@ export const SubjectsUpdate = () => {
             }}
             {...sizeFormItem}
         >
+            <Title level={2}>Редагування предмету</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>

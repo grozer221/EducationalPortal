@@ -22,12 +22,12 @@ namespace EducationalPortal.Server.Database.Repositories
         {
             if (!string.IsNullOrEmpty(entity.Email))
             {
-                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == entity.Email).ToList();
+                List<UserModel> checkUniqeUserEmail = GetOrDefault(e => e.Email == entity.Email).ToList();
                 if (checkUniqeUserEmail.Count > 0)
                     throw new Exception("Користувач з введеним Email уже існує");
             }
             
-            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == entity.Login).ToList();
+            List<UserModel> checkUniqeUserLogin = GetOrDefault(e => e.Login == entity.Login).ToList();
             if (checkUniqeUserLogin.Count > 0)
                 throw new Exception("Користувач з введеним Логіном уже існує");
 
@@ -39,12 +39,12 @@ namespace EducationalPortal.Server.Database.Repositories
         {
             if (!string.IsNullOrEmpty(newUser.Email))
             {
-                List<UserModel> checkUniqeUserEmail = Get(e => e.Email == newUser.Email && e.Id != newUser.Id).ToList();
+                List<UserModel> checkUniqeUserEmail = GetOrDefault(e => e.Email == newUser.Email && e.Id != newUser.Id).ToList();
                 if (checkUniqeUserEmail.Count > 0)
                     throw new Exception("Користувач з введеним Email уже існує");
             }
             
-            List<UserModel> checkUniqeUserLogin = Get(e => e.Login == newUser.Login && e.Id != newUser.Id).ToList();
+            List<UserModel> checkUniqeUserLogin = GetOrDefault(e => e.Login == newUser.Login && e.Id != newUser.Id).ToList();
             if (checkUniqeUserLogin.Count > 0)
                 throw new Exception("Користувач з введеним Логіном уже існує");
 
@@ -58,16 +58,16 @@ namespace EducationalPortal.Server.Database.Repositories
 
         public UserModel GetByLogin(string login)
         {
-            List<UserModel> users = Get(e => e.Login == login).ToList();
-            if (users.Count == 0)
+            UserModel? user = GetByLoginOrDefault(login);
+            if (user == null)
                 throw new Exception("Користувач з введеним Логіном не існує");
-            return users[0];
+            return user;
         }
         
         public UserModel? GetByLoginOrDefault(string login)
         {
             List<UserModel> users = Get(e => e.Login == login).ToList();
-            if (users.Count == 0)
+            if (users == null || users.Count == 0)
                 return null;
             return users[0];
         }

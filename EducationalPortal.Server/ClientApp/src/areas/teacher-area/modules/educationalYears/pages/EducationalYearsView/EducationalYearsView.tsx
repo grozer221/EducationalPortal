@@ -9,6 +9,8 @@ import {Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
+import '../../../../../../styles/table.css';
+import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 
 export const EducationalYearsView = () => {
     const params = useParams();
@@ -27,7 +29,8 @@ export const EducationalYearsView = () => {
     const educationalYear = getEducationalYearQuery.data?.getEducationalYear;
     return (
         <Space direction={'vertical'} size={20}>
-            <Title>{educationalYear?.name}</Title>
+            <Title level={2}>Перегляд навчального року</Title>
+            <Title level={3}>{educationalYear?.name}</Title>
             <table className="infoTable">
                 <tbody>
                 <tr>
@@ -42,13 +45,13 @@ export const EducationalYearsView = () => {
                 <tr>
                     <td>Дата початку:</td>
                     <td>
-                        <span>{educationalYear?.dateStart.split('T')[0]}</span>
+                        <span>{educationalYear?.dateStart && stringToUkraineDate(educationalYear.dateStart)}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Дата кінця:</td>
                     <td>
-                        <span>{educationalYear?.dateEnd.split('T')[0]}</span>
+                        <span>{educationalYear?.dateEnd && stringToUkraineDate(educationalYear.dateEnd)}</span>
                     </td>
                 </tr>
                 </tbody>

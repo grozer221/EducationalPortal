@@ -1,7 +1,6 @@
 import React, {FC, useState} from 'react';
 import {Card, message, Pagination, Space} from 'antd';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {SubjectPostsCreate} from '../SubjectPostsCreate/SubjectPostsCreate';
 import {Subject} from '../../../subjects/subjects.types';
 import {useMutation} from '@apollo/client';
@@ -10,6 +9,12 @@ import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost} from '../../subjectPosts.types';
 import {subjectPostTypeToTag} from '../../../../../../convertors/enumToBadgeConvertor';
 import Title from 'antd/es/typography/Title';
+import parse from 'html-react-parser';
+import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
+import '../../../../../../styles/text.css';
+import {useAppSelector} from '../../../../../../store/store';
+import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
+import {Role} from '../../../users/users.types';
 
 type Props = {
     subject: Subject,
@@ -19,6 +24,7 @@ type Props = {
 };
 
 export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, postsPage, setPostsPage}) => {
+    const currentUser = useAppSelector(s => s.auth.me?.user);
     const [isModalPostCreateVisible, setIsModalPostCreateVisible] = useState(false);
     const [isModalPostUpdateVisible, setIsModalPostUpdateVisible] = useState(false);
     const [inEditingPost, setInEditingPost] = useState<SubjectPost | null>(null);
@@ -46,23 +52,34 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
     return (
         <>
             <Space direction={'vertical'} style={{width: '100%'}} size={20}>
+                {(currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
                 <span onClick={() => setIsModalPostCreateVisible(true)}>
                     <ButtonCreate>Створити пост</ButtonCreate>
-                </span>
-                {subject.posts.entities.map(post => (
+                    </span>
+                }
+                {subject?.posts?.entities.map(post => (
                     <Card
                         key={post.id}
                         type={'inner'}
-                        title={<Space size={1}>{subjectPostTypeToTag(post.type)}<Title
-                            level={4}>{post.title}</Title></Space>}
+                        title={
+                            <Space size={1}>
+                                {subjectPostTypeToTag(post.type)}
+                                <Title level={4}>{post.title}</Title>
+                            </Space>
+                        }
                         extra={
+                            (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
                             <ButtonsVUR
                                 onUpdate={() => onPostUpdate(post)}
                                 onRemove={() => onPostRemove(post.id)}
                             />
                         }
                     >
-                        {post.text}
+                        <div>{parse(post.text)}</div>
+                        <div className={'small'}>
+                            <div>Створено: {stringToUkraineDatetime(post.createdAt)}</div>
+                            <div>Оновлено: {stringToUkraineDatetime(post.updatedAt)}</div>
+                        </div>
                     </Card>
                 ))}
                 {subject?.posts?.total > 0 &&

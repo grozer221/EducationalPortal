@@ -21,15 +21,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
             Field<NonNullGraphType<GetEntitiesResponseType<UserType, UserModel>>, GetEntitiesResponse<UserModel>>()
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
-                .Argument<UserRoleType, UserRoleEnum?>("Role", "Argument for get Users")
+                .Argument<ListGraphType<UserRoleType>, IEnumerable<UserRoleEnum>?>("Roles", "Argument for get Users")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
-                    UserRoleEnum? role = context.GetArgument<UserRoleEnum?>("Role");
-                    if (role == null)
+                    IEnumerable<UserRoleEnum>? roles = context.GetArgument<IEnumerable<UserRoleEnum>?>("Roles");
+                    if (roles == null || roles.Count() == 0)
                         return usersRepository.Get(u => u.LastName, false, page);
                     else
-                        return usersRepository.Get(u => u.LastName, false, page, u => u.Role == role);
+                        return usersRepository.Get(u => u.LastName, false, page, u => roles.Contains(u.Role));
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 

@@ -4,6 +4,7 @@ import {sizeFormItem} from '../../../../../../styles/form';
 import {useMutation} from '@apollo/client';
 import {CREATE_SUBJECT_POST_MUTATION, CreateSubjectPostData, CreateSubjectPostVars} from '../../subjectPosts.mutations';
 import {SubjectPostType} from '../../subjectPosts.types';
+import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 
 type Props = {
     isModalPostCreateVisible: boolean,
@@ -86,9 +87,8 @@ export const SubjectPostsCreate: FC<Props> = ({
                 <Form.Item
                     name="text"
                     label="Текст"
-                    rules={[{required: true, message: 'Введіть Текст!'}]}
                 >
-                    <Input placeholder="Текст" value={text} onChange={e => setText(e.target.value)}/>
+                    <WysiwygEditor text={text} setText={setText}/>
                 </Form.Item>
                 <Form.Item
                     name="type"
@@ -97,8 +97,9 @@ export const SubjectPostsCreate: FC<Props> = ({
                 >
                     <Select style={{width: '100%'}} value={type} onChange={setType}>
                         {(Object.values(SubjectPostType) as Array<SubjectPostType>).map((value) => (
-                            <Select.Option
-                                value={value}>{Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}</Select.Option>
+                            <Select.Option key={value} value={value}>
+                                {Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}
+                            </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>

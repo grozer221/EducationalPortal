@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {useQuery} from '@apollo/client';
-import {Navigate, useParams} from 'react-router-dom';
+import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {GET_SUBJECT_WITH_POSTS_QUERY, GetSubjectWithPostsData, GetSubjectWithPostsVars} from '../../subjects.queries';
 import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIndex/SubjectPostsIndex';
 import {Space} from 'antd';
 import Title from 'antd/es/typography/Title';
+import '../../../../../../styles/table.css';
 
 export const SubjectsView = () => {
     const params = useParams();
@@ -29,19 +30,24 @@ export const SubjectsView = () => {
     const subject = getSubjectQuery.data?.getSubject;
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
-            <Title>{subject?.name}</Title>
+            <Title level={2}>Переглад предмету</Title>
+            <Title level={3}>{subject?.name}</Title>
             <table className="infoTable">
                 <tbody>
                 <tr>
-                    <td>Викладач:</td>
+                    <td>Вчитель:</td>
                     <td>
-                        <span>{subject?.teacher.firstName} {subject?.teacher.middleName} {subject?.teacher.lastName}</span>
+                        <span>
+                            <Link to={`../../teachers/${subject?.teacherId}`}>{subject?.teacher.firstName} {subject?.teacher.lastName}</Link>
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td>Навчальний рік:</td>
                     <td>
-                        <span>{subject?.educationalYear.name}</span>
+                        <span>
+                            <Link to={`../../educational-years/${subject?.educationalYearId}`}>{subject?.educationalYear.name}</Link>
+                        </span>
                     </td>
                 </tr>
                 <tr>

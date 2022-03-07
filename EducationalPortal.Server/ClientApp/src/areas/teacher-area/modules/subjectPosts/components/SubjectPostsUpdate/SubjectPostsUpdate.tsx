@@ -8,6 +8,7 @@ import {
     UpdateSubjectPostVars,
 } from '../../subjectPosts.mutations';
 import {SubjectPost, SubjectPostType} from '../../subjectPosts.types';
+import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 
 type Props = {
     isModalPostUpdateVisible: boolean,
@@ -30,12 +31,14 @@ export const SubjectPostsUpdate: FC<Props> = ({
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [type, setType] = useState<SubjectPostType>(SubjectPostType.Info);
+    const [init, setInit] = useState(false);
 
     useEffect(() => {
         setId(inEditingPost.id);
         setTitle(inEditingPost.title);
         setText(inEditingPost.text);
         setType(inEditingPost.type);
+        setInit(true);
     }, []);
 
     const handleOk = async () => {
@@ -68,13 +71,16 @@ export const SubjectPostsUpdate: FC<Props> = ({
         setIsModalPostUpdateVisible(false);
     };
 
+    if (!init)
+        return null;
+
     return (
         <Modal
             confirmLoading={updateSubjectPostMutationOptions.loading}
             title="Оновити пост"
             visible={isModalPostUpdateVisible}
             onOk={handleOk}
-            okText={'Створити'}
+            okText={'Оновити'}
             onCancel={handleCancel}
             cancelText={'Відміна'}
             width={'70%'}
@@ -99,9 +105,8 @@ export const SubjectPostsUpdate: FC<Props> = ({
                 <Form.Item
                     name="text"
                     label="Текст"
-                    rules={[{required: true, message: 'Введіть Текст!'}]}
                 >
-                    <Input placeholder="Текст" value={text} onChange={e => setText(e.target.value)}/>
+                    <WysiwygEditor text={text} setText={setText}/>
                 </Form.Item>
                 <Form.Item
                     name="type"
@@ -110,8 +115,9 @@ export const SubjectPostsUpdate: FC<Props> = ({
                 >
                     <Select style={{width: '100%'}} value={type} onChange={setType}>
                         {(Object.values(SubjectPostType) as Array<SubjectPostType>).map((value) => (
-                            <Select.Option
-                                value={value}>{Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}</Select.Option>
+                            <Select.Option key={value} value={value}>
+                                {Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}
+                            </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>

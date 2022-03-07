@@ -11,6 +11,7 @@ import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCrea
 import locale from 'antd/es/date-picker/locale/uk_UA';
 import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
+import Title from 'antd/es/typography/Title';
 
 const {RangePicker} = DatePicker;
 
@@ -44,6 +45,7 @@ export const EducationalYearsCreate = () => {
             form={form}
             {...sizeFormItem}
         >
+            <Title level={2}>Створити навчальний рік</Title>
             <Form.Item
                 name="name"
                 label="Назва"

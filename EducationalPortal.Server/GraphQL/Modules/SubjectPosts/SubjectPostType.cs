@@ -30,7 +30,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
             
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .Resolve(context => usersRepository.GetById(context.Source.TeacherId));
+               .Resolve(context => usersRepository.GetByIdOrDefault(context.Source.TeacherId));
             
             //Field<NonNullGraphType<IdGraphType>, Guid?>()
             //   .Name("SubjectId")
