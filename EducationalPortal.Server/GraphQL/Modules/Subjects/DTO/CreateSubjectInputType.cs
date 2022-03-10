@@ -11,9 +11,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
     {
         public CreateSubjectInputType()
         {
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
+            
+            Field<NonNullGraphType<ListGraphType<IdGraphType>>, IEnumerable<Guid>>()
+               .Name("GradesHaveAccessReadIds")
+               .Resolve(context => context.Source.GradesHaveAccessReadIds);
         }
     }
 }

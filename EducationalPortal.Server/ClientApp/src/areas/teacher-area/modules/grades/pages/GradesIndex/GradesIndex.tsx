@@ -40,10 +40,12 @@ export const GradesIndex = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text, grade) => (
-                isAdministrator()
-                    ? <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
-                                  onRemove={() => onRemove(grade?.id)}/>
-                    : <ButtonsVUR viewUrl={`${grade?.id}`}/>
+                // isAdministrator()
+                //     ? <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
+                //                   onRemove={() => onRemove(grade?.id)}/>
+                //     : <ButtonsVUR viewUrl={`${grade?.id}`}/>
+                <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
+                            onRemove={() => onRemove(grade?.id)}/>
             ),
         },
     ];
@@ -51,10 +53,14 @@ export const GradesIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Класи</Title>
-            {isAdministrator() &&
+            {/*{isAdministrator() &&*/}
+            {/*<Link to={'create'}>*/}
+            {/*    <ButtonCreate/>*/}
+            {/*</Link>*/}
+            {/*}*/}
             <Link to={'create'}>
                 <ButtonCreate/>
-            </Link>}
+            </Link>
             <Table
                 rowKey={'id'}
                 loading={getGradesQuery.loading || removeGradeMutationOptions.loading}

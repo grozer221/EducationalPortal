@@ -14,63 +14,63 @@ namespace EducationalPortal.Server.Database.Repositories
     {
         private readonly AppDbContext _context;
         private readonly EducationalYearRepository _educationalYearRepository;
-        private readonly UserRepository _usersRepository;
-        public SubjectRepository(AppDbContext context, EducationalYearRepository educationalYearRepository, UserRepository usersRepository) : base(context)
+        private readonly GradeRepository _gradeRepository;
+        public SubjectRepository(AppDbContext context, EducationalYearRepository educationalYearRepository, GradeRepository gradeRepository) : base(context)
         {
             _context = context;
             _educationalYearRepository = educationalYearRepository;
-            _usersRepository = usersRepository;
+            _gradeRepository = gradeRepository;
         }
 
-        public override Task<SubjectModel> CreateAsync(SubjectModel entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<SubjectModel> CreateAsync(SubjectModel subject, Guid currentTeacherId)
-        {
-            UserModel currentTeacher = _usersRepository.GetById(currentTeacherId);
-            if (currentTeacher?.Role == UserRoleEnum.Student)
-                throw new Exception("Ви не маєте прав на створення данного предмету");
-            subject.TeacherId = currentTeacherId;
+        public override async Task<SubjectModel> CreateAsync(SubjectModel subject)
+        { 
             Guid currentEducationalYearId = _educationalYearRepository.GetCurrent().Id;
             subject.EducationalYearId = currentEducationalYearId;
             await base.CreateAsync(subject);
+            SubjectModel addedSubject = GetByIdWithGradesHaveAccessRead(subject.Id);
+            if (subject.GradesHaveAccessReadIds != null)
+            {
+                List<GradeModel> gradesHaveAccessRead = new List<GradeModel>();
+                foreach (var gradeId in subject.GradesHaveAccessReadIds)
+                {
+                    GradeModel grade = _gradeRepository.GetById(gradeId);
+                    gradesHaveAccessRead.Add(grade);
+                }
+                addedSubject.GradesHaveAccessRead = gradesHaveAccessRead;
+            }
+            await UpdateAsync(addedSubject);
             return subject;
         }
-        
-        public override Task<SubjectModel> UpdateAsync(SubjectModel entity)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<SubjectModel> UpdateAsync(SubjectModel newSubject, Guid currentTeacherId)
+        public override async Task<SubjectModel> UpdateAsync(SubjectModel newSubject)
         {
-            UserModel? currentTeacher = _usersRepository.GetById(currentTeacherId);
             SubjectModel oldSubject = GetById(newSubject.Id);
             newSubject.TeacherId = oldSubject.TeacherId;
             newSubject.EducationalYearId = oldSubject.EducationalYearId;
             newSubject.CreatedAt = oldSubject.CreatedAt;
-            if (currentTeacher?.Id != newSubject.TeacherId || currentTeacher?.Role == UserRoleEnum.Student)
-                if(currentTeacher?.Role != UserRoleEnum.Administrator)
-                    throw new Exception("Ви не маєте прав на редагування данного предмету");
             await base.UpdateAsync(newSubject);
-            return newSubject;
+            SubjectModel addedSubject = GetByIdWithGradesHaveAccessRead(newSubject.Id);
+            if (newSubject.GradesHaveAccessReadIds != null)
+            {
+                addedSubject.GradesHaveAccessRead = addedSubject.GradesHaveAccessRead.Where(g => newSubject.GradesHaveAccessReadIds.Any(gId => gId == g.Id)).ToList();
+                foreach (var gradeId in newSubject.GradesHaveAccessReadIds)
+                {
+                    if (!addedSubject.GradesHaveAccessRead.Any(g => g.Id == gradeId))
+                    {
+                        GradeModel grade = _gradeRepository.GetById(gradeId);
+                        addedSubject.GradesHaveAccessRead.Add(grade);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            return addedSubject;
         }
 
-        public override Task RemoveAsync(Guid id)
+        public SubjectModel GetByIdWithGradesHaveAccessRead(Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<SubjectModel> RemoveAsync(Guid subjectId, Guid currentTeacherId)
-        {
-            SubjectModel subject = GetById(subjectId);
-            UserModel currentTeacher = _usersRepository.GetById(currentTeacherId);
-            if (currentTeacher?.Id != subject.TeacherId || currentTeacher?.Role == UserRoleEnum.Student)
-                if(currentTeacher?.Role != UserRoleEnum.Administrator)
-                    throw new Exception("Ви не маєте прав на видалення данного предмету");
-            await base.RemoveAsync(subjectId);
+            SubjectModel? subject = _context.Subjects.Include(s => s.GradesHaveAccessRead).SingleOrDefault(s => s.Id == id);
+            if (subject == null)
+                throw new Exception("Не знайдено предмет");
             return subject;
         }
     }

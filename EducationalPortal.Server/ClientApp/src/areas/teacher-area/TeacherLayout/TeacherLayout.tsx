@@ -10,6 +10,7 @@ import {SubjectsLayout} from '../modules/subjects/SubjectsLayout/SubjectsLayout'
 import {GradesLayout} from '../modules/grades/GradesLayout/GradesLayout';
 import {StudentsLayout} from '../modules/users/StudentsLayout/StudentsLayout';
 import {TeachersLayout} from '../modules/users/TeachersLayout/TeachersLayout';
+import {SettingsLayout} from '../modules/settings/SettingsLayout/SettingsLayout';
 
 const {Content} = Layout;
 
@@ -27,6 +28,7 @@ export const TeacherLayout: FC = () => {
                             <Route path={'grades/*'} element={<GradesLayout/>}/>
                             <Route path={'students/*'} element={<StudentsLayout/>}/>
                             <Route path={'teachers/*'} element={<TeachersLayout/>}/>
+                            <Route path={'settings/*'} element={<SettingsLayout/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
                     </div>

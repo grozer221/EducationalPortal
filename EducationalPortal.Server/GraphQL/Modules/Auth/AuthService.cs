@@ -1,7 +1,6 @@
 ﻿using EducationalPortal.Server.Database.Enums;
 using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
-using EducationalPortal.Server.Database.Enums;
 using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
 using GraphQL;
 using Microsoft.IdentityModel.Tokens;

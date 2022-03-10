@@ -28,6 +28,6 @@ namespace EducationalPortal.Server.Database.Models
         public Guid? GradeId { get; set; }
         public virtual GradeModel? Grade { get; set; }
         public virtual IEnumerable<SubjectModel>? Subjects { get; set; }
-        //public virtual IEnumerable<PermisionTeacherEditSubjectModel> PermisionTeachersEditSubject { get; set; }
+        public virtual IEnumerable<SubjectModel>? SubjectHaveAccessCreatePosts { get; set; }
     }
 }

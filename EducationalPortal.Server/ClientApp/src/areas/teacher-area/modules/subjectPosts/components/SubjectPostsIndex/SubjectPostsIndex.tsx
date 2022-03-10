@@ -7,7 +7,7 @@ import {useMutation} from '@apollo/client';
 import {REMOVE_SUBJECT_POST_MUTATION, RemoveSubjectPostData, RemoveSubjectPostVars} from '../../subjectPosts.mutations';
 import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost} from '../../subjectPosts.types';
-import {subjectPostTypeToTag} from '../../../../../../convertors/enumToBadgeConvertor';
+import {subjectPostTypeToTag} from '../../../../../../convertors/toTagConvertor';
 import Title from 'antd/es/typography/Title';
 import parse from 'html-react-parser';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
@@ -68,7 +68,11 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                             </Space>
                         }
                         extra={
-                            (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
+                            // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
+                            // <ButtonsVUR
+                            //     onUpdate={() => onPostUpdate(post)}
+                            //     onRemove={() => onPostRemove(post.id)}
+                            // />
                             <ButtonsVUR
                                 onUpdate={() => onPostUpdate(post)}
                                 onRemove={() => onPostRemove(post.id)}

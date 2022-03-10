@@ -1,4 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
@@ -10,16 +11,24 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 {
     public class SubjectPostsMutations : ObjectGraphType, IMutationMarker
     {
-        public SubjectPostsMutations(SubjectPostRepository subjectPostRepository, IHttpContextAccessor httpContextAccessor)
+        public SubjectPostsMutations(SubjectRepository subjectRepository, SubjectPostRepository subjectPostRepository, IHttpContextAccessor httpContextAccessor)
         {
             Field<NonNullGraphType<SubjectPostType>, SubjectPostModel>()
                 .Name("CreateSubjectPost")
                 .Argument<NonNullGraphType<CreateSubjectPostInputType>, SubjectPostModel>("CreateSubjectPostInputType", "Argument for create new Subject Post")
                 .ResolveAsync(async (context) =>
                 {
-                    SubjectPostModel subjectPostModel = context.GetArgument<SubjectPostModel>("CreateSubjectPostInputType");
-                    Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    return await subjectPostRepository.CreateAsync(subjectPostModel, currentUserId);
+                    SubjectPostModel subjectPost = context.GetArgument<SubjectPostModel>("CreateSubjectPostInputType");
+                    Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
+                        typeof(UserRoleEnum),
+                        httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                    );
+                    SubjectModel subject = subjectRepository.GetById(subjectPost.SubjectId);
+                    if (subject.TeacherId != currentTeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception($"Ви не маєте прав на додавання посту для даного предмета");
+                    subjectPost.TeacherId = currentTeacherId;
+                    return await subjectPostRepository.CreateAsync(subjectPost);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -29,8 +38,16 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                 .ResolveAsync(async (context) =>
                 {
                     SubjectPostModel newSubjectPost = context.GetArgument<SubjectPostModel>("UpdateSubjectPostInputType");
-                    Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    return await subjectPostRepository.UpdateAsync(newSubjectPost, currentUserId);
+                    Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
+                      typeof(UserRoleEnum),
+                      httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                    );
+                    SubjectPostModel oldSubjectPost = subjectPostRepository.GetById(newSubjectPost.Id);
+                    SubjectModel subject = subjectRepository.GetById(oldSubjectPost.SubjectId);
+                    if (subject.TeacherId != currentTeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception($"Ви не маєте прав на редагування посту для даного предмета");
+                    return await subjectPostRepository.UpdateAsync(newSubjectPost);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -40,8 +57,16 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                .ResolveAsync(async (context) =>
                {
                    Guid id = context.GetArgument<Guid>("Id");
-                   Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                   await subjectPostRepository.RemoveAsync(id, currentUserId);
+                   SubjectPostModel subjectPost = subjectPostRepository.GetById(id);
+                   SubjectModel subject = subjectRepository.GetById(subjectPost.SubjectId);
+                   Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                   UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
+                     typeof(UserRoleEnum),
+                     httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                    );
+                   if (subject.TeacherId != currentTeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception($"Ви не маєте прав на видалення даного посту");
+                   await subjectPostRepository.RemoveAsync(id);
                    return true;
                })
                .AuthorizeWith(AuthPolicies.Teacher);

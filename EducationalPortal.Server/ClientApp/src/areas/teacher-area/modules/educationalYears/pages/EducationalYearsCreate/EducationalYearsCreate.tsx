@@ -12,6 +12,7 @@ import locale from 'antd/es/date-picker/locale/uk_UA';
 import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
+import {ukDateFormat} from '../../../../../../utils/formats';
 
 const {RangePicker} = DatePicker;
 
@@ -59,7 +60,7 @@ export const EducationalYearsCreate = () => {
                 label="Дата"
                 rules={[{required: true, message: 'Введіть дату початку та дату кінця!'}]}
             >
-                <RangePicker locale={locale}/>
+                <RangePicker locale={locale} format={ukDateFormat}/>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createEducationalYearMutationOption.loading} isSubmit={true}/>

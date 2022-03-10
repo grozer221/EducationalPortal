@@ -71,10 +71,12 @@ export const EducationalYearsIndex = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text: string, educationalYear: EducationalYear) => (
-                isAdministrator()
-                    ? <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
-                                  onRemove={() => onRemove(educationalYear.id)}/>
-                    : <ButtonsVUR viewUrl={`${educationalYear.id}`}/>
+                // isAdministrator()
+                //     ? <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
+                //                   onRemove={() => onRemove(educationalYear.id)}/>
+                //     : <ButtonsVUR viewUrl={`${educationalYear.id}`}/>
+                <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
+                            onRemove={() => onRemove(educationalYear.id)}/>
             ),
         },
     ];
@@ -82,11 +84,14 @@ export const EducationalYearsIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Навчальні роки</Title>
-            {isAdministrator() &&
+            {/*{isAdministrator() &&*/}
+            {/*<Link to={'create'}>*/}
+            {/*    <ButtonCreate/>*/}
+            {/*</Link>*/}
+            {/*}*/}
             <Link to={'create'}>
                 <ButtonCreate/>
             </Link>
-            }
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}

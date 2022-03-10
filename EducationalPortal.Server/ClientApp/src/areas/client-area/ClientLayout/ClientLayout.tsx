@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Link} from 'react-router-dom';
-import {authActions} from '../../../store/auth/auth.slice';
+import {authActions} from '../../../store/auth.slice';
 import {useAppDispatch, useAppSelector} from '../../../store/store';
 
 export const ClientLayout: FC = () => {

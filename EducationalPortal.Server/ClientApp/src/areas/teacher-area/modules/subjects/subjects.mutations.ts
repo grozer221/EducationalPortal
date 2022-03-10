@@ -7,6 +7,7 @@ export type CreateSubjectData = { createSubject: Subject }
 export type CreateSubjectVars = { createSubjectInputType: createSubjectInputType }
 export type createSubjectInputType = {
     name: string,
+    gradesHaveAccessReadIds: string[]
 }
 
 export const CREATE_SUBJECT_MUTATION = gql`

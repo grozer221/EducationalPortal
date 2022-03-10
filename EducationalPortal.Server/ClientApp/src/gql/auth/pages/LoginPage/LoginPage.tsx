@@ -2,11 +2,12 @@ import React, {FC} from 'react';
 import {Button, Checkbox, Form, Input, message} from 'antd';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Link, Navigate} from 'react-router-dom';
-import {useAppDispatch, useAppSelector} from '../../store/store';
-import {authActions} from '../../store/auth/auth.slice';
+import {useAppDispatch, useAppSelector} from '../../../../store/store';
+import {authActions} from '../../../../store/auth.slice';
 import {useMutation} from '@apollo/client';
-import {LOGIN_MUTATION, LoginData, LoginVars} from '../../gql/auth/auth.mutations';
+import {LOGIN_MUTATION, LoginData, LoginVars} from '../../auth.mutations';
 import s from './LoginPage.module.css';
+import {AppName} from '../../../../store/settings.slice';
 
 type FormValues = {
     login: string,
@@ -19,6 +20,7 @@ export const LoginPage: FC = () => {
     const isAuth = useAppSelector(s => s.auth.isAuth);
     const [loginMutation, loginMutationOptions] = useMutation<LoginData, LoginVars>(LOGIN_MUTATION);
     const [form] = Form.useForm();
+    const settings = useAppSelector(s => s.settings.settings);
 
     const onFinish = async ({login, password, remember}: FormValues) => {
         loginMutation({variables: {loginAuthInputType: {login, password}}})
@@ -44,9 +46,7 @@ export const LoginPage: FC = () => {
                 onFinish={onFinish}
                 form={form}
             >
-                <h2 className={s.title}>
-                    <div>ЗЗСО Степанівка</div>
-                </h2>
+                <h2 className={s.title}>{settings.find(setting => setting.name === AppName)?.value}</h2>
                 <Form.Item
                     name="login"
                     rules={[{required: true, message: 'Введіть ваш Логін!'}]}

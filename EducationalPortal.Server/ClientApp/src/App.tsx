@@ -1,33 +1,53 @@
 import React, {useEffect, useState} from 'react';
 import {Navigate, Route, Routes} from 'react-router-dom';
-import {authActions} from './store/auth/auth.slice';
+import {authActions} from './store/auth.slice';
 import {Loading} from './components/Loading/Loading';
 import {TeacherLayout} from './areas/teacher-area/TeacherLayout/TeacherLayout';
-import {LoginPage} from './pages/LoginPage/LoginPage';
-import {useAppDispatch} from './store/store';
+import {LoginPage} from './gql/auth/pages/LoginPage/LoginPage';
+import {useAppDispatch, useAppSelector} from './store/store';
 import {WithTeacherRoleOrRender} from './hocs/WithTeacherRoleOrRender';
 import {ClientLayout} from './areas/client-area/ClientLayout/ClientLayout';
-import {useQuery} from '@apollo/client';
 import {ME_QUERY, MeData, MeVars} from './gql/auth/auth.queries';
 import 'antd/dist/antd.css';
 import './App.css';
+import {
+    GET_SETTINGS_QUERY,
+    GetSettingsData,
+    GetSettingsVars,
+} from './areas/teacher-area/modules/settings/settings.queries';
+import {client} from './gql/client';
+import {AppName, settingsActions} from './store/settings.slice';
 
 export const App = () => {
     const dispatch = useAppDispatch();
-    const meQuery = useQuery<MeData, MeVars>(ME_QUERY);
-    const [isInitialised, setIsInitialised] = useState(false);
+    const [isMeDone, setMeDone] = useState(false);
+    const [isGetSettingsDone, setIsGetSettingsDone] = useState(false);
 
     useEffect(() => {
-        if (meQuery.data) {
-            dispatch(authActions.login({me: meQuery.data.me}));
-            setIsInitialised(true);
-        }
-        if (meQuery.error) {
-            setIsInitialised(true);
-        }
-    }, [meQuery]);
+        client.query<MeData, MeVars>({query: ME_QUERY})
+            .then(response => {
+                dispatch(authActions.login({me: response.data.me}));
+                setMeDone(true);
+            })
+            .catch(error => {
+                setMeDone(true);
+            });
 
-    if (meQuery.loading || !isInitialised)
+        client.query<GetSettingsData, GetSettingsVars>({query: GET_SETTINGS_QUERY})
+            .then(response => {
+                document.title = response.data.getSettings.find(s => s.name === AppName)?.value
+                dispatch(settingsActions.setSettings(response.data.getSettings));
+                setIsGetSettingsDone(true);
+            })
+            .catch(error => {
+                setIsGetSettingsDone(true);
+            });
+    }, []);
+
+    const settings = useAppSelector(s => s.settings.settings);
+    console.log(settings);
+
+    if (!isMeDone || !isGetSettingsDone)
         return <Loading/>;
 
     return (

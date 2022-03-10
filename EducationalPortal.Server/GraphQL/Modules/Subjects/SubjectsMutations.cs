@@ -1,4 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Server.Database.Enums;
+using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
@@ -15,7 +16,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsMutations : ObjectGraphType, IMutationMarker
     {
-        public SubjectsMutations(SubjectRepository subjectsRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
+        public SubjectsMutations(GradeRepository gradeRepository, SubjectRepository subjectsRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("CreateSubject")
@@ -23,8 +24,9 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .ResolveAsync(async (context) =>
                 {
                     SubjectModel subject = context.GetArgument<SubjectModel>("CreateSubjectInputType");
-                    Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    return await subjectsRepository.CreateAsync(subject, currentUserId);
+                    Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    subject.TeacherId = currentTeacherId;
+                    return await subjectsRepository.CreateAsync(subject);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -35,7 +37,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 {
                     SubjectModel newSubject = context.GetArgument<SubjectModel>("UpdateSubjectInputType");
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    return await subjectsRepository.UpdateAsync(newSubject, currentUserId);
+                    UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
+                       typeof(UserRoleEnum),
+                       httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                    );
+                    if (currentUserId != newSubject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception("Ви не маєте прав на редагування данного предмету");
+                    return await subjectsRepository.UpdateAsync(newSubject);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -45,8 +53,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .ResolveAsync(async (context) =>
                {
                    Guid id = context.GetArgument<Guid>("Id");
-                   Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                   await subjectsRepository.RemoveAsync(id, currentUserId);
+                   SubjectModel subject = subjectsRepository.GetById(id);
+                   Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                   UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
+                      typeof(UserRoleEnum),
+                      httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                   );
+                   if (currentTeacherId != subject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception("Ви не маєте прав на видалення данного предмету");
+                   await subjectsRepository.RemoveAsync(id);
                    return true;
                })
                .AuthorizeWith(AuthPolicies.Teacher);

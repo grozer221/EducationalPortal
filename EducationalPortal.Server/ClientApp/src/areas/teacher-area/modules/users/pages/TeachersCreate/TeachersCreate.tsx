@@ -10,6 +10,7 @@ import 'moment/locale/uk';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
+import {ukDateFormat} from '../../../../../../utils/formats';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -131,7 +132,7 @@ export const TeachersCreate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} onChange={() => changeLogin()}/>
+                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createStudentMutationOption.loading} isSubmit={true}/>

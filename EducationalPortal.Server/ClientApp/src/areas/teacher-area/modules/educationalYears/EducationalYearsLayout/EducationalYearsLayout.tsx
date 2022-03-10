@@ -9,18 +9,25 @@ import {WithAdministratorRoleOrRender} from '../../../../../hocs/WithAdministrat
 
 export const EducationalYearsLayout: FC = () => {
     return (
+        // <Routes>
+        //     <Route path={'/'} element={<EducationalYearsIndex/>}/>
+        //     <Route path={':id'} element={<EducationalYearsView/>}/>
+        //     <Route path={'create'} element={
+        //         <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+        //             <EducationalYearsCreate/>
+        //         </WithAdministratorRoleOrRender>}/>
+        //     <Route path={'update/:id'} element={
+        //         <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+        //             <EducationalYearsUpdate/>
+        //         </WithAdministratorRoleOrRender>
+        //     }/>
+        //     <Route path={'*'} element={<Error/>}/>
+        // </Routes>
         <Routes>
             <Route path={'/'} element={<EducationalYearsIndex/>}/>
             <Route path={':id'} element={<EducationalYearsView/>}/>
-            <Route path={'create'} element={
-                <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
-                    <EducationalYearsCreate/>
-                </WithAdministratorRoleOrRender>}/>
-            <Route path={'update/:id'} element={
-                <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
-                    <EducationalYearsUpdate/>
-                </WithAdministratorRoleOrRender>
-            }/>
+            <Route path={'create'} element={<EducationalYearsCreate/>}/>
+            <Route path={'update/:id'} element={<EducationalYearsUpdate/>}/>
             <Route path={'*'} element={<Error/>}/>
         </Routes>
     );

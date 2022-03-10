@@ -9,7 +9,6 @@ import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {User} from '../../../users/users.types';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
-import {isAdministrator} from '../../../../../../utils/permissions';
 
 export const GradesView = () => {
     const params = useParams();
@@ -32,9 +31,11 @@ export const GradesView = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text, user) => (
-                isAdministrator()
-                    ? <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
-                    : <ButtonsVUR viewUrl={`../../students/${user.id}`}/>
+                // isAdministrator()
+                //     ? <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
+                //     : <ButtonsVUR viewUrl={`../../students/${user.id}`}/>
+                <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>
+
             ),
         },
     ];

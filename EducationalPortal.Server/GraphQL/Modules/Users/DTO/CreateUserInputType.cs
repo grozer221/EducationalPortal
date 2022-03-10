@@ -40,7 +40,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
                .Name("PhoneNumber")
                .Resolve(context => context.Source.PhoneNumber);
 
-            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
+            Field<DateTimeGraphType, DateTime>()
                .Name("DateOfBirth")
                .Resolve(context => context.Source.DateOfBirth);
 

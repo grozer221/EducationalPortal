@@ -9,18 +9,29 @@ import {WithAdministratorRoleOrRender} from '../../../../../hocs/WithAdministrat
 
 export const GradesLayout: FC = () => {
     return (
+        // <Routes>
+        //     <Route path={'/'} element={<GradesIndex/>}/>
+        //     <Route path={':id'} element={<GradesView/>}/>
+        //     <Route path={'create'} element={
+        //         <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+        //             <GradesCreate/>
+        //         </WithAdministratorRoleOrRender>
+        //     }/>
+        //     <Route path={'update/:id'} element={
+        //         <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+        //             <GradesUpdate/>
+        //         </WithAdministratorRoleOrRender>
+        //     }/>
+        //     <Route path={'*'} element={<Error/>}/>
+        // </Routes>
         <Routes>
             <Route path={'/'} element={<GradesIndex/>}/>
             <Route path={':id'} element={<GradesView/>}/>
             <Route path={'create'} element={
-                <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
                     <GradesCreate/>
-                </WithAdministratorRoleOrRender>
             }/>
             <Route path={'update/:id'} element={
-                <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
                     <GradesUpdate/>
-                </WithAdministratorRoleOrRender>
             }/>
             <Route path={'*'} element={<Error/>}/>
         </Routes>

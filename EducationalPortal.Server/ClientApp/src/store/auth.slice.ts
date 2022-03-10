@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Auth} from '../../gql/auth/auth.types';
+import {Auth} from '../gql/auth/auth.types';
 
 const initialState = {
     isAuth: false,

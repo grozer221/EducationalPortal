@@ -2,10 +2,12 @@ import {gql} from '@apollo/client';
 import {USER_FRAGMENT} from '../users/users.fragments';
 import {EDUCATIONAL_YEAR_FRAGMENT} from '../educationalYears/educationalYears.fragments';
 import {SUBJECT_POST_FRAGMENT} from '../subjectPosts/subjectPosts.fragments';
+import {GRADE_FRAGMENT} from '../grades/grades.fragments';
 
 export const SUBJECT_FRAGMENT = gql`
     ${USER_FRAGMENT}
     ${EDUCATIONAL_YEAR_FRAGMENT}
+    ${GRADE_FRAGMENT}
     fragment SubjectFragment on SubjectType {
         id
         name
@@ -17,6 +19,9 @@ export const SUBJECT_FRAGMENT = gql`
         educationalYearId
         educationalYear {
             ...EducationalYearFragment
+        }
+        gradesHaveAccessRead {
+            ...GradeFragment
         }
         createdAt
         updatedAt

@@ -1,12 +1,13 @@
 import React from 'react';
 import {useQuery} from '@apollo/client';
-import {Link, Navigate, useParams} from 'react-router-dom';
+import {Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space} from 'antd';
 import Title from 'antd/es/typography/Title';
 import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../users.queries';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
+import {roleToTag} from '../../../../../../convertors/toTagConvertor';
 
 export const TeachersView = () => {
     const params = useParams();
@@ -50,6 +51,12 @@ export const TeachersView = () => {
                     <td>Дата нарождення:</td>
                     <td>
                         <span>{teacher?.dateOfBirth && stringToUkraineDate(teacher.dateOfBirth)}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Роль:</td>
+                    <td>
+                        <span>{teacher?.role && roleToTag(teacher.role)}</span>
                     </td>
                 </tr>
                 </tbody>

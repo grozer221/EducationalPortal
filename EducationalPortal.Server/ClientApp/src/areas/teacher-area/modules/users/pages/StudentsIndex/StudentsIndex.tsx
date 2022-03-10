@@ -49,10 +49,12 @@ export const StudentsIndex = () => {
             dataIndex: 'actions',
             key: 'actions',
             render: (text: string, student) => (
-                isAdministrator()
-                    ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                                  onRemove={() => onRemove(student?.id)}/>
-                    : <ButtonsVUR viewUrl={`${student?.id}`}/>
+                // isAdministrator()
+                //     ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
+                //                   onRemove={() => onRemove(student?.id)}/>
+                //     : <ButtonsVUR viewUrl={`${student?.id}`}/>
+                <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
+                            onRemove={() => onRemove(student?.id)}/>
             ),
         },
     ];
@@ -60,11 +62,14 @@ export const StudentsIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Учні</Title>
-            {isAdministrator() &&
+            {/*{isAdministrator() &&*/}
+            {/*<Link to={'create'}>*/}
+            {/*    <ButtonCreate/>*/}
+            {/*</Link>*/}
+            {/*}*/}
             <Link to={'create'}>
                 <ButtonCreate/>
             </Link>
-            }
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}

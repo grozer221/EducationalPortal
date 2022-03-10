@@ -10,6 +10,7 @@ import {Role, User} from '../../users.types';
 import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../users.mutations';
 import Title from 'antd/es/typography/Title';
 import {isAdministrator} from '../../../../../../utils/permissions';
+import {roleToTag} from '../../../../../../convertors/toTagConvertor';
 
 export const TeachersIndex = () => {
     const [page, setPage] = useState(1);
@@ -41,14 +42,22 @@ export const TeachersIndex = () => {
             render: (text, student) => <>{student?.lastName} {student?.firstName}</>,
         },
         {
+            title: 'Роль',
+            dataIndex: 'role',
+            key: 'role',
+            render: (text, student) => <>{student?.role && roleToTag(student.role)}</>,
+        },
+        {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
             render: (text: string, student) => (
-                isAdministrator()
-                    ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                                  onRemove={() => onRemove(student?.id)}/>
-                    : <ButtonsVUR viewUrl={`${student?.id}`}/>
+                // isAdministrator()
+                //     ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
+                //                   onRemove={() => onRemove(student?.id)}/>
+                //     : <ButtonsVUR viewUrl={`${student?.id}`}/>
+                <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
+                            onRemove={() => onRemove(student?.id)}/>
             ),
         },
     ];
@@ -56,11 +65,14 @@ export const TeachersIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Вчителі</Title>
-            {isAdministrator() &&
+            {/*{isAdministrator() &&*/}
+            {/*<Link to={'create'}>*/}
+            {/*    <ButtonCreate/>*/}
+            {/*</Link>*/}
+            {/*}*/}
             <Link to={'create'}>
                 <ButtonCreate/>
             </Link>
-            }
             <Table
                 rowKey={'id'}
                 loading={getTeachersOptions.loading || removeTeacherMutationOptions.loading}

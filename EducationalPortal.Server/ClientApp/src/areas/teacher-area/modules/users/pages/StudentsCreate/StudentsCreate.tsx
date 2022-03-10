@@ -14,6 +14,7 @@ import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/gr
 import {UserOutlined} from '@ant-design/icons';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
+import {ukDateFormat} from '../../../../../../utils/formats';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -53,7 +54,7 @@ export const StudentsCreate = () => {
                     password: values.password,
                     email: values.email,
                     phoneNumber: values.phoneNumber,
-                    dateOfBirth: new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
+                    dateOfBirth: values.dateOfBirth && new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
                     role: Role.Student,
                     gradeId: getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id,
                 },
@@ -162,7 +163,7 @@ export const StudentsCreate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} onChange={() => changeLogin()}/>
+                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="gradeName"

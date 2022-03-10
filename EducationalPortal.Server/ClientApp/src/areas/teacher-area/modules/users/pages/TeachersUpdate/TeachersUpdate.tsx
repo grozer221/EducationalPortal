@@ -1,23 +1,21 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {DatePicker, Form, Input, message} from 'antd';
+import {DatePicker, Form, Input, message, Select} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {UPDATE_USER_MUTATION, UpdateUserData, UpdateUserVars} from '../../users.mutations';
-import {
-    GET_USER_QUERY,
-    GET_USER_WITH_GRADE_QUERY,
-    GetUserData,
-    GetUserVars,
-    GetUserWithGradeData,
-    GetUserWithGradeVars,
-} from '../../users.queries';
+import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../users.queries';
 import moment from 'moment';
 import {Role} from '../../users.types';
-import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
 import Title from 'antd/es/typography/Title';
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
+import locale from 'antd/es/date-picker/locale/uk_UA';
+import 'moment/locale/uk';
+import {ukDateFormat} from '../../../../../../utils/formats';
+
+const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
 type FormValues = {
     id: string,
@@ -28,6 +26,7 @@ type FormValues = {
     email: string,
     phoneNumber: string,
     dateOfBirth: any,
+    role: Role,
 }
 
 export const TeachersUpdate = () => {
@@ -52,7 +51,7 @@ export const TeachersUpdate = () => {
                     email: values.email,
                     phoneNumber: values.phoneNumber,
                     dateOfBirth: new Date(values.dateOfBirth._d.setHours(12)).toISOString(),
-                    role: Role.Teacher,
+                    role: values.role,
                     gradeId: undefined,
                 },
             },
@@ -65,54 +64,69 @@ export const TeachersUpdate = () => {
             });
     };
 
+    const changeLogin = () => {
+        const lastName: string = form.getFieldValue('lastName') || '';
+        const lastName1Letter = lastName.length ? lastName[0] : '';
+        const firstName: string = form.getFieldValue('firstName') || '';
+        const firstName1Letter = firstName.length ? firstName[0] : '';
+        const middleName: string = form.getFieldValue('middleName') || '';
+        const middleName1Letter = middleName.length ? middleName[0] : '';
+        const dateOfBorn: Date | null = form.getFieldValue('dateOfBirth')?._d;
+        const yearOfBorn = dateOfBorn?.getFullYear() || '';
+        form.setFieldsValue({
+            login: cyrillicToTranslit.transform(`${yearOfBorn}_${lastName1Letter}${firstName1Letter}${middleName1Letter}`).toLowerCase(),
+        });
+    };
+
     if (!id)
         return <Navigate to={'/error'}/>;
 
     if (getTeacher.loading)
         return <Loading/>;
 
-    const student = getTeacher.data?.getUser;
+    const teacher = getTeacher.data?.getUser;
     return (
         <Form
             name="TeachersUpdateForm"
             onFinish={onFinish}
             form={form}
             initialValues={{
-                id: student?.id,
-                firstName: student?.firstName,
-                middleName: student?.middleName,
-                lastName: student?.lastName,
-                login: student?.login,
-                email: student?.email,
-                phoneNumber: student?.phoneNumber,
-                dateOfBirth: moment(student?.dateOfBirth.split('T')[0], 'YYYY-MM-DD'),
+                id: teacher?.id,
+                firstName: teacher?.firstName,
+                middleName: teacher?.middleName,
+                lastName: teacher?.lastName,
+                login: teacher?.login,
+                email: teacher?.email,
+                phoneNumber: teacher?.phoneNumber,
+                dateOfBirth: moment(teacher?.dateOfBirth.split('T')[0], 'YYYY-MM-DD'),
+                role: teacher?.role,
             }}
             {...sizeFormItem}
         >
-            <Title level={2}>Оновити учня</Title>
+            <Title level={2}>Оновити вчителя</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
-            </Form.Item>
-            <Form.Item
-                name="firstName"
-                label="Ім'я"
-                rules={[{required: true, message: 'Введіть Ім\'я!'}]}
-            >
-                <Input placeholder="Ім'я"/>
-            </Form.Item>
-            <Form.Item
-                name="middleName"
-                label="По-батькові"
-                rules={[{required: true, message: 'Введіть По-батькові!'}]}
-            >
-                <Input placeholder="По-батькові"/>
             </Form.Item>
             <Form.Item
                 name="lastName"
                 label="Прізвище"
                 rules={[{required: true, message: 'Введіть Прізвище!'}]}
             >
-                <Input placeholder="Прізвище"/>
+                <Input placeholder="Прізвище" onChange={() => changeLogin()}/>
+            </Form.Item>
+            <Form.Item
+                name="firstName"
+                label="Ім'я"
+                rules={[{required: true, message: 'Введіть Ім\'я!'}]}
+            >
+                <Input placeholder="Ім'я" onChange={() => changeLogin()}/>
+            </Form.Item>
+            <Form.Item
+                name="middleName"
+                label="По-батькові"
+                rules={[{required: true, message: 'Введіть По-батькові!'}]}
+            >
+                <Input placeholder="По-батькові" onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="login"
@@ -138,7 +152,23 @@ export const TeachersUpdate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker/>
+                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
+            </Form.Item>
+            <Form.Item
+                name="role"
+                label="Роль"
+            >
+                <Select>
+                    {(Object.values(Role) as Array<Role>).map(value => {
+                        if (value === Role.Student)
+                            return null;
+                        return (
+                            <Select.Option key={value} value={value}>
+                                {Object.keys(Role)[Object.values(Role).indexOf(value)]}
+                            </Select.Option>
+                        );
+                    })}
+                </Select>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonUpdate loading={updateStudentOptions.loading} isSubmit={true}/>

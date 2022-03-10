@@ -11,6 +11,6 @@ namespace EducationalPortal.Server.Database.Models
     {
         public string Name { get; set; }
         public virtual IEnumerable<UserModel>? Students { get; set; }
-        //public virtual IEnumerable<SubjectModel>? SubjectHaveAccess { get; set; }
+        public virtual List<SubjectModel>? SubjectsHaveAccessRead { get; set; }
     }
 }

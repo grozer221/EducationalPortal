@@ -13,6 +13,13 @@ import Search from 'antd/es/input/Search';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
 import debounce from 'lodash.debounce';
 import Title from 'antd/es/typography/Title';
+import locale from 'antd/es/date-picker/locale/uk_UA';
+import 'moment/locale/uk';
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
+import {ukDateFormat} from '../../../../../../utils/formats';
+
+const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
+
 
 type FormValues = {
     id: string,
@@ -92,6 +99,20 @@ export const StudentsUpdate = () => {
     const debouncedSearchGradesHandler = useCallback(debounce(nextValue => onSearchGradesHandler(nextValue), 500), []);
     const searchGradesHandler = (value: string) => debouncedSearchGradesHandler(value);
 
+    const changeLogin = () => {
+        const lastName: string = form.getFieldValue('lastName') || '';
+        const lastName1Letter = lastName.length ? lastName[0] : '';
+        const firstName: string = form.getFieldValue('firstName') || '';
+        const firstName1Letter = firstName.length ? firstName[0] : '';
+        const middleName: string = form.getFieldValue('middleName') || '';
+        const middleName1Letter = middleName.length ? middleName[0] : '';
+        const dateOfBorn: Date | null = form.getFieldValue('dateOfBirth')?._d;
+        const yearOfBorn = dateOfBorn?.getFullYear() || '';
+        form.setFieldsValue({
+            login: cyrillicToTranslit.transform(`${yearOfBorn}_${lastName1Letter}${firstName1Letter}${middleName1Letter}`).toLowerCase(),
+        });
+    };
+
     if (!id)
         return <Navigate to={'/error'}/>;
 
@@ -122,25 +143,25 @@ export const StudentsUpdate = () => {
                 <Input type={'hidden'}/>
             </Form.Item>
             <Form.Item
+                name="lastName"
+                label="Прізвище"
+                rules={[{required: true, message: 'Введіть Прізвище!'}]}
+            >
+                <Input placeholder="Прізвище" onChange={() => changeLogin()}/>
+            </Form.Item>
+            <Form.Item
                 name="firstName"
                 label="Ім'я"
                 rules={[{required: true, message: 'Введіть Ім\'я!'}]}
             >
-                <Input placeholder="Ім'я"/>
+                <Input placeholder="Ім'я" onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="middleName"
                 label="По-батькові"
                 rules={[{required: true, message: 'Введіть По-батькові!'}]}
             >
-                <Input placeholder="По-батькові"/>
-            </Form.Item>
-            <Form.Item
-                name="lastName"
-                label="Прізвище"
-                rules={[{required: true, message: 'Введіть Прізвище!'}]}
-            >
-                <Input placeholder="Прізвище"/>
+                <Input placeholder="По-батькові" onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="login"
@@ -166,7 +187,7 @@ export const StudentsUpdate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker/>
+                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="gradeName"
