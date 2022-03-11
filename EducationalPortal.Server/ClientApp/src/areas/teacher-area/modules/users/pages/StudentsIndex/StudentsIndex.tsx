@@ -9,13 +9,13 @@ import {GET_USERS_WITH_GRADE_QUERY, GetUsersWithGradeData, GetUsersWithGradeVars
 import {Role, User} from '../../users.types';
 import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../users.mutations';
 import Title from 'antd/es/typography/Title';
-import {isAdministrator} from '../../../../../../utils/permissions';
 
 export const StudentsIndex = () => {
     const [page, setPage] = useState(1);
     const [roles, setRoles] = useState([Role.Student]);
+    const [like, setLike] = useState('');
     const getStudentsQuery = useQuery<GetUsersWithGradeData, GetUsersWithGradeVars>(GET_USERS_WITH_GRADE_QUERY,
-        {variables: {page: page, roles: roles}, fetchPolicy: 'network-only'},
+        {variables: {page: page, roles: roles, like: like}, fetchPolicy: 'network-only'},
     );
     const [removeStudentMutation, removeStudentMutationOptions] = useMutation<RemoveUserData, RemoveUserVars>(REMOVE_USER_MUTATION);
 

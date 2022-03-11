@@ -27,7 +27,7 @@ namespace EducationalPortal.Server.Database.Models
 
         public Guid? GradeId { get; set; }
         public virtual GradeModel? Grade { get; set; }
-        public virtual IEnumerable<SubjectModel>? Subjects { get; set; }
-        public virtual IEnumerable<SubjectModel>? SubjectHaveAccessCreatePosts { get; set; }
+        public virtual List<SubjectModel>? Subjects { get; set; }
+        public virtual List<SubjectModel>? SubjectHaveAccessCreatePosts { get; set; }
     }
 }

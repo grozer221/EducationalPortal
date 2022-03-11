@@ -4,7 +4,7 @@ import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {GET_SUBJECT_WITH_POSTS_QUERY, GetSubjectWithPostsData, GetSubjectWithPostsVars} from '../../subjects.queries';
 import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIndex/SubjectPostsIndex';
-import {Space} from 'antd';
+import {Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
 
@@ -30,23 +30,35 @@ export const SubjectsView = () => {
     const subject = getSubjectQuery.data?.getSubject;
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
-            <Title level={2}>Переглад предмету</Title>
+            <Title level={2}>Перегляд предмету</Title>
             <Title level={3}>{subject?.name}</Title>
             <table className="infoTable">
                 <tbody>
                 <tr>
-                    <td>Вчитель:</td>
+                    <td>Вчитель предмету:</td>
                     <td>
                         <span>
-                            <Link to={`../../teachers/${subject?.teacherId}`}>{subject?.teacher.firstName} {subject?.teacher.lastName}</Link>
+                            <Link
+                                to={`../../teachers/${subject?.teacherId}`}>{subject?.teacher.lastName} {subject?.teacher.firstName}</Link>
                         </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Вчителі:</td>
+                    <td>
+                        {subject?.teachersHaveAccessCreatePosts.map(teacher => (
+                            <Tag>
+                                <Link to={`../../teachers/${teacher.id}`}>{teacher?.lastName} {teacher.firstName}</Link>
+                            </Tag>
+                        ))}
                     </td>
                 </tr>
                 <tr>
                     <td>Навчальний рік:</td>
                     <td>
                         <span>
-                            <Link to={`../../educational-years/${subject?.educationalYearId}`}>{subject?.educationalYear.name}</Link>
+                            <Link
+                                to={`../../educational-years/${subject?.educationalYearId}`}>{subject?.educationalYear.name}</Link>
                         </span>
                     </td>
                 </tr>
@@ -54,6 +66,16 @@ export const SubjectsView = () => {
                     <td>Посилання:</td>
                     <td>
                         <span>{subject?.link}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Класи:</td>
+                    <td>
+                        {subject?.gradesHaveAccessRead.map(grade => (
+                            <Tag>
+                                <Link to={`../../grades/${grade.id}`}>{grade?.name}</Link>
+                            </Tag>
+                        ))}
                     </td>
                 </tr>
                 </tbody>

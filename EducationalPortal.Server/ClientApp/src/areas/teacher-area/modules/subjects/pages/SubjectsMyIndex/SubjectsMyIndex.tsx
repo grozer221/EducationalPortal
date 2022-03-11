@@ -2,15 +2,17 @@ import React, {useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Space, Table} from 'antd';
+import {message, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link} from 'react-router-dom';
 import {GET_MY_SUBJECTS_QUERY, GetMySubjectsData, GetMySubjectsVars} from '../../subjects.queries';
 import {Subject} from '../../subjects.types';
 import {REMOVE_SUBJECT_MUTATION, RemoveSubjectData, RemoveSubjectVars} from '../../subjects.mutations';
 import Title from 'antd/es/typography/Title';
+import {useAppSelector} from '../../../../../../store/store';
 
 export const SubjectsMyIndex = () => {
+    const currentUser = useAppSelector(s => s.auth.me?.user);
     const [page, setPage] = useState(1);
     const [like, setLike] = useState('');
     const getSubjectsQuery = useQuery<GetMySubjectsData, GetMySubjectsVars>(GET_MY_SUBJECTS_QUERY,
@@ -33,6 +35,15 @@ export const SubjectsMyIndex = () => {
             title: 'Назва',
             dataIndex: 'name',
             key: 'name',
+            render: (text, subject) => (
+                <Space>
+                    <div>{subject?.name}</div>
+                    <div>
+                        {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
+                        {subject.teachersHaveAccessCreatePosts.some(t => t.id === currentUser?.id) && <Tag color={'cyan'}>Надано доступ</Tag>}
+                    </div>
+                </Space>
+            ),
         },
         {
             title: 'Навчальний рік',

@@ -14,36 +14,25 @@ namespace EducationalPortal.Server.Database
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            Database.Migrate();
         }
 
         public DbSet<EducationalYearModel> EducationalYears { get; set; }
         public DbSet<GradeModel> Grades { get; set; }
-        //public DbSet<PermisionTeacherEditSubjectModel> PermisionTeachersEditSubjects { get; set; }
         public DbSet<SettingModel> Settings { get; set; }
         public DbSet<SubjectModel> Subjects { get; set; }
         public DbSet<SubjectPostModel> SubjectPost { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder options)
-        //{
-        //    if (!options.IsConfigured)
-        //    {
-        //        options.UseMySQL("server=localhost;database=educational-portal;user=root;password=;port=3306;");
-        //    }
-        //}
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<EducationalYearModel>(y => y.HasIndex(e => e.Name).IsUnique());
-            //builder.Entity<EducationalYearModel>().HasMany(y => y.Subjects).WithOne(s => s.EducationalYear).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<EducationalYearModel>().HasMany(y => y.Subjects).WithOne(s => s.EducationalYear).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<GradeModel>(g => g.HasIndex(e => e.Name).IsUnique());
             builder.Entity<GradeModel>().HasMany(g => g.Students).WithOne(s => s.Grade).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SettingModel>(s => s.HasIndex(s => s.Name).IsUnique());
-
-            //builder.Entity<PermisionTeacherEditSubjectModel>().HasOne(p => p.Subject).WithMany(s => s.PermisionTeachersEditSubject).OnDelete(DeleteBehavior.SetNull);
-            //builder.Entity<PermisionTeacherEditSubjectModel>().HasOne(p => p.Teacher).WithMany(t => t.PermisionTeachersEditSubject).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SubjectModel>().HasOne(s => s.EducationalYear).WithMany(y => y.Subjects).OnDelete(DeleteBehavior.SetNull);
             builder.Entity<SubjectModel>().HasMany(s => s.Posts).WithOne(y => y.Subject).OnDelete(DeleteBehavior.Cascade);

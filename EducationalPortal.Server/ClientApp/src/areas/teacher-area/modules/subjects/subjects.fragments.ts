@@ -23,6 +23,9 @@ export const SUBJECT_FRAGMENT = gql`
         gradesHaveAccessRead {
             ...GradeFragment
         }
+        teachersHaveAccessCreatePosts {
+            ...UserFragment
+        }
         createdAt
         updatedAt
     }

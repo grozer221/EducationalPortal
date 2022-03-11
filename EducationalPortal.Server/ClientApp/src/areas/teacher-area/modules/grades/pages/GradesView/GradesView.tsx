@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useQuery} from '@apollo/client';
-import {Navigate, useParams} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useLazyQuery} from '@apollo/client';
+import {createSearchParams, Navigate, useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {GET_GRADE_WITH_STUDENTS_QUERY, GetGradeWithStudentsData, GetGradeWithStudentsVars} from '../../grades.queries';
 import {Space, Table} from 'antd';
@@ -10,14 +10,26 @@ import {User} from '../../../users/users.types';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
 
+const studentsPageDefaultValue = 1;
+
 export const GradesView = () => {
     const params = useParams();
     const id = params.id as string;
-    const [studentsPage, setStudentsPage] = useState(1);
-
-    const getGradeQuery = useQuery<GetGradeWithStudentsData, GetGradeWithStudentsVars>(GET_GRADE_WITH_STUDENTS_QUERY,
+    const [searchParams] = useSearchParams();
+    const [studentsPage, setStudentsPage] = useState(parseInt(searchParams.get('studentsPage') || '') || studentsPageDefaultValue);
+    const [getGrade, getGradeOptions] = useLazyQuery<GetGradeWithStudentsData, GetGradeWithStudentsVars>(GET_GRADE_WITH_STUDENTS_QUERY,
         {variables: {id: id, studentsPage: studentsPage}},
     );
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!(studentsPage === studentsPageDefaultValue))
+            navigate({
+                pathname: './',
+                search: `?${createSearchParams({studentsPage: studentsPage.toString()})}`,
+            });
+        getGrade({variables: {id, studentsPage}});
+    }, [id, studentsPage]);
 
     const columns: ColumnsType<User> = [
         {
@@ -43,10 +55,10 @@ export const GradesView = () => {
     if (!id)
         return <Navigate to={'/error'}/>;
 
-    if (getGradeQuery.loading)
+    if (getGradeOptions.loading)
         return <Loading/>;
 
-    const grade = getGradeQuery.data?.getGrade;
+    const grade = getGradeOptions.data?.getGrade;
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Перегляд класу</Title>
@@ -67,10 +79,7 @@ export const GradesView = () => {
                 columns={columns}
                 pagination={{
                     total: grade?.students.total,
-                    onChange: async (newPage: number) => {
-                        setStudentsPage(newPage);
-                        await getGradeQuery.refetch({id: id, studentsPage: studentsPage});
-                    },
+                    onChange: setStudentsPage,
                 }}
             />
         </Space>

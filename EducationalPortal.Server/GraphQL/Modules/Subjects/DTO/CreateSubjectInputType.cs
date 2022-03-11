@@ -18,6 +18,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
             Field<NonNullGraphType<ListGraphType<IdGraphType>>, IEnumerable<Guid>>()
                .Name("GradesHaveAccessReadIds")
                .Resolve(context => context.Source.GradesHaveAccessReadIds);
+            
+            Field<NonNullGraphType<ListGraphType<IdGraphType>>, IEnumerable<Guid>>()
+               .Name("TeachersHaveAccessCreatePostsIds")
+               .Resolve(context => context.Source.TeachersHaveAccessCreatePostsIds);
         }
     }
 }

@@ -13,6 +13,6 @@ namespace EducationalPortal.Server.Database.Models
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
         public bool IsCurrent { get; set; }
-        public virtual IEnumerable<SubjectModel>? Subjects { get; set; }
+        public virtual List<SubjectModel>? Subjects { get; set; }
     }
 }

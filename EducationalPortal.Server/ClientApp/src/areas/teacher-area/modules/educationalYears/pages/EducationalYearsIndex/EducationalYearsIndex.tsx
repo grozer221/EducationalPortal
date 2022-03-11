@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {
     GET_EDUCATIONAL_YEARS_QUERY,
@@ -8,9 +8,9 @@ import {
 import {ColumnsType} from 'antd/es/table';
 import {EducationalYear} from '../../educationalYears.types';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Space, Table, Tag} from 'antd';
+import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link, useNavigate} from 'react-router-dom';
+import {createSearchParams, Link, useNavigate, useSearchParams} from 'react-router-dom';
 import {
     REMOVE_EDUCATIONAL_YEAR_MUTATION,
     RemoveEducationalYearData,
@@ -18,15 +18,28 @@ import {
 } from '../../educationalYears.mutations';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 import Title from 'antd/es/typography/Title';
-import {isAdministrator} from '../../../../../../utils/permissions';
+import Search from 'antd/es/input/Search';
+import debounce from 'lodash.debounce';
+import '../../../../../../styles/controls.css';
 
 export const EducationalYearsIndex = () => {
-    const [page, setPage] = useState(1);
+    const [searchParams] = useSearchParams();
+    const [page, setPage] = useState(parseInt(searchParams.get('page') || '') || 1);
+    const [like, setLike] = useState(searchParams.get('like') || '');
+    const [likeInput, setLikeInput] = useState(searchParams.get('like') || '');
     const navigate = useNavigate();
     const getEducationalYearsQuery = useQuery<GetEducationalYearsData, GetEducationalYearsVars>(GET_EDUCATIONAL_YEARS_QUERY,
-        {variables: {page: page}, fetchPolicy: 'network-only'},
+        {variables: {page, like}, fetchPolicy: 'network-only'},
     );
     const [removeEducationalYearsMutation, removeEducationalYearsMutationOptions] = useMutation<RemoveEducationalYearData, RemoveEducationalYearVars>(REMOVE_EDUCATIONAL_YEAR_MUTATION);
+
+    useEffect(() => {
+        navigate({
+            pathname: './',
+            search: `?${createSearchParams({page: page.toString(), like})}`,
+        });
+        getEducationalYearsQuery.refetch({page, like});
+    }, [page, like]);
 
     const onRemove = (educationalYearId: string) => {
         removeEducationalYearsMutation({variables: {id: educationalYearId}})
@@ -81,6 +94,13 @@ export const EducationalYearsIndex = () => {
         },
     ];
 
+    const debouncedSearchEduYearsHandler = useCallback(debounce(setLike, 500), []);
+    const searchEduYearsHandler = (value: string) => {
+        debouncedSearchEduYearsHandler(value);
+        setLikeInput(value);
+    };
+
+
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Навчальні роки</Title>
@@ -89,9 +109,23 @@ export const EducationalYearsIndex = () => {
             {/*    <ButtonCreate/>*/}
             {/*</Link>*/}
             {/*}*/}
-            <Link to={'create'}>
-                <ButtonCreate/>
-            </Link>
+            <Row justify="space-between">
+                <Col>
+                    <Link to={'create'}>
+                        <ButtonCreate/>
+                    </Link>
+                </Col>
+                <Col>
+                    <Search
+                        value={likeInput}
+                        onChange={e => searchEduYearsHandler(e.target.value)}
+                        placeholder="Пошук"
+                        enterButton
+                        loading={getEducationalYearsQuery.loading}
+                        className={'search'}
+                    />
+                </Col>
+            </Row>
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}
@@ -100,12 +134,7 @@ export const EducationalYearsIndex = () => {
                 columns={columns}
                 pagination={{
                     total: getEducationalYearsQuery.data?.getEducationalYears.total,
-                    onChange: async (newPage: number) => {
-                        setPage(newPage);
-                        await getEducationalYearsQuery.refetch({
-                            page: newPage,
-                        });
-                    },
+                    onChange: setPage,
                 }}
             />
         </Space>

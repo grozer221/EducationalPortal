@@ -17,6 +17,8 @@ import {
 } from './areas/teacher-area/modules/settings/settings.queries';
 import {client} from './gql/client';
 import {AppName, settingsActions} from './store/settings.slice';
+import {WithStudentRoleOrRender} from './hocs/WithStudentRoleOrRender';
+import {StudentLayout} from './areas/student-area/StudentLayout/StudentLayout';
 
 export const App = () => {
     const dispatch = useAppDispatch();
@@ -58,7 +60,11 @@ export const App = () => {
                     <TeacherLayout/>
                 </WithTeacherRoleOrRender>
             }/>
-            <Route path="student/*" element={<div>StudentLayout</div>}/>
+            <Route path="student/*" element={
+                <WithStudentRoleOrRender render={<Navigate to={'/login'}/>}>
+                    <StudentLayout/>
+                </WithStudentRoleOrRender>
+            }/>
             <Route path="/*" element={<ClientLayout/>}/>
         </Routes>
     );

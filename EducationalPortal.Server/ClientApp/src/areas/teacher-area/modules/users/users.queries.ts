@@ -29,12 +29,12 @@ export const GET_USER_QUERY = gql`
 export type GetUsersData = { getUsers: getUsersType }
 export type getUsersType = { entities: User[], total: number }
 
-export type GetUsersVars = { page: number, roles: Role[] }
+export type GetUsersVars = { page: number, roles: Role[], like: string }
 
 export const GET_USERS_QUERY = gql`
     ${USER_FRAGMENT}
-    query GetUsers($page: Int!, $roles: [UserRoleEnum]) {
-        getUsers(page: $page, roles: $roles) {
+    query GetUsers($page: Int!, $roles: [UserRoleEnum], $like: String!) {
+        getUsers(page: $page, roles: $roles, like: $like) {
             entities {
                 ...UserFragment
             }
@@ -46,12 +46,12 @@ export const GET_USERS_QUERY = gql`
 export type GetUsersWithGradeData = { getUsers: getUsersWithGradeType }
 export type getUsersWithGradeType = { entities: User[], total: number }
 
-export type GetUsersWithGradeVars = { page: number, roles: Role[] }
+export type GetUsersWithGradeVars = { page: number, roles: Role[], like: string }
 
 export const GET_USERS_WITH_GRADE_QUERY = gql`
     ${USER_WITH_GRADE_FRAGMENT}
-    query GetUsers($page: Int!, $roles: [UserRoleEnum]) {
-        getUsers(page: $page, roles: $roles) {
+    query GetUsers($page: Int!, $roles: [UserRoleEnum], $like: String!) {
+        getUsers(page: $page, roles: $roles, like: $like) {
             entities {
                 ...UserWithGradeFragment
             }

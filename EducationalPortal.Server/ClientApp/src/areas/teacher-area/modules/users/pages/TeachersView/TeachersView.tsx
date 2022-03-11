@@ -55,9 +55,7 @@ export const TeachersView = () => {
                 </tr>
                 <tr>
                     <td>Роль:</td>
-                    <td>
-                        <span>{teacher?.role && roleToTag(teacher.role)}</span>
-                    </td>
+                    <td>{teacher?.role && roleToTag(teacher.role)}</td>
                 </tr>
                 </tbody>
             </table>

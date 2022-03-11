@@ -12,6 +12,8 @@ import {Grade} from '../../../grades/grades.types';
 import Search from 'antd/es/input/Search';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
 import debounce from 'lodash.debounce';
+import {Role, User} from '../../../users/users.types';
+import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../users/users.queries';
 
 type FormValues = {
     id: string,
@@ -38,6 +40,18 @@ export const SubjectsUpdate = () => {
     });
     const [grades, setGrades] = useState<Grade[]>([]);
 
+    const [teacherPage, setTeacherPage] = useState(1);
+    const [teacherLike, setTeacherLike] = useState('');
+    const [teacherRoles, setTeacherRoles] = useState([Role.Teacher, Role.Administrator]);
+    const getTeachersQuery = useQuery<GetUsersData, GetUsersVars>(GET_USERS_QUERY, {
+        variables: {
+            page: teacherPage,
+            roles: teacherRoles,
+            like: teacherLike,
+        },
+    });
+    const [teachers, setTeachers] = useState<User[]>([]);
+
     useEffect(() => {
         getGradesQuery.refetch({
             page: gradePage,
@@ -55,7 +69,24 @@ export const SubjectsUpdate = () => {
 
     useEffect(() => {
         getSubjectQuery.data && setGrades(getSubjectQuery.data.getSubject.gradesHaveAccessRead);
+        getSubjectQuery.data && setTeachers(getSubjectQuery.data.getSubject.teachersHaveAccessCreatePosts);
     }, [getSubjectQuery.data?.getSubject]);
+
+    useEffect(() => {
+        getTeachersQuery.refetch({
+            page: teacherPage,
+            roles: teacherRoles,
+            like: teacherLike,
+        })
+            .then(response => {
+                if (!response.data.getUsers.entities.length) {
+                    message.warning('Вчителів з даним ім\'ям не знайдено');
+                }
+            })
+            .catch(error => {
+                message.error(error.message);
+            });
+    }, [teacherPage, teacherLike, teacherRoles]);
 
     const onFinish = async ({id, name, link}: FormValues) => {
         updateSubjectMutation({
@@ -65,6 +96,8 @@ export const SubjectsUpdate = () => {
                     name,
                     link,
                     gradesHaveAccessReadIds: grades.map(grade => grade.id),
+                    teachersHaveAccessCreatePostsIds: teachers.map(teacher => teacher.id),
+
                 },
             },
         })
@@ -87,6 +120,19 @@ export const SubjectsUpdate = () => {
     const removeGradeHandler = (value: string) => {
         const newGrades = grades.filter(grade => grade.name !== value);
         setGrades(newGrades);
+    };
+
+    const debouncedSearchTeachersHandler = useCallback(debounce(nextValue => setTeacherLike(nextValue), 500), []);
+    const searchTeachersHandler = (value: string) => debouncedSearchTeachersHandler(value);
+
+    const selectTeacherHandler = (value: string, options: any) => {
+        const newTeacher = getTeachersQuery.data?.getUsers.entities.find(teacher => teacher.id === options.teacher.id) as User;
+        setTeachers([...teachers, newTeacher]);
+    };
+
+    const removeTeacherHandler = (id: string) => {
+        const newTeachers = teachers.filter(teacher => teacher.id !== id);
+        setTeachers(newTeachers);
     };
 
     if (!id)
@@ -148,6 +194,33 @@ export const SubjectsUpdate = () => {
                             removeGradeHandler(grade.name);
                         }}
                     >{grade.name}</Tag>
+                ))}
+            </Form.Item>
+            <Form.Item
+                label="Вчителі"
+            >
+                <AutoComplete
+                    options={getTeachersQuery.data?.getUsers.entities.map(teacher => ({
+                        value: `${teacher.lastName} ${teacher.firstName}`,
+                        teacher,
+                    }))}
+                    onSearch={searchTeachersHandler}
+                    onSelect={selectTeacherHandler}
+                >
+                    <Search
+                        placeholder="Вчителі"
+                        enterButton
+                        loading={getTeachersQuery.loading}
+                    />
+                </AutoComplete>
+                {teachers.map(teacher => (
+                    <Tag
+                        closable
+                        onClose={e => {
+                            e.preventDefault();
+                            removeTeacherHandler(teacher.id);
+                        }}
+                    >{teacher.lastName} {teacher.firstName}</Tag>
                 ))}
             </Form.Item>
             <Form.Item {...sizeButtonItem}>

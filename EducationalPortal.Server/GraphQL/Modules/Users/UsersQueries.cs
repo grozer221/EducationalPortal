@@ -21,15 +21,31 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
             Field<NonNullGraphType<GetEntitiesResponseType<UserType, UserModel>>, GetEntitiesResponse<UserModel>>()
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
+                .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Users")
                 .Argument<ListGraphType<UserRoleType>, IEnumerable<UserRoleEnum>?>("Roles", "Argument for get Users")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
+                    string like = context.GetArgument<string>("Like");
                     IEnumerable<UserRoleEnum>? roles = context.GetArgument<IEnumerable<UserRoleEnum>?>("Roles");
                     if (roles == null || roles.Count() == 0)
-                        return usersRepository.Get(u => u.LastName, false, page);
+                        return usersRepository.Get(u => u.LastName, false, page, 
+                            u => (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (u.LastName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (u.MiddleName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (u.Login?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                        );
                     else
-                        return usersRepository.Get(u => u.LastName, false, page, u => roles.Contains(u.Role));
+                        return usersRepository.Get(u => u.LastName, false, page, 
+                            u => roles.Contains(u.Role) 
+                            && (
+                                (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                                || (u.LastName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                                || (u.MiddleName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                                || (u.Login?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                                || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
+                            ));
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 

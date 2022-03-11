@@ -20,10 +20,12 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
             Field<NonNullGraphType<GetEntitiesResponseType<EducationalYearType, EducationalYearModel>>, GetEntitiesResponse<EducationalYearModel>>()
                 .Name("GetEducationalYears")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Educational years")
+                .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Educational years")
                 .Resolve(context => 
                 {
                     int page = context.GetArgument<int>("Page");
-                    return educationalYearRepository.Get(y => y.CreatedAt, true, page);
+                    string like = context.GetArgument<string>("Like");
+                    return educationalYearRepository.Get(y => y.CreatedAt, true, page, y => y.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 

@@ -42,6 +42,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
             Field<ListGraphType<GradeType>, IEnumerable<GradeModel>?>()
                .Name("GradesHaveAccessRead")
                .Resolve(context => subjectRepository.GetByIdWithGradesHaveAccessRead(context.Source.Id)?.GradesHaveAccessRead);
+            
+            Field<ListGraphType<UserType>, IEnumerable<UserModel>?>()
+               .Name("TeachersHaveAccessCreatePosts")
+               .Resolve(context => subjectRepository.GetByIdWithTeachersHaveAccessCreatePosts(context.Source.Id)?.TeachersHaveAccessCreatePosts);
 
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("TeacherId")

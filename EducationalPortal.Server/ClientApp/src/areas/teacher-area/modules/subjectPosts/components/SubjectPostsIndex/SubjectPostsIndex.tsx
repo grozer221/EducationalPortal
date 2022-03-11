@@ -14,7 +14,6 @@ import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDate
 import '../../../../../../styles/text.css';
 import {useAppSelector} from '../../../../../../store/store';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Role} from '../../../users/users.types';
 
 type Props = {
     subject: Subject,
@@ -52,11 +51,14 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
     return (
         <>
             <Space direction={'vertical'} style={{width: '100%'}} size={20}>
-                {(currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
+                {/*{(currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&*/}
+                {/*<span onClick={() => setIsModalPostCreateVisible(true)}>*/}
+                {/*    <ButtonCreate>Створити пост</ButtonCreate>*/}
+                {/*    </span>*/}
+                {/*}*/}
                 <span onClick={() => setIsModalPostCreateVisible(true)}>
                     <ButtonCreate>Створити пост</ButtonCreate>
-                    </span>
-                }
+                </span>
                 {subject?.posts?.entities.map(post => (
                     <Card
                         key={post.id}
@@ -81,7 +83,7 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     >
                         <div>{parse(post.text)}</div>
                         <div className={'small'}>
-                            <div>Створено: {stringToUkraineDatetime(post.createdAt)}</div>
+                            <div>Створено: {stringToUkraineDatetime(post.createdAt)}, {post.teacher.lastName} {post.teacher.firstName}</div>
                             <div>Оновлено: {stringToUkraineDatetime(post.updatedAt)}</div>
                         </div>
                     </Card>

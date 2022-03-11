@@ -16,6 +16,7 @@ export type Subject = {
     educationalYearId: string,
     educationalYear: EducationalYear,
     gradesHaveAccessRead: Grade[],
+    teachersHaveAccessCreatePosts: User[],
     createdAt: string,
     updatedAt: string,
 }

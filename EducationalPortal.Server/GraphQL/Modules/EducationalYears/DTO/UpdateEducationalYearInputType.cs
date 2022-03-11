@@ -11,11 +11,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO
     {
         public UpdateEducationalYearInputType() : base()
         {
-            Field<IdGraphType>()
+            Field<NonNullGraphType<IdGraphType>, Guid>()
                .Name("Id")
                .Resolve(context => context.Source.Id);
             
-            Field<BooleanGraphType>()
+            Field<NonNullGraphType<BooleanGraphType>, bool>()
                .Name("IsCurrent")
                .Resolve(context => context.Source.IsCurrent);
         }

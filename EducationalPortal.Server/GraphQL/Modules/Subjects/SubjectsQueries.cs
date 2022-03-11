@@ -17,7 +17,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsQueries : ObjectGraphType, IQueryMarker
     {
-        public SubjectsQueries(SubjectRepository subjectsRepository, UserRepository userRepository, IHttpContextAccessor httpContextAccessor)
+        public SubjectsQueries(SubjectRepository subjectsRepository, UserRepository userRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("GetSubject")
@@ -35,7 +35,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
-                    return subjectsRepository.Get(s => s.CreatedAt, true, page);
+                    EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
+                    return subjectsRepository.Get(s => s.CreatedAt, true, page, s => s.EducationalYearId == currentEducationalYear.Id);
                 })
                .AuthorizeWith(AuthPolicies.Authenticated);
             
@@ -47,12 +48,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
+                    EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    UserModel currentUser = userRepository.GetById(currentUserId);
-                    if (currentUser.Role == UserRoleEnum.Student)
+                    UserRoleEnum currentUserRole = (UserRoleEnum)Enum.Parse(
+                        typeof(UserRoleEnum),
+                        httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
+                    );
+                    if (currentUserRole == UserRoleEnum.Student)
                         return new GetEntitiesResponse<SubjectModel>();
                     return subjectsRepository.Get(s => s.CreatedAt, true, page, 
-                        s => s.TeacherId == currentUserId && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
+                        s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
+                        && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                        && s.EducationalYearId == currentEducationalYear.Id
+                    );
                 })
                .AuthorizeWith(AuthPolicies.Authenticated);
         }

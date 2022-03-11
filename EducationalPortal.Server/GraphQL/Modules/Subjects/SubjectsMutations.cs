@@ -25,6 +25,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 {
                     SubjectModel subject = context.GetArgument<SubjectModel>("CreateSubjectInputType");
                     Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    if(subject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == currentTeacherId))
+                        throw new Exception("Ви не можете надати собі права для створення постів");
                     subject.TeacherId = currentTeacherId;
                     return await subjectsRepository.CreateAsync(subject);
                 })
@@ -36,13 +38,18 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .ResolveAsync(async (context) =>
                 {
                     SubjectModel newSubject = context.GetArgument<SubjectModel>("UpdateSubjectInputType");
-                    Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
                     UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
                        typeof(UserRoleEnum),
                        httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
-                    if (currentUserId != newSubject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
+                    SubjectModel oldSubject = subjectsRepository.GetById(newSubject.Id);
+                    if (currentTeacherId != oldSubject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception("Ви не маєте прав на редагування данного предмету");
+
+                    if (newSubject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == oldSubject.TeacherId))
+                        throw new Exception("Ви не можете надати собі права для створення постів");
+
                     return await subjectsRepository.UpdateAsync(newSubject);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);

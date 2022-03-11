@@ -11,15 +11,15 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO
     {
         public CreateEducationalYearInputType()
         {
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
                .Resolve(context => context.Source.Name);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
                .Name("DateStart")
                .Resolve(context => context.Source.DateStart);
 
-            Field<DateTimeGraphType>()
+            Field<NonNullGraphType<DateTimeGraphType>, DateTime>()
                .Name("DateEnd")
                .Resolve(context => context.Source.DateEnd);
         }

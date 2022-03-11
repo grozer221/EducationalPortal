@@ -15,19 +15,20 @@ import {roleToTag} from '../../../../../../convertors/toTagConvertor';
 export const TeachersIndex = () => {
     const [page, setPage] = useState(1);
     const [roles, setRoles] = useState([Role.Teacher, Role.Administrator]);
+    const [like, setLike] = useState('');
     const [getTeachers, getTeachersOptions] = useLazyQuery<GetUsersData, GetUsersVars>(GET_USERS_QUERY,
-        {variables: {page: page, roles: roles}, fetchPolicy: 'network-only'},
+        {variables: {page: page, roles: roles, like: like}, fetchPolicy: 'network-only'},
     );
     const [removeTeacherMutation, removeTeacherMutationOptions] = useMutation<RemoveUserData, RemoveUserVars>(REMOVE_USER_MUTATION);
 
     useEffect(() => {
-        getTeachers({variables: {page, roles}});
+        getTeachers({variables: {page, roles, like}});
     }, [page, roles]);
 
     const onRemove = (studentId: string) => {
         removeTeacherMutation({variables: {id: studentId}})
             .then(async (response) => {
-                await getTeachers({variables: {page, roles}});
+                await getTeachers({variables: {page, roles, like}});
             })
             .catch(error => {
                 message.error(error.message);
