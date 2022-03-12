@@ -1,28 +1,39 @@
-import React, {useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Space, Table} from 'antd';
+import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link} from 'react-router-dom';
+import {Link, useSearchParams} from 'react-router-dom';
 import {GET_USERS_WITH_GRADE_QUERY, GetUsersWithGradeData, GetUsersWithGradeVars} from '../../users.queries';
 import {Role, User} from '../../users.types';
 import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../users.mutations';
 import Title from 'antd/es/typography/Title';
+import debounce from 'lodash.debounce';
+import Search from 'antd/es/input/Search';
 
 export const StudentsIndex = () => {
-    const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [likeInput, setLikeInput] = useState('');
     const [roles, setRoles] = useState([Role.Student]);
-    const [like, setLike] = useState('');
-    const getStudentsQuery = useQuery<GetUsersWithGradeData, GetUsersWithGradeVars>(GET_USERS_WITH_GRADE_QUERY,
-        {variables: {page: page, roles: roles, like: like}, fetchPolicy: 'network-only'},
+    const [getStudents, getStudentsOptions] = useLazyQuery<GetUsersWithGradeData, GetUsersWithGradeVars>(GET_USERS_WITH_GRADE_QUERY,
+        {fetchPolicy: 'network-only'},
     );
     const [removeStudentMutation, removeStudentMutationOptions] = useMutation<RemoveUserData, RemoveUserVars>(REMOVE_USER_MUTATION);
+
+    useEffect(() => {
+        const page = parseInt(searchParams.get('page') || '') || 1;
+        const like = searchParams.get('like') || '';
+        setLikeInput(like);
+        getStudents({variables: {page, like, roles}});
+    }, [searchParams]);
 
     const onRemove = (studentId: string) => {
         removeStudentMutation({variables: {id: studentId}})
             .then(async (response) => {
-                await getStudentsQuery.refetch({page, roles: roles});
+                const page = parseInt(searchParams.get('page') || '') || 1;
+                const like = searchParams.get('like') || '';
+                await getStudents({variables: {page, like, roles}});
             })
             .catch(error => {
                 message.error(error.message);
@@ -41,8 +52,9 @@ export const StudentsIndex = () => {
             dataIndex: 'grade',
             key: 'grade',
             render: (text, student) => student?.grade
-                ? <Link to={`../../grades/${student.gradeId}`}>{student.grade?.name}</Link>
-                : '--',
+                && <Tag>
+                    <Link to={`../../grades/${student.gradeId}`}>{student.grade?.name}</Link>
+                </Tag>,
         },
         {
             title: 'Дії',
@@ -59,6 +71,12 @@ export const StudentsIndex = () => {
         },
     ];
 
+    const debouncedSearchStudentsHandler = useCallback(debounce(like => setSearchParams({like}), 500), []);
+    const searchStudentsHandler = (value: string) => {
+        debouncedSearchStudentsHandler(value);
+        setLikeInput(value);
+    };
+
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Учні</Title>
@@ -67,21 +85,33 @@ export const StudentsIndex = () => {
             {/*    <ButtonCreate/>*/}
             {/*</Link>*/}
             {/*}*/}
-            <Link to={'create'}>
-                <ButtonCreate/>
-            </Link>
+            <Row justify="space-between">
+                <Col>
+                    <Link to={'create'}>
+                        <ButtonCreate/>
+                    </Link>
+                </Col>
+                <Col>
+                    <Search
+                        allowClear
+                        value={likeInput}
+                        onChange={e => searchStudentsHandler(e.target.value)}
+                        placeholder="Пошук"
+                        enterButton
+                        loading={getStudentsOptions.loading}
+                        className={'search'}
+                    />
+                </Col>
+            </Row>
             <Table
                 style={{width: '100%'}}
                 rowKey={'id'}
-                loading={getStudentsQuery.loading || removeStudentMutationOptions.loading}
-                dataSource={getStudentsQuery.data?.getUsers.entities}
+                loading={getStudentsOptions.loading || removeStudentMutationOptions.loading}
+                dataSource={getStudentsOptions.data?.getUsers.entities}
                 columns={columns}
                 pagination={{
-                    total: getStudentsQuery.data?.getUsers.total,
-                    onChange: async (newPage: number) => {
-                        setPage(newPage);
-                        await getStudentsQuery.refetch({page: newPage, roles: roles});
-                    },
+                    total: getStudentsOptions.data?.getUsers.total,
+                    onChange: page => setSearchParams({page: page.toString()}),
                 }}
             />
         </Space>

@@ -1,32 +1,40 @@
-import React, {useEffect, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {message, Space, Table, Tag} from 'antd';
+import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link} from 'react-router-dom';
+import {Link, useSearchParams} from 'react-router-dom';
 import {GET_SUBJECTS_QUERY, GetSubjectsData, GetSubjectsVars} from '../../subjects.queries';
 import {Subject} from '../../subjects.types';
 import {REMOVE_SUBJECT_MUTATION, RemoveSubjectData, RemoveSubjectVars} from '../../subjects.mutations';
 import Title from 'antd/es/typography/Title';
 import {useAppSelector} from '../../../../../../store/store';
+import Search from 'antd/es/input/Search';
+import debounce from 'lodash.debounce';
 
 export const SubjectsIndex = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [likeInput, setLikeInput] = useState('');
     const currentUser = useAppSelector(s => s.auth.me?.user);
-    const [page, setPage] = useState(1);
-    const getSubjectsQuery = useQuery<GetSubjectsData, GetSubjectsVars>(GET_SUBJECTS_QUERY,
-        {variables: {page: page}, fetchPolicy: 'network-only'},
+    const [getSubjects, getSubjectsOptions] = useLazyQuery<GetSubjectsData, GetSubjectsVars>(GET_SUBJECTS_QUERY,
+        {fetchPolicy: 'network-only'},
     );
     const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
     useEffect(() => {
-        getSubjectsQuery.refetch({page: page});
-    }, [page]);
+        const page = parseInt(searchParams.get('page') || '') || 1;
+        const like = searchParams.get('like') || '';
+        setLikeInput(like);
+        getSubjects({variables: {page, like}});
+    }, [searchParams]);
 
     const onRemove = (subjectId: string) => {
         removeSubjectMutation({variables: {id: subjectId}})
             .then(async (response) => {
-                await getSubjectsQuery.refetch({page});
+                const page = parseInt(searchParams.get('page') || '') || 1;
+                const like = searchParams.get('like') || '';
+                await getSubjects({variables: {page, like}});
             })
             .catch(error => {
                 message.error(error.message);
@@ -50,6 +58,18 @@ export const SubjectsIndex = () => {
             ),
         },
         {
+            title: 'Класи',
+            dataIndex: 'grades',
+            key: 'grades',
+            render: (text, subject) => (
+                subject.gradesHaveAccessRead.map(grade => (
+                    <Link to={`../../grades/${grade.id}`}>
+                        <Tag>{grade.name}</Tag>
+                    </Link>
+                ))
+            )
+        },
+        {
             title: 'Вчитель',
             dataIndex: 'teacher',
             key: 'teacher',
@@ -58,13 +78,6 @@ export const SubjectsIndex = () => {
                     {subject?.teacher?.lastName} {subject?.teacher?.firstName}
                 </Link>
             ),
-        },
-        {
-            title: 'Навчальний рік',
-            dataIndex: 'educationalYear',
-            key: 'educationalYear',
-            render: (text, subject) => <Link
-                to={`../../educational-years/${subject?.educationalYearId}`}>{subject?.educationalYear?.name}</Link>,
         },
         {
             title: 'Дії',
@@ -81,20 +94,41 @@ export const SubjectsIndex = () => {
         },
     ];
 
+    const debouncedSearchSubjectsHandler = useCallback(debounce(like => setSearchParams({like}), 500), []);
+    const searchSubjectsHandler = (value: string) => {
+        debouncedSearchSubjectsHandler(value);
+        setLikeInput(value);
+    };
+
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Предмети</Title>
-            <Link to={'create'}>
-                <ButtonCreate/>
-            </Link>
+            <Row justify="space-between">
+                <Col>
+                    <Link to={'create'}>
+                        <ButtonCreate/>
+                    </Link>
+                </Col>
+                <Col>
+                    <Search
+                        allowClear
+                        value={likeInput}
+                        onChange={e => searchSubjectsHandler(e.target.value)}
+                        placeholder="Пошук"
+                        enterButton
+                        loading={getSubjectsOptions.loading}
+                        className={'search'}
+                    />
+                </Col>
+            </Row>
             <Table
                 rowKey={'id'}
-                loading={getSubjectsQuery.loading || removeSubjectMutationOptions.loading}
-                dataSource={getSubjectsQuery.data?.getSubjects.entities}
+                loading={getSubjectsOptions.loading || removeSubjectMutationOptions.loading}
+                dataSource={getSubjectsOptions.data?.getSubjects.entities}
                 columns={columns}
                 pagination={{
-                    total: getSubjectsQuery.data?.getSubjects.total,
-                    onChange: setPage,
+                    total: getSubjectsOptions.data?.getSubjects.total,
+                    onChange: page => setSearchParams({page: page.toString()}),
                 }}
             />
         </Space>

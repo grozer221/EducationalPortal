@@ -2,7 +2,7 @@ import React from 'react';
 import {useQuery} from '@apollo/client';
 import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {Space} from 'antd';
+import {Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
 import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../users.queries';
 import '../../../../../../styles/table.css';
@@ -55,12 +55,11 @@ export const StudentsView = () => {
                 <tr>
                     <td>Клас:</td>
                     <td>
-                        <span>
-                            {student?.grade
-                                ? <Link to={`../../grades/${student?.grade?.id}`}>{student?.grade?.name}</Link>
-                                : '--'
-                            }
-                        </span>
+                        {student?.grade
+                        && <Tag>
+                            <Link to={`../../grades/${student.gradeId}`}>{student.grade?.name}</Link>
+                        </Tag>
+                        }
                     </td>
                 </tr>
                 </tbody>

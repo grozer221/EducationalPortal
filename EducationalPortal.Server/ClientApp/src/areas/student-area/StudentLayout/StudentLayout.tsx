@@ -5,7 +5,6 @@ import {AppBreadcrumb} from '../../teacher-area/components/AppBreadcrumb/AppBrea
 import {Error} from '../../../components/Error/Error';
 import s from './StudentLayout.module.css';
 import {StudentMenu} from '../components/StudentMenu/StudentMenu';
-import {SubjectsMyIndex} from '../../teacher-area/modules/subjects/pages/SubjectsMyIndex/SubjectsMyIndex';
 
 const {Content} = Layout;
 
@@ -19,7 +18,7 @@ export const StudentLayout: FC = () => {
                         <StudentMenu/>
                         <Routes>
                             <Route path={'subjects/*'}>
-                                <Route path={'my'} element={<SubjectsMyIndex/>}/>
+                                <Route path={'my'} element={<div>SubjectsMyIndex</div>}/>
                                 <Route path={':id'} element={<div>id</div>}/>
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>

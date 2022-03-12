@@ -32,11 +32,16 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
             Field<NonNullGraphType<GetEntitiesResponseType<SubjectType, SubjectModel>>, GetEntitiesResponse<SubjectModel>>()
                 .Name("GetSubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
+                .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get My Subjects")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
+                    string like = context.GetArgument<string>("Like");
                     EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
-                    return subjectsRepository.Get(s => s.CreatedAt, true, page, s => s.EducationalYearId == currentEducationalYear.Id);
+                    return subjectsRepository.Get(s => s.CreatedAt, true, page, s => 
+                        s.EducationalYearId == currentEducationalYear.Id
+                        && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                    );
                 })
                .AuthorizeWith(AuthPolicies.Authenticated);
             

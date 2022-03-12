@@ -18,12 +18,12 @@ export const GET_SUBJECT_QUERY = gql`
 export type GetSubjectsData = { getSubjects: getSubjectsType }
 export type getSubjectsType = { entities: Subject[], total: number }
 
-export type GetSubjectsVars = { page: number }
+export type GetSubjectsVars = { page: number, like: string }
 
 export const GET_SUBJECTS_QUERY = gql`
     ${SUBJECT_FRAGMENT}
-    query GetSubjects($page: Int!) {
-        getSubjects(page: $page) {
+    query GetSubjects($page: Int!, $like: String!) {
+        getSubjects(page: $page, like: $like) {
             entities {
                 ...SubjectFragment
             }

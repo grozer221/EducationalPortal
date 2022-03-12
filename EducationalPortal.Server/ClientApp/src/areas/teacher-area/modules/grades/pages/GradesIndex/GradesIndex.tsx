@@ -4,7 +4,7 @@ import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Col, message, Row, Space, Table} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {createSearchParams, Link, useNavigate, useSearchParams} from 'react-router-dom';
+import {Link, useNavigate, useSearchParams} from 'react-router-dom';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../grades.queries';
 import {Grade} from '../../grades.types';
 import {REMOVE_GRADE_MUTATION, RemoveGradeData, RemoveGradeVars} from '../../grades.mutations';
@@ -12,34 +12,27 @@ import Title from 'antd/es/typography/Title';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
 
-
 export const GradesIndex = () => {
-    const [searchParams] = useSearchParams();
-    const pageParamsValue = parseInt(searchParams.get('page') || '') || 1;
-    const likeParamsValue = searchParams.get('like') || '';
-    const [page, setPage] = useState(pageParamsValue);
-    const [like, setLike] = useState(likeParamsValue);
-    const [likeInput, setLikeInput] = useState(searchParams.get('like') || '');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [likeInput, setLikeInput] = useState('');
     const [getGrades, getGradesOptions] = useLazyQuery<GetGradesData, GetGradesVars>(GET_GRADES_QUERY,
-        {variables: {page: page, like: like}, fetchPolicy: 'network-only'},
+        {fetchPolicy: 'network-only'},
     );
     const [removeGradeMutation, removeGradeMutationOptions] = useMutation<RemoveGradeData, RemoveGradeVars>(REMOVE_GRADE_MUTATION);
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigate({search: `?${createSearchParams({page: page.toString(), like})}`});
+        const page = parseInt(searchParams.get('page') || '') || 1;
+        const like = searchParams.get('like') || '';
+        setLikeInput(like);
         getGrades({variables: {page, like}});
-    }, [page, like]);
-
-    useEffect(() => setPage(pageParamsValue), [pageParamsValue]);
-    useEffect(() => {
-        setLike(likeParamsValue);
-        setLikeInput(likeParamsValue);
-    }, [likeParamsValue]);
+    }, [searchParams]);
 
     const onRemove = (gradeId: string) => {
         removeGradeMutation({variables: {id: gradeId}})
             .then(async (response) => {
+                const page = parseInt(searchParams.get('page') || '') || 1;
+                const like = searchParams.get('like') || '';
                 await getGrades({variables: {page, like}});
             })
             .catch(error => {
@@ -68,7 +61,7 @@ export const GradesIndex = () => {
         },
     ];
 
-    const debouncedSearchGradesHandler = useCallback(debounce(setLike, 500), []);
+    const debouncedSearchGradesHandler = useCallback(debounce(like => setSearchParams({like}), 500), []);
     const searchGradesHandler = (value: string) => {
         debouncedSearchGradesHandler(value);
         setLikeInput(value);
@@ -106,7 +99,7 @@ export const GradesIndex = () => {
                 columns={columns}
                 pagination={{
                     total: getGradesOptions.data?.getGrades.total,
-                    onChange: setPage,
+                    onChange: page => setSearchParams({page: page.toString()}),
                 }}
             />
         </Space>
