@@ -43,7 +43,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                         && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
                     );
                 })
-               .AuthorizeWith(AuthPolicies.Authenticated);
+               .AuthorizeWith(AuthPolicies.Teacher);
             
             Field<NonNullGraphType<GetEntitiesResponseType<SubjectType, SubjectModel>>, GetEntitiesResponse<SubjectModel>>()
                 .Name("GetMySubjects")
@@ -59,13 +59,26 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                         typeof(UserRoleEnum),
                         httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
-                    if (currentUserRole == UserRoleEnum.Student)
-                        return new GetEntitiesResponse<SubjectModel>();
-                    return subjectsRepository.Get(s => s.CreatedAt, true, page, 
-                        s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
-                        && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
-                        && s.EducationalYearId == currentEducationalYear.Id
-                    );
+                    switch (currentUserRole)
+                    {
+                        case UserRoleEnum.Student:
+                            UserModel currentUser = userRepository.GetById(currentUserId);
+                            return subjectsRepository.Get(s => s.CreatedAt, true, page,
+                                s => s.GradesHaveAccessRead.Any(g => g.Id == currentUser.GradeId)
+                                && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                                && s.EducationalYearId == currentEducationalYear.Id
+                            );
+                        case UserRoleEnum.Teacher:
+                        case UserRoleEnum.Administrator:
+                            return subjectsRepository.Get(s => s.CreatedAt, true, page,
+                                s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
+                                && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                                && s.EducationalYearId == currentEducationalYear.Id
+                            );
+                        default:
+                            throw new Exception("Невідома роль");
+                    }
+                   
                 })
                .AuthorizeWith(AuthPolicies.Authenticated);
         }

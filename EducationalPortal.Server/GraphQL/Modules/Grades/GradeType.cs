@@ -2,6 +2,7 @@
 using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
+using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Users;
 using GraphQL;
 using GraphQL.Types;
@@ -24,7 +25,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
                    int page = context.GetArgument<int>("Page");
                    Guid gradeId = context.Source.Id;
                    return userRepository.GetOrDefault(s => s.CreatedAt, true, page, p => p.GradeId == gradeId);
-               });
+               })
+               .AuthorizeWith(AuthPolicies.Teacher);
         }
     }
 }

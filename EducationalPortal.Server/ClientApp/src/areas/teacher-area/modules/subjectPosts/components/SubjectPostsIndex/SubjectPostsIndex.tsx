@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {Card, message, Pagination, Space} from 'antd';
+import {Card, message, Pagination, Row, Space} from 'antd';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {SubjectPostsCreate} from '../SubjectPostsCreate/SubjectPostsCreate';
 import {Subject} from '../../../subjects/subjects.types';
@@ -89,7 +89,9 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     </Card>
                 ))}
                 {subject?.posts?.total > 0 &&
-                <Pagination defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>
+                <Row justify={'end'}>
+                    <Pagination defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>
+                </Row>
                 }
             </Space>
             <SubjectPostsCreate

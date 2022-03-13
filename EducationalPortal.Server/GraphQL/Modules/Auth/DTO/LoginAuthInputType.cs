@@ -10,11 +10,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth.DTO
     {
         public LoginAuthInputType()
         {
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("Login")
                 .Resolve(context => context.Source.Login);
             
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("Password")
                 .Resolve(context => context.Source.Password);
         }

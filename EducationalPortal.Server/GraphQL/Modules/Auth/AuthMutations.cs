@@ -53,27 +53,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                     };
                 });
             
-            Field<NonNullGraphType<AuthResponseType>, AuthResponse>()
-                .Name("ChangerPassword")
-                .Argument<NonNullGraphType<LoginAuthInputType>, LoginAuthInput>("LoginAuthInputType", "Argument for register User")
+            Field<BooleanGraphType, bool>()
+                .Name("ChangePassword")
+                .Argument<NonNullGraphType<ChangePasswordInputType>, ChangePassword>("ChangePasswordInputType", "Argument for change User password")
                 .ResolveAsync(async context =>
                 {
-                    List<UserModel> allUsers = usersRepository.Get().ToList();
-                    if (allUsers.Count > 0)
-                        throw new Exception("Ви не можете самостійно зареєструватися. Зверніться до адміністратора");
-
                     LoginAuthInput loginAuthInput = context.GetArgument<LoginAuthInput>("LoginAuthInputType");
-                    UserModel user = await usersRepository.CreateAsync(new UserModel
-                    {
-                        Login = loginAuthInput.Login,
-                        Password = loginAuthInput.Password,
-                        Role = UserRoleEnum.Administrator,
-                    });
-                    return new AuthResponse()
-                    {
-                        Token = authService.Authenticate(loginAuthInput),
-                        User = user,
-                    };
+                    return true;
                 });
         }
     }

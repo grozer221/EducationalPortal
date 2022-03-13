@@ -60,7 +60,7 @@ export const StudentsIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
-            render: (text: string, student) => (
+            render: (text, student) => (
                 // isAdministrator()
                 //     ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
                 //                   onRemove={() => onRemove(student?.id)}/>

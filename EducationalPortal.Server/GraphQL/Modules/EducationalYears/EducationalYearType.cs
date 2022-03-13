@@ -2,6 +2,7 @@
 using EducationalPortal.Server.Database.Models;
 using EducationalPortal.Server.Database.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
+using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Subjects;
 using GraphQL;
 using GraphQL.Types;
@@ -40,7 +41,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
                     int page = context.GetArgument<int>("Page");
                     Guid educationalYearId = context.Source.Id;
                     return subjectRepository.GetOrDefault(s => s.CreatedAt, true, page, s => s.EducationalYearId == educationalYearId);
-                });
+                })
+                .AuthorizeWith(AuthPolicies.Teacher);
         }
     }
 }

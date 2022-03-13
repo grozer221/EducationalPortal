@@ -1,4 +1,5 @@
-﻿using EducationalPortal.Server.GraphQL.Modules.Users;
+﻿using EducationalPortal.Server.Database.Models;
+using EducationalPortal.Server.GraphQL.Modules.Users;
 using GraphQL.Types;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth.DTO
     {
         public AuthResponseType()
         {
-            Field<UserType>()
+            Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("User")
                 .Resolve(context => context.Source.User);
 
-            Field<StringGraphType>()
+            Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("Token")
                 .Resolve(context => context.Source.Token);
         }

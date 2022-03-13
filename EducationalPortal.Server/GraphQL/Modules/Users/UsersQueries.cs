@@ -47,7 +47,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                                 || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
                             ));
                 })
-                .AuthorizeWith(AuthPolicies.Authenticated);
+                .AuthorizeWith(AuthPolicies.Teacher);
 
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("GetUser")
@@ -57,7 +57,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                     Guid id = context.GetArgument<Guid>("Id");
                     return usersRepository.GetById(id);
                 })
-                .AuthorizeWith(AuthPolicies.Authenticated);
+                .AuthorizeWith(AuthPolicies.Teacher);
         }
     }
 }

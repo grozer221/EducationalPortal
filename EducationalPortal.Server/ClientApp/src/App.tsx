@@ -19,11 +19,13 @@ import {client} from './gql/client';
 import {AppName, settingsActions} from './store/settings.slice';
 import {WithStudentRoleOrRender} from './hocs/WithStudentRoleOrRender';
 import {StudentLayout} from './areas/student-area/StudentLayout/StudentLayout';
+import {Error} from './components/Error/Error';
 
 export const App = () => {
     const dispatch = useAppDispatch();
     const [isMeDone, setMeDone] = useState(false);
     const [isGetSettingsDone, setIsGetSettingsDone] = useState(false);
+    const isAuth = useAppSelector(s => s.auth.isAuth);
 
     useEffect(() => {
         client.query<MeData, MeVars>({query: ME_QUERY})
@@ -37,7 +39,7 @@ export const App = () => {
 
         client.query<GetSettingsData, GetSettingsVars>({query: GET_SETTINGS_QUERY})
             .then(response => {
-                document.title = response.data.getSettings.find(s => s.name === AppName)?.value
+                document.title = response.data.getSettings.find(s => s.name === AppName)?.value;
                 dispatch(settingsActions.setSettings(response.data.getSettings));
                 setIsGetSettingsDone(true);
             })
@@ -56,12 +58,12 @@ export const App = () => {
         <Routes>
             <Route path="login" element={<LoginPage/>}/>
             <Route path="teacher/*" element={
-                <WithTeacherRoleOrRender render={<Navigate to={'/login'}/>}>
+                <WithTeacherRoleOrRender render={isAuth ? <Error statusCode={403}/> : <Navigate to={'/login'}/>}>
                     <TeacherLayout/>
                 </WithTeacherRoleOrRender>
             }/>
             <Route path="student/*" element={
-                <WithStudentRoleOrRender render={<Navigate to={'/login'}/>}>
+                <WithStudentRoleOrRender render={isAuth ? <Error statusCode={403}/> : <Navigate to={'/login'}/>}>
                     <StudentLayout/>
                 </WithStudentRoleOrRender>
             }/>

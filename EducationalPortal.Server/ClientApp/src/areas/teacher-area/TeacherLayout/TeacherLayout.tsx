@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Layout} from 'antd';
-import {Route, Routes} from 'react-router-dom';
+import {Navigate, Route, Routes} from 'react-router-dom';
 import {AppMenu} from '../components/AppMenu/AppMenu';
 import {AppBreadcrumb} from '../components/AppBreadcrumb/AppBreadcrumb';
 import {EducationalYearsLayout} from '../modules/educationalYears/EducationalYearsLayout/EducationalYearsLayout';
@@ -29,6 +29,7 @@ export const TeacherLayout: FC = () => {
                             <Route path={'students/*'} element={<StudentsLayout/>}/>
                             <Route path={'teachers/*'} element={<TeachersLayout/>}/>
                             <Route path={'settings/*'} element={<SettingsLayout/>}/>
+                            <Route path={'/'} element={<Navigate to={'subjects/my'}/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
                     </div>

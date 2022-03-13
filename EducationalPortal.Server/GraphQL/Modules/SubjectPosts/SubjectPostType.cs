@@ -31,14 +31,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
                .Resolve(context => usersRepository.GetByIdOrDefault(context.Source.TeacherId));
-            
-            //Field<NonNullGraphType<IdGraphType>, Guid?>()
-            //   .Name("SubjectId")
-            //   .Resolve(context => context.Source.SubjectId);
 
-            //Field<NonNullGraphType<SubjectType>, SubjectModel>()
-            //    .Name("Subject")
-            //    .Resolve(context => subjectRepository.GetById(context.Source.SubjectId));
+            Field<NonNullGraphType<IdGraphType>, Guid?>()
+               .Name("SubjectId")
+               .Resolve(context => context.Source.SubjectId);
+
+            Field<NonNullGraphType<SubjectType>, SubjectModel>()
+                .Name("Subject")
+                .Resolve(context => subjectRepository.GetById(context.Source.SubjectId));
         }
     }
     public class PostTypeType : EnumerationGraphType<PostType>
