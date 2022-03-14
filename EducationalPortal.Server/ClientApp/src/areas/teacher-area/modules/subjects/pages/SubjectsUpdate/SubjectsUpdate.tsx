@@ -102,7 +102,7 @@ export const SubjectsUpdate = () => {
             },
         })
             .then(response => {
-                navigate('../');
+                navigate(-1);
             })
             .catch(error => {
                 message.error(error.message);

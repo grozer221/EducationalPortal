@@ -4,7 +4,7 @@ import {Grade} from './grades.types';
 import {GRADE_WITH_STUDENTS_FRAGMENT} from '../users/users.fragments';
 
 export type GetGradesData = { getGrades: getGrades }
-export type getGrades = { entities: Grade[], total: number }
+export type getGrades = { entities: Grade[], total: number, pageSize: number }
 
 export type GetGradesVars = { page: number, like: string }
 
@@ -16,6 +16,7 @@ export const GET_GRADES_QUERY = gql`
                 ...GradeFragment
             }
             total
+            pageSize
         }
     }
 `;

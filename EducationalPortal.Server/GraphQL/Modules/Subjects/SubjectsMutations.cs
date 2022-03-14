@@ -16,7 +16,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsMutations : ObjectGraphType, IMutationMarker
     {
-        public SubjectsMutations(GradeRepository gradeRepository, SubjectRepository subjectsRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
+        public SubjectsMutations(SubjectRepository subjectRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("CreateSubject")
@@ -28,7 +28,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     if(subject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == currentTeacherId))
                         throw new Exception("Ви не можете надати собі права для створення постів");
                     subject.TeacherId = currentTeacherId;
-                    return await subjectsRepository.CreateAsync(subject);
+                    return await subjectRepository.CreateAsync(subject);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -43,14 +43,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                        typeof(UserRoleEnum),
                        httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
-                    SubjectModel oldSubject = subjectsRepository.GetById(newSubject.Id);
+                    SubjectModel oldSubject = subjectRepository.GetById(newSubject.Id);
                     if (currentTeacherId != oldSubject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception("Ви не маєте прав на редагування данного предмету");
 
                     if (newSubject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == oldSubject.TeacherId))
                         throw new Exception("Ви не можете надати собі права для створення постів");
 
-                    return await subjectsRepository.UpdateAsync(newSubject);
+                    return await subjectRepository.UpdateAsync(newSubject);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
@@ -60,7 +60,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .ResolveAsync(async (context) =>
                {
                    Guid id = context.GetArgument<Guid>("Id");
-                   SubjectModel subject = subjectsRepository.GetById(id);
+                   SubjectModel subject = subjectRepository.GetById(id);
                    Guid currentTeacherId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
                    UserRoleEnum currentTeacherRole = (UserRoleEnum)Enum.Parse(
                       typeof(UserRoleEnum),
@@ -68,7 +68,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                    );
                    if (currentTeacherId != subject.TeacherId && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception("Ви не маєте прав на видалення данного предмету");
-                   await subjectsRepository.RemoveAsync(id);
+                   await subjectRepository.RemoveAsync(id);
                    return true;
                })
                .AuthorizeWith(AuthPolicies.Teacher);

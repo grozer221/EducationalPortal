@@ -17,7 +17,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsQueries : ObjectGraphType, IQueryMarker
     {
-        public SubjectsQueries(SubjectRepository subjectsRepository, UserRepository userRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
+        public SubjectsQueries(SubjectRepository subjectRepository, UserRepository userRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("GetSubject")
@@ -25,7 +25,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .Resolve(context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return subjectsRepository.GetById(id);
+                    return subjectRepository.GetById(id);
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 
@@ -38,7 +38,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
                     EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
-                    return subjectsRepository.Get(s => s.CreatedAt, true, page, s => 
+                    return subjectRepository.Get(s => s.CreatedAt, true, page, s => 
                         s.EducationalYearId == currentEducationalYear.Id
                         && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
                     );
@@ -63,17 +63,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     {
                         case UserRoleEnum.Student:
                             UserModel currentUser = userRepository.GetById(currentUserId);
-                            return subjectsRepository.Get(s => s.CreatedAt, true, page,
+                            return subjectRepository.Get(s => s.CreatedAt, true, page,
                                 s => s.GradesHaveAccessRead.Any(g => g.Id == currentUser.GradeId)
                                 && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
-                                && s.EducationalYearId == currentEducationalYear.Id
+                                && s.EducationalYearId == currentEducationalYear.Id,
+                                s => s.GradesHaveAccessRead
                             );
                         case UserRoleEnum.Teacher:
                         case UserRoleEnum.Administrator:
-                            return subjectsRepository.Get(s => s.CreatedAt, true, page,
+                            return subjectRepository.Get(s => s.CreatedAt, true, page,
                                 s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
                                 && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
-                                && s.EducationalYearId == currentEducationalYear.Id
+                                && s.EducationalYearId == currentEducationalYear.Id,
+                                s => s.TeachersHaveAccessCreatePosts
                             );
                         default:
                             throw new Exception("Невідома роль");

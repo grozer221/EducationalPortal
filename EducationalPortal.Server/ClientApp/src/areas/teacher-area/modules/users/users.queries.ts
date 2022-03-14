@@ -27,7 +27,7 @@ export const GET_USER_QUERY = gql`
 `;
 
 export type GetUsersData = { getUsers: getUsersType }
-export type getUsersType = { entities: User[], total: number }
+export type getUsersType = { entities: User[], total: number, pageSize: number }
 
 export type GetUsersVars = { page: number, roles: Role[], like: string }
 
@@ -39,12 +39,13 @@ export const GET_USERS_QUERY = gql`
                 ...UserFragment
             }
             total
+            pageSize
         }
     }
 `;
 
 export type GetUsersWithGradeData = { getUsers: getUsersWithGradeType }
-export type getUsersWithGradeType = { entities: User[], total: number }
+export type getUsersWithGradeType = { entities: User[], total: number, pageSize: number }
 
 export type GetUsersWithGradeVars = { page: number, roles: Role[], like: string }
 
@@ -56,6 +57,7 @@ export const GET_USERS_WITH_GRADE_QUERY = gql`
                 ...UserWithGradeFragment
             }
             total
+            pageSize
         }
     }
 `;

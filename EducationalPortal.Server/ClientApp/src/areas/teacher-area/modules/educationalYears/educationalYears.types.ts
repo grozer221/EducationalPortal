@@ -1,4 +1,4 @@
-import {Subject} from '../subjects/subjects.types';
+import {getSubjectsType} from '../subjects/subjects.queries';
 
 export type EducationalYear = {
     id: string,
@@ -8,8 +8,5 @@ export type EducationalYear = {
     isCurrent: boolean,
     createdAt: string,
     updatedAt: string,
-    subjects: {
-        entities: Subject[],
-        total: number,
-    },
+    subjects: getSubjectsType,
 }

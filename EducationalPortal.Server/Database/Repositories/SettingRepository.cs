@@ -42,9 +42,9 @@ namespace EducationalPortal.Server.Database.Repositories
             }
             else
             {
-                newSetting.Id = checkUniqueSettingName[0].Id;
-                newSetting.CreatedAt = checkUniqueSettingName[0].CreatedAt;
-                await base.UpdateAsync(newSetting);
+                checkUniqueSettingName[0].Id = newSetting.Id;
+                checkUniqueSettingName[0].CreatedAt = newSetting.CreatedAt;
+                await _context.SaveChangesAsync();
             }
             return newSetting;
         }

@@ -48,11 +48,16 @@ namespace EducationalPortal.Server.Database.Repositories
             if (checkUniqeUserLogin.Count > 0)
                 throw new Exception("Користувач з введеним Логіном уже існує");
 
-            UserModel oldUser = GetById(newUser.Id);
-            newUser.CreatedAt = oldUser.CreatedAt;
-            newUser.Password = oldUser.Password;
-            newUser.IsEmailConfirmed = oldUser.IsEmailConfirmed;
-            await base.UpdateAsync(newUser);
+            UserModel addedUser = GetById(newUser.Id);
+            addedUser.FirstName = newUser.FirstName;
+            addedUser.LastName = newUser.LastName;
+            addedUser.MiddleName = newUser.MiddleName;
+            addedUser.Email = newUser.Email;
+            addedUser.Login = newUser.Login;
+            addedUser.DateOfBirth = newUser.DateOfBirth;
+            addedUser.Role = newUser.Role;
+            addedUser.GradeId = newUser.GradeId;
+            await _context.SaveChangesAsync();
             return newUser;
         }
 

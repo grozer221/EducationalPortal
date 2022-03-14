@@ -24,6 +24,11 @@ namespace EducationalPortal.Server.Database
         public DbSet<SubjectPostModel> SubjectPost { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<EducationalYearModel>(y => y.HasIndex(e => e.Name).IsUnique());

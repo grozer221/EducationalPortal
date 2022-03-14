@@ -16,14 +16,14 @@ namespace EducationalPortal.Server.Database.Repositories
             _usersRepository = usersRepository;
         }
         
-        public async Task<SubjectPostModel> UpdateAsync(SubjectPostModel subjectPost)
+        public async Task<SubjectPostModel> UpdateAsync(SubjectPostModel newSubjectPost)
         {
-            SubjectPostModel oldSubjectPost = GetById(subjectPost.Id);
-            subjectPost.SubjectId = oldSubjectPost.SubjectId;
-            subjectPost.TeacherId = oldSubjectPost.TeacherId;
-            subjectPost.CreatedAt = oldSubjectPost.CreatedAt;
-            await base.UpdateAsync(subjectPost);
-            return subjectPost;
+            SubjectPostModel addedSubjectPost = GetById(newSubjectPost.Id);
+            addedSubjectPost.Title = newSubjectPost.Title;
+            addedSubjectPost.Text = newSubjectPost.Text;
+            addedSubjectPost.Type = newSubjectPost.Type;
+            await _context.SaveChangesAsync();
+            return newSubjectPost;
         }
     }
 }

@@ -41,11 +41,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<ListGraphType<GradeType>, IEnumerable<GradeModel>?>()
                .Name("GradesHaveAccessRead")
-               .Resolve(context => subjectRepository.GetByIdWithGradesHaveAccessRead(context.Source.Id)?.GradesHaveAccessRead);
+               .Resolve(context => subjectRepository.GetById(context.Source.Id, s => s.GradesHaveAccessRead)?.GradesHaveAccessRead);
             
             Field<ListGraphType<UserType>, IEnumerable<UserModel>?>()
                .Name("TeachersHaveAccessCreatePosts")
-               .Resolve(context => subjectRepository.GetByIdWithTeachersHaveAccessCreatePosts(context.Source.Id)?.TeachersHaveAccessCreatePosts);
+               .Resolve(context => subjectRepository.GetById(context.Source.Id, s => s.TeachersHaveAccessCreatePosts)?.TeachersHaveAccessCreatePosts);
 
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("TeacherId")
@@ -53,10 +53,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .Resolve(context => 
-               {
-                   return usersRepository.GetByIdOrDefault(context.Source.TeacherId);
-               });
+               .Resolve(context => usersRepository.GetByIdOrDefault(context.Source.TeacherId));
             
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("EducationalYearId")
@@ -64,10 +61,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                .Name("EducationalYear")
-               .Resolve(context =>
-               {
-                   return educationalYearRepository.GetByIdOrDefault(context.Source.EducationalYearId);
-               });
+               .Resolve(context => educationalYearRepository.GetByIdOrDefault(context.Source.EducationalYearId));
         }
     }
 }

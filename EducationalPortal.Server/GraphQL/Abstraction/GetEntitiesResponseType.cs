@@ -17,6 +17,10 @@ namespace EducationalPortal.Server.GraphQL.Abstraction
             Field<NonNullGraphType<IntGraphType>, int>()
                 .Name("Total")
                 .Resolve(context => context.Source.Total);
+            
+            Field<NonNullGraphType<IntGraphType>, int>()
+                .Name("PageSize")
+                .Resolve(context => context.Source.PageSize);
         }
     }
 }

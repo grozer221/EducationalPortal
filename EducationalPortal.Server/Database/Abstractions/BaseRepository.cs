@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,58 +18,72 @@ namespace EducationalPortal.Server.Database.Abstractions
             _context = context;
         }
 
-        public virtual T GetById(Guid? id)
+        public virtual T GetById(Guid? id, params Expression<Func<T, object>>[] includes)
         {
-            T? entity = GetByIdOrDefault(id);
+            T? entity = GetByIdOrDefault(id, includes);
             if (entity == null)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entity;
         }
         
-        public virtual T GetByIdOrDefault(Guid? id)
+        public virtual T? GetByIdOrDefault(Guid? id, params Expression<Func<T, object>>[] includes)
         {
-            return _context.Set<T>().AsNoTracking().FirstOrDefault(e => e.Id == id);
+            return includes.Aggregate(
+              _context.Set<T>().AsQueryable(),
+              (current, include) => current.Include(include)
+            ).FirstOrDefault(e => e.Id == id);
         }
 
-        public virtual IEnumerable<T> Get()
+        public virtual IEnumerable<T> Get(params Expression<Func<T, object>>[] includes)
         {
-            IEnumerable<T> entities = GetOrDefault();
+            IEnumerable<T> entities = GetOrDefault(includes);
             if (entities == null)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
         }
         
-        public virtual IEnumerable<T> GetOrDefault()
+        public virtual IEnumerable<T> GetOrDefault(params Expression<Func<T, object>>[] includes)
         {
-            return _context.Set<T>().AsNoTracking();
+            return includes.Aggregate(
+               _context.Set<T>().AsQueryable(),
+               (current, include) => current.Include(include)
+            );
         }
         
-        public virtual IEnumerable<T> Get(Func<T, bool> condition)
+        public virtual IEnumerable<T> Get(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
         {
-            IEnumerable<T> entities = GetOrDefault(condition);
+            IEnumerable<T> entities = GetOrDefault(condition, includes);
             if (entities == null || entities.Count() == 0)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
         }
         
-        public virtual IEnumerable<T> GetOrDefault(Func<T, bool> condition)
+        public virtual IEnumerable<T> GetOrDefault(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
         {
-            return _context.Set<T>().AsNoTracking().Where(condition); 
+            return includes.Aggregate(
+                _context.Set<T>().AsQueryable(),
+                (current, include) => current.Include(include)
+            ).Where(condition);
         }
 
-        public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
+        public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
         {
-            GetEntitiesResponse<T> getEntitiesResponse = GetOrDefault(predicate, descending, page, condition);
+            GetEntitiesResponse<T> getEntitiesResponse = GetOrDefault(predicate, descending, page, condition, includes);
             if (getEntitiesResponse == null || getEntitiesResponse.Total == 0)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return getEntitiesResponse;
         }
         
-        public virtual GetEntitiesResponse<T> GetOrDefault(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null)
+        public virtual GetEntitiesResponse<T> GetOrDefault(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
         {
+            IQueryable<T>? includedQuery = includes.Aggregate(
+                _context.Set<T>().AsQueryable(),
+                (current, include) => current.Include(include)
+            );
+
             IEnumerable<T> entities = descending
-                ? _context.Set<T>().AsNoTracking().OrderByDescending(predicate)
-                : _context.Set<T>().AsNoTracking().OrderBy(predicate);
+                ? includedQuery.OrderByDescending(predicate)
+                : includedQuery.OrderBy(predicate);
 
             if (condition != null)
                 entities = entities.Where(condition);
@@ -83,6 +98,7 @@ namespace EducationalPortal.Server.Database.Abstractions
             {
                 Entities = entities,
                 Total = total,
+                PageSize = take,
             };
         }
 

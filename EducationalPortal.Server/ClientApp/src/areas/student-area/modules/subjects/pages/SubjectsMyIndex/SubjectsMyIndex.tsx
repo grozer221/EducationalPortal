@@ -85,6 +85,7 @@ export const SubjectsMyIndex = () => {
                 dataSource={getSubjectsOptions.data?.getMySubjects.entities}
                 columns={columns}
                 pagination={{
+                    defaultPageSize: getSubjectsOptions.data?.getMySubjects.pageSize,
                     total: getSubjectsOptions.data?.getMySubjects.total,
                     onChange: page => setSearchParams({page: page.toString()}),
                 }}

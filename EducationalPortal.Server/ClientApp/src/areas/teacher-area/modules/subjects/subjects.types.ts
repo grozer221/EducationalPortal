@@ -12,6 +12,7 @@ export type Subject = {
     posts: {
         entities: SubjectPost[],
         total: number,
+        pageSize: number,
     },
     educationalYearId: string,
     educationalYear: EducationalYear,

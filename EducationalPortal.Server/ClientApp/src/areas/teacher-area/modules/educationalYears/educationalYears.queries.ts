@@ -3,7 +3,7 @@ import {EDUCATIONAL_YEAR_FRAGMENT, EDUCATIONAL_YEAR_WITH_SUBJECTS_FRAGMENT} from
 import {EducationalYear} from './educationalYears.types';
 
 export type GetEducationalYearsData = { getEducationalYears: getEducationalYearsType }
-export type getEducationalYearsType = { entities: EducationalYear[], total: number }
+export type getEducationalYearsType = { entities: EducationalYear[], total: number, pageSize: number }
 
 export type GetEducationalYearsVars = { page: number, like: string }
 
@@ -15,6 +15,7 @@ export const GET_EDUCATIONAL_YEARS_QUERY = gql`
                 ...EducationalYearFragment
             }
             total
+            pageSize
         }
     }
 `;

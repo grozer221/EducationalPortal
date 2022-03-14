@@ -107,6 +107,7 @@ export const TeachersIndex = () => {
                 dataSource={getTeachersOptions.data?.getUsers.entities}
                 columns={columns}
                 pagination={{
+                    defaultPageSize: getTeachersOptions.data?.getUsers.pageSize,
                     total: getTeachersOptions.data?.getUsers.total,
                     onChange: page => setSearchParams({page: page.toString()}),
                 }}

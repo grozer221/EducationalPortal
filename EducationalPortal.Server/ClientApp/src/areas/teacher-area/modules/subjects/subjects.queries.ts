@@ -16,7 +16,7 @@ export const GET_SUBJECT_QUERY = gql`
 
 
 export type GetSubjectsData = { getSubjects: getSubjectsType }
-export type getSubjectsType = { entities: Subject[], total: number }
+export type getSubjectsType = { entities: Subject[], total: number, pageSize: number }
 
 export type GetSubjectsVars = { page: number, like: string }
 
@@ -28,6 +28,7 @@ export const GET_SUBJECTS_QUERY = gql`
                 ...SubjectFragment
             }
             total
+            pageSize
         }
     }
 `;
@@ -47,7 +48,7 @@ export const GET_SUBJECT_WITH_POSTS_QUERY = gql`
 
 
 export type GetMySubjectsData = { getMySubjects: getMySubjectsType }
-export type getMySubjectsType = { entities: Subject[], total: number }
+export type getMySubjectsType = { entities: Subject[], total: number, pageSize: number }
 
 export type GetMySubjectsVars = { page: number, like: string }
 
@@ -59,6 +60,7 @@ export const GET_MY_SUBJECTS_QUERY = gql`
                 ...SubjectFragment
             }
             total
+            pageSize
         }
     }
 `;

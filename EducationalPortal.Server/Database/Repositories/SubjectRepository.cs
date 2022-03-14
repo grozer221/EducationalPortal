@@ -24,110 +24,56 @@ namespace EducationalPortal.Server.Database.Repositories
             _userRepository = userRepository;
         }
 
-        public override GetEntitiesResponse<SubjectModel> Get(Func<SubjectModel, object> predicate, bool descending, int page, Func<SubjectModel, bool>? condition = null)
-        {
-
-            IEnumerable<SubjectModel> entities = descending
-                ? _context.Set<SubjectModel>().Include(s => s.TeachersHaveAccessCreatePosts).Include(s => s.GradesHaveAccessRead).AsNoTracking().OrderByDescending(predicate)
-                : _context.Set<SubjectModel>().Include(s => s.TeachersHaveAccessCreatePosts).Include(s => s.GradesHaveAccessRead).AsNoTracking().OrderBy(predicate);
-
-            if (condition != null)
-                entities = entities.Where(condition);
-
-            int total = entities.Count();
-
-            int take = 20;
-            int skip = (page - 1) * take;
-            entities = entities.Skip(skip).Take(take);
-
-            return new GetEntitiesResponse<SubjectModel>
-            {
-                Entities = entities,
-                Total = total,
-            };
-        }
-
         public override async Task<SubjectModel> CreateAsync(SubjectModel subject)
         { 
             Guid currentEducationalYearId = _educationalYearRepository.GetCurrent().Id;
             subject.EducationalYearId = currentEducationalYearId;
             await base.CreateAsync(subject);
-            if (subject.GradesHaveAccessReadIds != null)
+            _context.Entry(subject).State = EntityState.Detached;
+
+            SubjectModel addedSubject = GetById(subject.Id, s => s.GradesHaveAccessRead, s => s.TeachersHaveAccessCreatePosts);
+            foreach (var gradeId in subject.GradesHaveAccessReadIds.Distinct())
             {
-                SubjectModel addedSubject = GetByIdWithGradesHaveAccessRead(subject.Id);
-                foreach (var gradeId in subject.GradesHaveAccessReadIds.Distinct())
-                {
-                    GradeModel grade = _gradeRepository.GetById(gradeId);
-                    addedSubject.GradesHaveAccessRead.Add(grade);
-                }
-                await UpdateAsync(addedSubject);
+                GradeModel grade = _gradeRepository.GetById(gradeId);
+                addedSubject.GradesHaveAccessRead.Add(grade);
             }
-            if (subject.TeachersHaveAccessCreatePostsIds != null)
+            foreach (var teacherId in subject.TeachersHaveAccessCreatePostsIds.Distinct())
             {
-                SubjectModel addedSubject = GetByIdWithTeachersHaveAccessCreatePosts(subject.Id);
-                foreach (var teacherId in subject.TeachersHaveAccessCreatePostsIds.Distinct())
-                {
-                    UserModel teacher = _userRepository.GetById(teacherId);
-                    addedSubject.TeachersHaveAccessCreatePosts.Add(teacher);
-                }
-                await UpdateAsync(addedSubject);
+                UserModel teacher = _userRepository.GetById(teacherId);
+                addedSubject.TeachersHaveAccessCreatePosts.Add(teacher);
             }
-            return subject;
+            await base.UpdateAsync(addedSubject);
+            return addedSubject;
         }
 
         public override async Task<SubjectModel> UpdateAsync(SubjectModel newSubject)
         {
-            SubjectModel oldSubject = GetById(newSubject.Id);
-            newSubject.TeacherId = oldSubject.TeacherId;
-            newSubject.EducationalYearId = oldSubject.EducationalYearId;
-            newSubject.CreatedAt = oldSubject.CreatedAt;
-            await base.UpdateAsync(newSubject);
-            SubjectModel subjectWithGradesHaveAccessRead = GetByIdWithGradesHaveAccessRead(newSubject.Id);
-            if (newSubject.GradesHaveAccessReadIds != null)
-            {
-                subjectWithGradesHaveAccessRead.GradesHaveAccessRead = subjectWithGradesHaveAccessRead.GradesHaveAccessRead.Where(g => newSubject.GradesHaveAccessReadIds.Any(gId => gId == g.Id)).ToList();
-                foreach (var gradeId in newSubject.GradesHaveAccessReadIds.Distinct())
-                {
-                    if (!subjectWithGradesHaveAccessRead.GradesHaveAccessRead.Any(g => g.Id == gradeId))
-                    {
-                        GradeModel grade = _gradeRepository.GetById(gradeId);
-                        subjectWithGradesHaveAccessRead.GradesHaveAccessRead.Add(grade);
-                    }
-                }
-                await _context.SaveChangesAsync();
-            }
-            
-            SubjectModel subjectWithTeachersHaveAccessCreatePosts = GetByIdWithTeachersHaveAccessCreatePosts(newSubject.Id);
-            if (newSubject.TeachersHaveAccessCreatePostsIds != null)
-            {
-                subjectWithTeachersHaveAccessCreatePosts.TeachersHaveAccessCreatePosts = subjectWithTeachersHaveAccessCreatePosts.TeachersHaveAccessCreatePosts.Where(t => newSubject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == t.Id)).ToList();
-                foreach (var teacherId in newSubject.TeachersHaveAccessCreatePostsIds.Distinct())
-                {
-                    if (!subjectWithTeachersHaveAccessCreatePosts.TeachersHaveAccessCreatePosts.Any(t => t.Id == teacherId))
-                    {
-                        UserModel teacher = _userRepository.GetById(teacherId);
-                        subjectWithTeachersHaveAccessCreatePosts.TeachersHaveAccessCreatePosts.Add(teacher);
-                    }
-                }
-                await _context.SaveChangesAsync();
-            }
-            return newSubject;
-        }
+            SubjectModel addedSubject = GetById(newSubject.Id, s => s.GradesHaveAccessRead, s => s.TeachersHaveAccessCreatePosts);
+            addedSubject.Name = newSubject.Name;
+            addedSubject.Link = newSubject.Link;
 
-        public SubjectModel GetByIdWithGradesHaveAccessRead(Guid? id)
-        {
-            SubjectModel? subject = _context.Subjects.Include(s => s.GradesHaveAccessRead).SingleOrDefault(s => s.Id == id);
-            if (subject == null)
-                throw new Exception("Не знайдено предмет");
-            return subject;
-        }
-        
-        public SubjectModel GetByIdWithTeachersHaveAccessCreatePosts(Guid? id)
-        {
-            SubjectModel? subject = _context.Subjects.Include(s => s.TeachersHaveAccessCreatePosts).SingleOrDefault(s => s.Id == id);
-            if (subject == null)
-                throw new Exception("Не знайдено предмет");
-            return subject;
+            addedSubject.GradesHaveAccessRead = addedSubject.GradesHaveAccessRead.Where(g => newSubject.GradesHaveAccessReadIds.Any(gId => gId == g.Id)).ToList();
+            foreach (var gradeId in newSubject.GradesHaveAccessReadIds.Distinct())
+            {
+                if (!addedSubject.GradesHaveAccessRead.Any(g => g.Id == gradeId))
+                {
+                    GradeModel grade = _gradeRepository.GetById(gradeId);
+                    addedSubject.GradesHaveAccessRead.Add(grade);
+                }
+            }
+
+            addedSubject.TeachersHaveAccessCreatePosts = addedSubject.TeachersHaveAccessCreatePosts.Where(t => newSubject.TeachersHaveAccessCreatePostsIds.Any(tId => tId == t.Id)).ToList();
+            foreach (var teacherId in newSubject.TeachersHaveAccessCreatePostsIds.Distinct())
+            {
+                if (!addedSubject.TeachersHaveAccessCreatePosts.Any(t => t.Id == teacherId))
+                {
+                    UserModel teacher = _userRepository.GetById(teacherId);
+                    addedSubject.TeachersHaveAccessCreatePosts.Add(teacher);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return addedSubject;
         }
     }
 }

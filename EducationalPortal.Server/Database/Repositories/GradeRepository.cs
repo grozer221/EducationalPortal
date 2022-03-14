@@ -26,9 +26,9 @@ namespace EducationalPortal.Server.Database.Repositories
             List<GradeModel>? checkUniqueGradeName = GetOrDefault(e => e.Name == newGrade.Name && e.Id != newGrade.Id).ToList();
             if (checkUniqueGradeName.Count > 0 && checkUniqueGradeName[0].Id != newGrade.Id)
                 throw new Exception("Клас з даною назвою уже існує");
-            GradeModel oldGrade = GetById(newGrade.Id);
-            newGrade.CreatedAt = oldGrade.CreatedAt;
-            await base.UpdateAsync(newGrade);
+            GradeModel addedGrade = GetById(newGrade.Id);
+            addedGrade.Name = newGrade.Name;
+            await _context.SaveChangesAsync();
             return newGrade;
         }
     }

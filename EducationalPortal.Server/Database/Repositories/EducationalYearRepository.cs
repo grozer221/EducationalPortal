@@ -33,19 +33,22 @@ namespace EducationalPortal.Server.Database.Repositories
             if (checkUniqeYear.Count > 0 && checkUniqeYear[0].Id != newEducationalYear.Id)
                 throw new Exception("Навчальний рік з данним ім'ям уже існує");
 
-            EducationalYearModel oldEducationalYear = GetById(newEducationalYear.Id);
-            newEducationalYear.CreatedAt = oldEducationalYear.CreatedAt;
+            EducationalYearModel addedEducationalYear = GetById(newEducationalYear.Id);
+            addedEducationalYear.Name = newEducationalYear.Name;
+            addedEducationalYear.DateStart = newEducationalYear.DateStart;
+            addedEducationalYear.DateEnd = newEducationalYear.DateEnd;
+            addedEducationalYear.IsCurrent = newEducationalYear.IsCurrent;
             if (newEducationalYear.IsCurrent)
             {
                 List<EducationalYearModel>? currentYears = GetOrDefault(y => y.IsCurrent == true && y.Id != newEducationalYear.Id).ToList();
                 foreach(var currentYear in currentYears)
                 {
                     currentYear.IsCurrent = false;
-                    await base.UpdateAsync(currentYear);
                 }
+                await _context.SaveChangesAsync();
             }
-            await base.UpdateAsync(newEducationalYear);
-            return newEducationalYear;
+            await _context.SaveChangesAsync();
+            return addedEducationalYear;
         }
 
         public EducationalYearModel GetCurrent()

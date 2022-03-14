@@ -107,6 +107,7 @@ export const EducationalYearsView = () => {
                 dataSource={getEducationalYearQuery.data?.getEducationalYear?.subjects.entities}
                 columns={columns}
                 pagination={{
+                    defaultPageSize: getEducationalYearQuery.data?.getEducationalYear.subjects.pageSize,
                     total: getEducationalYearQuery.data?.getEducationalYear?.subjects.total,
                     onChange: setSubjectsPage,
                 }}

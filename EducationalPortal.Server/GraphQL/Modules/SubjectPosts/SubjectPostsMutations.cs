@@ -24,7 +24,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                         typeof(UserRoleEnum),
                         httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
-                    SubjectModel subject = subjectRepository.GetByIdWithTeachersHaveAccessCreatePosts(subjectPost.SubjectId);
+                    SubjectModel subject = subjectRepository.GetById(subjectPost.SubjectId, s => s.TeachersHaveAccessCreatePosts);
                     if (subject.TeacherId != currentTeacherId && !subject.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentTeacherId) && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception($"Ви не маєте прав на додавання посту для даного предмета");
                     subjectPost.TeacherId = currentTeacherId;
@@ -44,7 +44,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                       httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
                     SubjectPostModel oldSubjectPost = subjectPostRepository.GetById(newSubjectPost.Id);
-                    SubjectModel subject = subjectRepository.GetByIdWithTeachersHaveAccessCreatePosts(oldSubjectPost.SubjectId);
+                    SubjectModel subject = subjectRepository.GetById(oldSubjectPost.SubjectId, s => s.TeachersHaveAccessCreatePosts);
                     if (subject.TeacherId != currentTeacherId && !subject.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentTeacherId) && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception($"Ви не маєте прав на редагування посту для даного предмета");
                     return await subjectPostRepository.UpdateAsync(newSubjectPost);
@@ -63,7 +63,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                      typeof(UserRoleEnum),
                      httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
                     );
-                   SubjectModel subject = subjectRepository.GetByIdWithTeachersHaveAccessCreatePosts(subjectPost.SubjectId);
+                   SubjectModel subject = subjectRepository.GetById(subjectPost.SubjectId, s => s.TeachersHaveAccessCreatePosts);
                    if (subject.TeacherId != currentTeacherId && !subject.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentTeacherId) && currentTeacherRole != UserRoleEnum.Administrator)
                         throw new Exception($"Ви не маєте прав на видалення даного посту");
                    await subjectPostRepository.RemoveAsync(id);

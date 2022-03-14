@@ -98,6 +98,7 @@ export const GradesIndex = () => {
                 dataSource={getGradesOptions.data?.getGrades.entities}
                 columns={columns}
                 pagination={{
+                    defaultPageSize: getGradesOptions.data?.getGrades.pageSize,
                     total: getGradesOptions.data?.getGrades.total,
                     onChange: page => setSearchParams({page: page.toString()}),
                 }}
