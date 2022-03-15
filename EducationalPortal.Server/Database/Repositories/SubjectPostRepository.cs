@@ -23,7 +23,7 @@ namespace EducationalPortal.Server.Database.Repositories
             addedSubjectPost.Text = newSubjectPost.Text;
             addedSubjectPost.Type = newSubjectPost.Type;
             await _context.SaveChangesAsync();
-            return newSubjectPost;
+            return addedSubjectPost;
         }
     }
 }

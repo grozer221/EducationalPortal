@@ -49,7 +49,6 @@ export const App = () => {
     }, []);
 
     const settings = useAppSelector(s => s.settings.settings);
-    console.log(settings);
 
     if (!isMeDone || !isGetSettingsDone)
         return <Loading/>;

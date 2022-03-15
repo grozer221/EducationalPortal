@@ -18,10 +18,12 @@ namespace EducationalPortal.Server.Database
         }
 
         public DbSet<EducationalYearModel> EducationalYears { get; set; }
+        public DbSet<FileModel> Files { get; set; }
         public DbSet<GradeModel> Grades { get; set; }
+        public DbSet<HomeworkModel> Homeworks { get; set; }
         public DbSet<SettingModel> Settings { get; set; }
         public DbSet<SubjectModel> Subjects { get; set; }
-        public DbSet<SubjectPostModel> SubjectPost { get; set; }
+        public DbSet<SubjectPostModel> SubjectPosts { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +38,9 @@ namespace EducationalPortal.Server.Database
 
             builder.Entity<GradeModel>(g => g.HasIndex(e => e.Name).IsUnique());
             builder.Entity<GradeModel>().HasMany(g => g.Students).WithOne(s => s.Grade).OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<HomeworkModel>().HasOne(h => h.Student).WithMany(s => s.Homeworks).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<HomeworkModel>().HasOne(h => h.SubjectPost).WithMany(s => s.Homeworks).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SettingModel>(s => s.HasIndex(s => s.Name).IsUnique());
 

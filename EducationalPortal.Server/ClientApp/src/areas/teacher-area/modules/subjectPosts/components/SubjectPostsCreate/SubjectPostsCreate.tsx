@@ -28,7 +28,6 @@ export const SubjectPostsCreate: FC<Props> = ({
     const handleOk = async () => {
         try {
             await form.validateFields();
-            console.log(title, text, type, subjectId);
             createSubjectPostMutation({
                 variables: {
                     createSubjectPostInputType: {

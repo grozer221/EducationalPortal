@@ -7,7 +7,7 @@ import Title from 'antd/es/typography/Title';
 import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../users.queries';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
-import {roleToTag} from '../../../../../../convertors/toTagConvertor';
+import {roleToTag} from '../../../../../../convertors/enumToTagConvertor';
 
 export const TeachersView = () => {
     const params = useParams();

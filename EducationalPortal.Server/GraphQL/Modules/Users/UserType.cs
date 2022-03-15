@@ -69,7 +69,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                { 
                    int page = context.GetArgument<int>("Page");
                    Guid userId = context.Source.Id;
-                   return subjectRepository.GetOrDefault(s => s.CreatedAt, true, page, s => s.TeacherId == userId);
+                   return subjectRepository.GetOrDefault(s => s.CreatedAt, Order.Descend, page, s => s.TeacherId == userId);
                })
                .AuthorizeWith(AuthPolicies.Teacher);
         }

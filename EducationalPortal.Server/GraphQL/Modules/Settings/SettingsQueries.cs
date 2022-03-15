@@ -21,7 +21,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Settings
                     return settingRepository.GetByName(name);
                 });
 
-            Field<NonNullGraphType<ListGraphType<SettingType>>, IEnumerable<SettingModel>>()
+            Field<NonNullGraphType<ListGraphType<SettingType>>, List<SettingModel>>()
                 .Name("GetSettings")
                 .Resolve(context => settingRepository.Get());
         }

@@ -25,7 +25,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    return educationalYearRepository.Get(y => y.CreatedAt, true, page, y => y.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
+                    return educationalYearRepository.Get(y => y.CreatedAt, Order.Descend, page, y => y.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 

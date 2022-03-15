@@ -8,11 +8,10 @@ import {
 import {DatePicker, Form, Input, message} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
 import {ukDateFormat} from '../../../../../../utils/formats';
+import 'moment/locale/uk';
 
 const {RangePicker} = DatePicker;
 
@@ -60,7 +59,7 @@ export const EducationalYearsCreate = () => {
                 label="Дата"
                 rules={[{required: true, message: 'Введіть дату початку та дату кінця!'}]}
             >
-                <RangePicker locale={locale} format={ukDateFormat}/>
+                <RangePicker format={ukDateFormat}/>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createEducationalYearMutationOption.loading} isSubmit={true}/>

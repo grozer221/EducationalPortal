@@ -5,16 +5,14 @@ import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {CREATE_USER_MUTATION, CreateUserData, CreateUserVars} from '../../users.mutations';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import Search from 'antd/es/input/Search';
 import debounce from 'lodash.debounce';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
-import {UserOutlined} from '@ant-design/icons';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
 import {ukDateFormat} from '../../../../../../utils/formats';
+import 'moment/locale/uk';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -43,7 +41,6 @@ export const StudentsCreate = () => {
     const navigate = useNavigate();
 
     const onFinish = async (values: FormValues) => {
-        console.log(getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id);
         createStudentMutation({
             variables: {
                 createUserInputType: {
@@ -83,7 +80,6 @@ export const StudentsCreate = () => {
     };
 
     const onSearchGradesHandler = async (value: string) => {
-        console.log(value);
         const response = await getGradeQuery.refetch({
             page: 1,
             like: value,
@@ -163,7 +159,7 @@ export const StudentsCreate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
+                <DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="gradeName"

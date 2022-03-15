@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationalPortal.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220304161403_dekete post cascade")]
-    partial class deketepostcascade
+    [Migration("20220315121757_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,36 @@ namespace EducationalPortal.Server.Migrations
                     b.ToTable("EducationalYears");
                 });
 
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.FileModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("HomeworkId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HomeworkId");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.GradeModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -78,6 +108,45 @@ namespace EducationalPortal.Server.Migrations
                     b.ToTable("Grades");
                 });
 
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.HomeworkModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReviewResult")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("StudentId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("SubjectPostId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("SubjectPostId");
+
+                    b.ToTable("Homeworks");
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.SettingModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,14 +156,20 @@ namespace EducationalPortal.Server.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Data")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Settings");
                 });
@@ -168,7 +243,7 @@ namespace EducationalPortal.Server.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("SubjectPost");
+                    b.ToTable("SubjectPosts");
                 });
 
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.UserModel", b =>
@@ -232,6 +307,62 @@ namespace EducationalPortal.Server.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("GradeModelSubjectModel", b =>
+                {
+                    b.Property<Guid>("GradesHaveAccessReadId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SubjectsHaveAccessReadId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("GradesHaveAccessReadId", "SubjectsHaveAccessReadId");
+
+                    b.HasIndex("SubjectsHaveAccessReadId");
+
+                    b.ToTable("GradeModelSubjectModel");
+                });
+
+            modelBuilder.Entity("SubjectModelUserModel", b =>
+                {
+                    b.Property<Guid>("SubjectHaveAccessCreatePostsId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("TeachersHaveAccessCreatePostsId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("SubjectHaveAccessCreatePostsId", "TeachersHaveAccessCreatePostsId");
+
+                    b.HasIndex("TeachersHaveAccessCreatePostsId");
+
+                    b.ToTable("SubjectModelUserModel");
+                });
+
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.FileModel", b =>
+                {
+                    b.HasOne("EducationalPortal.Server.Database.Models.HomeworkModel", "Homework")
+                        .WithMany("Files")
+                        .HasForeignKey("HomeworkId");
+
+                    b.Navigation("Homework");
+                });
+
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.HomeworkModel", b =>
+                {
+                    b.HasOne("EducationalPortal.Server.Database.Models.UserModel", "Student")
+                        .WithMany("Homeworks")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("EducationalPortal.Server.Database.Models.SubjectPostModel", "SubjectPost")
+                        .WithMany("Homeworks")
+                        .HasForeignKey("SubjectPostId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Student");
+
+                    b.Navigation("SubjectPost");
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.SubjectModel", b =>
                 {
                     b.HasOne("EducationalPortal.Server.Database.Models.EducationalYearModel", "EducationalYear")
@@ -274,6 +405,36 @@ namespace EducationalPortal.Server.Migrations
                     b.Navigation("Grade");
                 });
 
+            modelBuilder.Entity("GradeModelSubjectModel", b =>
+                {
+                    b.HasOne("EducationalPortal.Server.Database.Models.GradeModel", null)
+                        .WithMany()
+                        .HasForeignKey("GradesHaveAccessReadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EducationalPortal.Server.Database.Models.SubjectModel", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectsHaveAccessReadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SubjectModelUserModel", b =>
+                {
+                    b.HasOne("EducationalPortal.Server.Database.Models.SubjectModel", null)
+                        .WithMany()
+                        .HasForeignKey("SubjectHaveAccessCreatePostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EducationalPortal.Server.Database.Models.UserModel", null)
+                        .WithMany()
+                        .HasForeignKey("TeachersHaveAccessCreatePostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.EducationalYearModel", b =>
                 {
                     b.Navigation("Subjects");
@@ -284,13 +445,25 @@ namespace EducationalPortal.Server.Migrations
                     b.Navigation("Students");
                 });
 
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.HomeworkModel", b =>
+                {
+                    b.Navigation("Files");
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.SubjectModel", b =>
                 {
                     b.Navigation("Posts");
                 });
 
+            modelBuilder.Entity("EducationalPortal.Server.Database.Models.SubjectPostModel", b =>
+                {
+                    b.Navigation("Homeworks");
+                });
+
             modelBuilder.Entity("EducationalPortal.Server.Database.Models.UserModel", b =>
                 {
+                    b.Navigation("Homeworks");
+
                     b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618

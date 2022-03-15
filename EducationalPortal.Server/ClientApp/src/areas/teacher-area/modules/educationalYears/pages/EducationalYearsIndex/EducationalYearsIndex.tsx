@@ -133,6 +133,7 @@ export const EducationalYearsIndex = () => {
                 dataSource={getEducationalYearsOpions.data?.getEducationalYears.entities}
                 columns={columns}
                 pagination={{
+                    current: parseInt(searchParams.get('page') || '') || 1,
                     defaultPageSize: getEducationalYearsOpions.data?.getEducationalYears.pageSize,
                     total: getEducationalYearsOpions.data?.getEducationalYears.total,
                     onChange: page => setSearchParams({page: page.toString()}),

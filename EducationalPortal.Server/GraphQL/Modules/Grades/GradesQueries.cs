@@ -22,7 +22,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    return gradeRepository.Get(y => y.Name, false, page, g => g.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
+                    return gradeRepository.Get(y => y.Name, Order.Ascend, page, g => g.Name.Contains(like, StringComparison.OrdinalIgnoreCase));
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 

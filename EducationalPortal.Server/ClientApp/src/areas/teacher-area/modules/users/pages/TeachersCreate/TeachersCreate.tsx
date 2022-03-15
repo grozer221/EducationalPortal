@@ -5,12 +5,11 @@ import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {CREATE_USER_MUTATION, CreateUserData, CreateUserVars} from '../../users.mutations';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
 import {ukDateFormat} from '../../../../../../utils/formats';
+import 'moment/locale/uk';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -132,7 +131,7 @@ export const TeachersCreate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
+                <DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createStudentMutationOption.loading} isSubmit={true}/>

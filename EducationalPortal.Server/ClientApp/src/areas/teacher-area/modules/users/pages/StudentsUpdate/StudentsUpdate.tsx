@@ -13,10 +13,9 @@ import Search from 'antd/es/input/Search';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
 import debounce from 'lodash.debounce';
 import Title from 'antd/es/typography/Title';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import {ukDateFormat} from '../../../../../../utils/formats';
+import 'moment/locale/uk';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -53,7 +52,6 @@ export const StudentsUpdate = () => {
 
 
     const onFinish = async (values: FormValues) => {
-        console.log(getStudentQuery.data);
         const gradeId = getStudentQuery.data?.getUser?.grade?.name === values.gradeName
             ? getStudentQuery.data?.getUser.gradeId
             : getGradeQuery.data?.getGrades.entities.find(grade => grade.name === values.gradeName)?.id;
@@ -187,7 +185,7 @@ export const StudentsUpdate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
+                <DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="gradeName"

@@ -36,14 +36,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                {
                    int page = context.GetArgument<int>("Page");
                    Guid subjectId = context.Source.Id;
-                   return subjectPostRepository.GetOrDefault(p => p.CreatedAt, true, page, p => p.SubjectId == subjectId);
+                   return subjectPostRepository.GetOrDefault(p => p.CreatedAt, Order.Descend, page, p => p.SubjectId == subjectId);
                });
 
-            Field<ListGraphType<GradeType>, IEnumerable<GradeModel>?>()
+            Field<ListGraphType<GradeType>, List<GradeModel>?>()
                .Name("GradesHaveAccessRead")
                .Resolve(context => subjectRepository.GetById(context.Source.Id, s => s.GradesHaveAccessRead)?.GradesHaveAccessRead);
             
-            Field<ListGraphType<UserType>, IEnumerable<UserModel>?>()
+            Field<ListGraphType<UserType>, List<UserModel>?>()
                .Name("TeachersHaveAccessCreatePosts")
                .Resolve(context => subjectRepository.GetById(context.Source.Id, s => s.TeachersHaveAccessCreatePosts)?.TeachersHaveAccessCreatePosts);
 

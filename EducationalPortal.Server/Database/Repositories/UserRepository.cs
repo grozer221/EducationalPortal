@@ -71,7 +71,7 @@ namespace EducationalPortal.Server.Database.Repositories
         
         public UserModel? GetByLoginOrDefault(string login)
         {
-            List<UserModel> users = Get(e => e.Login == login).ToList();
+            List<UserModel> users = GetOrDefault(e => e.Login == login).ToList();
             if (users == null || users.Count == 0)
                 return null;
             return users[0];

@@ -78,6 +78,7 @@ export const GradesView = () => {
                 dataSource={grade?.students.entities}
                 columns={columns}
                 pagination={{
+                    current: parseInt(searchParams.get('page') || '') || 1,
                     defaultPageSize: grade?.students.pageSize,
                     total: grade?.students.total,
                     onChange: setStudentsPage,

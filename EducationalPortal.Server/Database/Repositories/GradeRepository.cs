@@ -29,7 +29,7 @@ namespace EducationalPortal.Server.Database.Repositories
             GradeModel addedGrade = GetById(newGrade.Id);
             addedGrade.Name = newGrade.Name;
             await _context.SaveChangesAsync();
-            return newGrade;
+            return addedGrade;
         }
     }
 }

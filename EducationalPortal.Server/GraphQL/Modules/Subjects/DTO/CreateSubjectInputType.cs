@@ -15,11 +15,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
                .Name("Name")
                .Resolve(context => context.Source.Name);
             
-            Field<NonNullGraphType<ListGraphType<IdGraphType>>, IEnumerable<Guid>>()
+            Field<NonNullGraphType<ListGraphType<IdGraphType>>, List<Guid>>()
                .Name("GradesHaveAccessReadIds")
                .Resolve(context => context.Source.GradesHaveAccessReadIds);
             
-            Field<NonNullGraphType<ListGraphType<IdGraphType>>, IEnumerable<Guid>>()
+            Field<NonNullGraphType<ListGraphType<IdGraphType>>, List<Guid>>()
                .Name("TeachersHaveAccessCreatePostsIds")
                .Resolve(context => context.Source.TeachersHaveAccessCreatePostsIds);
         }

@@ -7,7 +7,7 @@ import {useMutation} from '@apollo/client';
 import {REMOVE_SUBJECT_POST_MUTATION, RemoveSubjectPostData, RemoveSubjectPostVars} from '../../subjectPosts.mutations';
 import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost} from '../../subjectPosts.types';
-import {subjectPostTypeToTag} from '../../../../../../convertors/toTagConvertor';
+import {subjectPostTypeToTag} from '../../../../../../convertors/enumToTagConvertor';
 import Title from 'antd/es/typography/Title';
 import parse from 'html-react-parser';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';

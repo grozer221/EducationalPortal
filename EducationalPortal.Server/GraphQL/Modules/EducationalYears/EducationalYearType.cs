@@ -40,7 +40,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
                 {
                     int page = context.GetArgument<int>("Page");
                     Guid educationalYearId = context.Source.Id;
-                    return subjectRepository.GetOrDefault(s => s.CreatedAt, true, page, s => s.EducationalYearId == educationalYearId);
+                    return subjectRepository.GetOrDefault(s => s.CreatedAt, Order.Descend, page, s => s.EducationalYearId == educationalYearId);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
         }

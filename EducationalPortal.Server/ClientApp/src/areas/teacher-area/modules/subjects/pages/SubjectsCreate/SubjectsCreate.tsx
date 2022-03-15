@@ -3,7 +3,6 @@ import {useMutation, useQuery} from '@apollo/client';
 import {AutoComplete, Form, Input, message, Space, Tag} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import 'moment/locale/uk';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import {CREATE_SUBJECT_MUTATION, CreateSubjectData, CreateSubjectVars} from '../../subjects.mutations';
 import Title from 'antd/es/typography/Title';

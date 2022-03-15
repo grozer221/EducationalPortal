@@ -18,5 +18,6 @@ namespace EducationalPortal.Server.Database.Models
         public virtual SubjectModel? Subject { get; set; }
         public Guid? TeacherId { get; set; }
         public virtual UserModel? Teacher { get; set; }
+        public virtual List<HomeworkModel>? Homeworks { get; set; }
     }
 }

@@ -20,7 +20,7 @@ import {authActions} from '../../../../store/auth.slice';
 import {isAdministrator} from '../../../../utils/permissions';
 import {AppName, AppNameType} from '../../../../store/settings.slice';
 import Title from 'antd/es/typography/Title';
-import {roleToTag} from '../../../../convertors/toTagConvertor';
+import {roleToTag} from '../../../../convertors/enumToTagConvertor';
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -96,6 +96,9 @@ export const AppMenu: FC = () => {
                 <SubMenu key="portal" icon={<ShopOutlined/>} title="Портал">
                     <Menu.Item key="subjects" icon={<BookOutlined/>}>
                         <Link to={'subjects'}>Предмети</Link>
+                    </Menu.Item>
+                    <Menu.Item key="homeworks" icon={<BookOutlined/>}>
+                        <Link to={'homeworks'}>Домашні роботи</Link>
                     </Menu.Item>
                     <Menu.Item key="grades" icon={<BoxPlotOutlined/>}>
                         <Link to={'grades'}>Класи</Link>

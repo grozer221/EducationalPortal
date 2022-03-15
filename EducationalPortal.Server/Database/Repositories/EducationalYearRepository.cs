@@ -53,9 +53,9 @@ namespace EducationalPortal.Server.Database.Repositories
 
         public EducationalYearModel GetCurrent()
         {
-            List<EducationalYearModel> currentYears = Get(y => y.IsCurrent == true).ToList();
+            List<EducationalYearModel> currentYears = GetOrDefault(y => y.IsCurrent == true).ToList();
             if (currentYears.Count == 0)
-                throw new Exception("На даний момент немає навчального року");
+                throw new Exception("Ви не можете створити коли немає поточного навчального року");
             return currentYears[0];
         }
     }

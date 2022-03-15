@@ -11,6 +11,8 @@ import {GradesLayout} from '../modules/grades/GradesLayout/GradesLayout';
 import {StudentsLayout} from '../modules/users/StudentsLayout/StudentsLayout';
 import {TeachersLayout} from '../modules/users/TeachersLayout/TeachersLayout';
 import {SettingsLayout} from '../modules/settings/SettingsLayout/SettingsLayout';
+import {HomeworksIndex} from '../modules/homeworks/pages/HomeworksIndex/HomeworksIndex';
+import {HomeworksUpdate} from '../modules/homeworks/pages/HomeworksUpdate/HomeworksUpdate';
 
 const {Content} = Layout;
 
@@ -29,6 +31,10 @@ export const TeacherLayout: FC = () => {
                             <Route path={'students/*'} element={<StudentsLayout/>}/>
                             <Route path={'teachers/*'} element={<TeachersLayout/>}/>
                             <Route path={'settings/*'} element={<SettingsLayout/>}/>
+                            <Route path={'homeworks/*'}>
+                                <Route index element={<HomeworksIndex/>}/>
+                                <Route path={'update/:id'} element={<HomeworksUpdate/>}/>
+                            </Route>
                             <Route path={'/'} element={<Navigate to={'subjects/my'}/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>

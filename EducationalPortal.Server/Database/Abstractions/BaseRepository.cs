@@ -34,56 +34,57 @@ namespace EducationalPortal.Server.Database.Abstractions
             ).FirstOrDefault(e => e.Id == id);
         }
 
-        public virtual IEnumerable<T> Get(params Expression<Func<T, object>>[] includes)
+        public virtual List<T> Get(params Expression<Func<T, object>>[] includes)
         {
-            IEnumerable<T> entities = GetOrDefault(includes);
+            List<T> entities = GetOrDefault(includes);
             if (entities == null)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
         }
         
-        public virtual IEnumerable<T> GetOrDefault(params Expression<Func<T, object>>[] includes)
+        public virtual List<T> GetOrDefault(params Expression<Func<T, object>>[] includes)
         {
             return includes.Aggregate(
                _context.Set<T>().AsQueryable(),
                (current, include) => current.Include(include)
-            );
+            ).ToList();
         }
         
-        public virtual IEnumerable<T> Get(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
+        public virtual List<T> Get(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
         {
-            IEnumerable<T> entities = GetOrDefault(condition, includes);
+            List<T> entities = GetOrDefault(condition, includes);
             if (entities == null || entities.Count() == 0)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
         }
         
-        public virtual IEnumerable<T> GetOrDefault(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
+        public virtual List<T> GetOrDefault(Func<T, bool> condition, params Expression<Func<T, object>>[] includes)
         {
             return includes.Aggregate(
                 _context.Set<T>().AsQueryable(),
                 (current, include) => current.Include(include)
-            ).Where(condition);
+            ).Where(condition).ToList();
         }
 
-        public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
+        public virtual GetEntitiesResponse<T> Get(Func<T, object> predicate, Order order, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
         {
-            GetEntitiesResponse<T> getEntitiesResponse = GetOrDefault(predicate, descending, page, condition, includes);
+            GetEntitiesResponse<T> getEntitiesResponse = GetOrDefault(predicate, order, page, condition, includes);
             if (getEntitiesResponse == null || getEntitiesResponse.Total == 0)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return getEntitiesResponse;
         }
         
-        public virtual GetEntitiesResponse<T> GetOrDefault(Func<T, object> predicate, bool descending, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
+        public virtual GetEntitiesResponse<T> GetOrDefault(Func<T, object> predicate, Order order, int page, Func<T, bool>? condition = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T>? includedQuery = includes.Aggregate(
                 _context.Set<T>().AsQueryable(),
                 (current, include) => current.Include(include)
             );
-
-            IEnumerable<T> entities = descending
-                ? includedQuery.OrderByDescending(predicate)
-                : includedQuery.OrderBy(predicate);
+            IEnumerable<T> entities = order == Order.Ascend
+                ? includedQuery.OrderBy(predicate)
+                : order == Order.Descend
+                    ? includedQuery.OrderByDescending(predicate)
+                    : new List<T>();
 
             if (condition != null)
                 entities = entities.Where(condition);
@@ -96,7 +97,7 @@ namespace EducationalPortal.Server.Database.Abstractions
 
             return new GetEntitiesResponse<T>
             {
-                Entities = entities,
+                Entities = entities.ToList(),
                 Total = total,
                 PageSize = take,
             };

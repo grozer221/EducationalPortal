@@ -8,7 +8,6 @@ import {
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {DatePicker, Form, Input, message, Switch} from 'antd';
-import locale from 'antd/es/date-picker/locale/uk_UA';
 import {
     UPDATE_EDUCATIONAL_YEAR_MUTATION,
     UpdateEducationalYearData,
@@ -18,6 +17,7 @@ import moment from 'moment';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
+import 'moment/locale/uk';
 
 const {RangePicker} = DatePicker;
 
@@ -114,7 +114,7 @@ export const EducationalYearsUpdate = () => {
                 label="Дата"
                 rules={[{required: true, message: 'Введіть дату початку та дату кінця!'}]}
             >
-                <RangePicker locale={locale} value={dateStartAndEnd} onChange={setDateStartAndEnd}/>
+                <RangePicker value={dateStartAndEnd} onChange={setDateStartAndEnd}/>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonUpdate loading={updateEducationalYearMutationOption.loading} isSubmit={true}/>

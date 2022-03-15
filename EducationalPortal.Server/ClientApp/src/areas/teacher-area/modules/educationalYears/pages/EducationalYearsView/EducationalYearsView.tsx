@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {useQuery} from '@apollo/client';
+import React, {useEffect} from 'react';
+import {useLazyQuery} from '@apollo/client';
 import {
     GET_EDUCATIONAL_YEAR_WITH_SUBJECTS_QUERY,
     GetEducationalYearWithSubjectsData,
     GetEducationalYearWithSubjectsVars,
 } from '../../educationalYears.queries';
-import {Link, Navigate, useParams} from 'react-router-dom';
+import {Link, Navigate, useParams, useSearchParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space, Table, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
@@ -17,13 +17,16 @@ import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {useAppSelector} from '../../../../../../store/store';
 
 export const EducationalYearsView = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const currentUser = useAppSelector(s => s.auth.me?.user);
     const params = useParams();
     const id = params.id as string;
-    const [subjectsPage, setSubjectsPage] = useState(1);
-    const getEducationalYearQuery = useQuery<GetEducationalYearWithSubjectsData, GetEducationalYearWithSubjectsVars>(GET_EDUCATIONAL_YEAR_WITH_SUBJECTS_QUERY,
-        {variables: {id: id, subjectsPage: subjectsPage}},
-    );
+    const [getEducationalYear, getEducationalYearOptions] = useLazyQuery<GetEducationalYearWithSubjectsData, GetEducationalYearWithSubjectsVars>(GET_EDUCATIONAL_YEAR_WITH_SUBJECTS_QUERY);
+
+    useEffect(() => {
+        const subjectsPage = parseInt(searchParams.get('subjectsPage') || '') || 1;
+        getEducationalYear({variables: {id, subjectsPage: subjectsPage}});
+    }, [searchParams]);
 
     const columns: ColumnsType<Subject> = [
         {
@@ -35,7 +38,8 @@ export const EducationalYearsView = () => {
                     <div>{subject?.name}</div>
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
-                        {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) && <Tag color={'cyan'}>Надано доступ</Tag>}
+                        {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&
+                        <Tag color={'cyan'}>Надано доступ</Tag>}
                     </div>
                 </Space>
             ),
@@ -59,7 +63,8 @@ export const EducationalYearsView = () => {
                 //     ? <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`} updateUrl={`../../subjects/update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>
                 //     : <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`} updateUrl={`../../subjects/update/${subject?.id}`}/>
+                <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}
+                            updateUrl={`../../subjects/update/${subject?.id}`}/>
             ),
         },
     ];
@@ -67,10 +72,10 @@ export const EducationalYearsView = () => {
     if (!id)
         return <Navigate to={'/error'}/>;
 
-    if (getEducationalYearQuery.loading)
+    if (getEducationalYearOptions.loading)
         return <Loading/>;
 
-    const educationalYear = getEducationalYearQuery.data?.getEducationalYear;
+    const educationalYear = getEducationalYearOptions.data?.getEducationalYear;
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
             <Title level={2}>Перегляд навчального року</Title>
@@ -103,13 +108,14 @@ export const EducationalYearsView = () => {
             <Table
                 title={() => <Title level={4}>Предмети</Title>}
                 rowKey={'id'}
-                loading={getEducationalYearQuery.loading}
-                dataSource={getEducationalYearQuery.data?.getEducationalYear?.subjects.entities}
+                loading={getEducationalYearOptions.loading}
+                dataSource={getEducationalYearOptions.data?.getEducationalYear?.subjects.entities}
                 columns={columns}
                 pagination={{
-                    defaultPageSize: getEducationalYearQuery.data?.getEducationalYear.subjects.pageSize,
-                    total: getEducationalYearQuery.data?.getEducationalYear?.subjects.total,
-                    onChange: setSubjectsPage,
+                    current: parseInt(searchParams.get('subjectsPage') || '') || 1,
+                    defaultPageSize: educationalYear?.subjects.pageSize,
+                    total: educationalYear?.subjects.total,
+                    onChange: subjectsPage => setSearchParams({subjectsPage: subjectsPage.toString()}),
                 }}
             />
         </Space>

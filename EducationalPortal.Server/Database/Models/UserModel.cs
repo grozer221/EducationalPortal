@@ -29,5 +29,6 @@ namespace EducationalPortal.Server.Database.Models
         public virtual GradeModel? Grade { get; set; }
         public virtual List<SubjectModel>? Subjects { get; set; }
         public virtual List<SubjectModel>? SubjectHaveAccessCreatePosts { get; set; }
+        public virtual List<HomeworkModel>? Homeworks { get; set; }
     }
 }

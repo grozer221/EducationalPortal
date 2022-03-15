@@ -38,7 +38,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
                     EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
-                    return subjectRepository.Get(s => s.CreatedAt, true, page, s => 
+                    return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page, s => 
                         s.EducationalYearId == currentEducationalYear.Id
                         && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
                     );
@@ -63,7 +63,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     {
                         case UserRoleEnum.Student:
                             UserModel currentUser = userRepository.GetById(currentUserId);
-                            return subjectRepository.Get(s => s.CreatedAt, true, page,
+                            return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page,
                                 s => s.GradesHaveAccessRead.Any(g => g.Id == currentUser.GradeId)
                                 && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
                                 && s.EducationalYearId == currentEducationalYear.Id,
@@ -71,7 +71,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                             );
                         case UserRoleEnum.Teacher:
                         case UserRoleEnum.Administrator:
-                            return subjectRepository.Get(s => s.CreatedAt, true, page,
+                            return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page,
                                 s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
                                 && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
                                 && s.EducationalYearId == currentEducationalYear.Id,

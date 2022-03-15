@@ -22,14 +22,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
                 .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Users")
-                .Argument<ListGraphType<UserRoleType>, IEnumerable<UserRoleEnum>?>("Roles", "Argument for get Users")
+                .Argument<ListGraphType<UserRoleType>, List<UserRoleEnum>?>("Roles", "Argument for get Users")
                 .Resolve(context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    IEnumerable<UserRoleEnum>? roles = context.GetArgument<IEnumerable<UserRoleEnum>?>("Roles");
+                    List<UserRoleEnum>? roles = context.GetArgument<List<UserRoleEnum>?>("Roles");
                     if (roles == null || roles.Count() == 0)
-                        return usersRepository.Get(u => u.LastName, false, page, 
+                        return usersRepository.Get(u => u.LastName, Order.Ascend, page, 
                             u => (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
                             || (u.LastName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
                             || (u.MiddleName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
@@ -37,7 +37,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                             || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
                         );
                     else
-                        return usersRepository.Get(u => u.LastName, false, page, 
+                        return usersRepository.Get(u => u.LastName, Order.Ascend, page, 
                             u => roles.Contains(u.Role) 
                             && (
                                 (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)

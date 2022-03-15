@@ -11,9 +11,8 @@ import moment from 'moment';
 import {Role} from '../../users.types';
 import Title from 'antd/es/typography/Title';
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
-import locale from 'antd/es/date-picker/locale/uk_UA';
-import 'moment/locale/uk';
 import {ukDateFormat} from '../../../../../../utils/formats';
+import 'moment/locale/uk';
 
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
@@ -152,7 +151,7 @@ export const TeachersUpdate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                <DatePicker locale={locale} format={ukDateFormat} onChange={() => changeLogin()}/>
+                <DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="role"

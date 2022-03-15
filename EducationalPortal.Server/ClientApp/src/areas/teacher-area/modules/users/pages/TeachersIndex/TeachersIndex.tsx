@@ -9,7 +9,7 @@ import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../users.queries';
 import {Role, User} from '../../users.types';
 import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../users.mutations';
 import Title from 'antd/es/typography/Title';
-import {roleToTag} from '../../../../../../convertors/toTagConvertor';
+import {roleToTag} from '../../../../../../convertors/enumToTagConvertor';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
 
@@ -29,8 +29,8 @@ export const TeachersIndex = () => {
         getTeachers({variables: {page, like, roles}});
     }, [searchParams]);
 
-    const onRemove = (studentId: string) => {
-        removeTeacherMutation({variables: {id: studentId}})
+    const onRemove = (teacherId: string) => {
+        removeTeacherMutation({variables: {id: teacherId}})
             .then(async (response) => {
                 const page = parseInt(searchParams.get('page') || '') || 1;
                 const like = searchParams.get('like') || '';
@@ -43,28 +43,28 @@ export const TeachersIndex = () => {
 
     const columns: ColumnsType<User> = [
         {
-            title: 'Учень',
-            dataIndex: 'student',
-            key: 'student',
-            render: (text, student) => <>{student?.lastName} {student?.firstName}</>,
+            title: 'Вчитель',
+            dataIndex: 'teacher',
+            key: 'teacher',
+            render: (text, teacher) => <>{teacher?.lastName} {teacher?.firstName}</>,
         },
         {
             title: 'Роль',
             dataIndex: 'role',
             key: 'role',
-            render: (text, student) => <>{student?.role && roleToTag(student.role)}</>,
+            render: (text, teacher) => <>{teacher?.role && roleToTag(teacher.role)}</>,
         },
         {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
-            render: (text: string, student) => (
+            render: (text: string, teacher) => (
                 // isAdministrator()
-                //     ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                //                   onRemove={() => onRemove(student?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${student?.id}`}/>
-                <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                            onRemove={() => onRemove(student?.id)}/>
+                //     ? <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
+                //                   onRemove={() => onRemove(teacher?.id)}/>
+                //     : <ButtonsVUR viewUrl={`${teacher?.id}`}/>
+                <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
+                            onRemove={() => onRemove(teacher?.id)}/>
             ),
         },
     ];
@@ -107,6 +107,7 @@ export const TeachersIndex = () => {
                 dataSource={getTeachersOptions.data?.getUsers.entities}
                 columns={columns}
                 pagination={{
+                    current: parseInt(searchParams.get('page') || '') || 1,
                     defaultPageSize: getTeachersOptions.data?.getUsers.pageSize,
                     total: getTeachersOptions.data?.getUsers.total,
                     onChange: page => setSearchParams({page: page.toString()}),

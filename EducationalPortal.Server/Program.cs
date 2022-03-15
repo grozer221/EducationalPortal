@@ -7,6 +7,7 @@ using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears;
 using EducationalPortal.Server.GraphQL.Modules.Grades;
+using EducationalPortal.Server.GraphQL.Modules.Homeworks;
 using EducationalPortal.Server.GraphQL.Modules.Settings;
 using EducationalPortal.Server.GraphQL.Modules.SubjectPosts;
 using EducationalPortal.Server.GraphQL.Modules.Subjects;
@@ -38,6 +39,7 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddTransient(typeof(BaseRepository<>));
 builder.Services.AddTransient<EducationalYearRepository>();
 builder.Services.AddTransient<GradeRepository>();
+builder.Services.AddTransient<HomeworkRepository>();
 builder.Services.AddTransient<SettingRepository>();
 builder.Services.AddTransient<SubjectPostRepository>();
 builder.Services.AddTransient<SubjectRepository>();
@@ -82,6 +84,9 @@ builder.Services.AddTransient<IMutationMarker, SettingsMutations>();
 
 builder.Services.AddTransient<IQueryMarker, GradesQueries>();
 builder.Services.AddTransient<IMutationMarker, GradesMutations>();
+
+builder.Services.AddTransient<IQueryMarker, HomeworksQueries>();
+builder.Services.AddTransient<IMutationMarker, HomeworksMutations>();
 
 builder.Services.AddTransient<IMutationMarker, SubjectPostsMutations>();
 
