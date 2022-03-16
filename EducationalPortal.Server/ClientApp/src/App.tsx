@@ -39,7 +39,7 @@ export const App = () => {
 
         client.query<GetSettingsData, GetSettingsVars>({query: GET_SETTINGS_QUERY})
             .then(response => {
-                document.title = response.data.getSettings.find(s => s.name === AppName)?.value;
+                document.title = response.data.getSettings?.find(s => s.name === AppName)?.value;
                 dispatch(settingsActions.setSettings(response.data.getSettings));
                 setIsGetSettingsDone(true);
             })

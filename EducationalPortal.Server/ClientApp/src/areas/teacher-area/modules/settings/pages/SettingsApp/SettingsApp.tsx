@@ -37,7 +37,7 @@ export const SettingsApp: FC = () => {
                 name="AppNameForm"
                 onFinish={createOrUpdateName}
                 initialValues={{
-                    name: settings.find(s => s.name === AppName)?.value,
+                    name: settings?.find(s => s.name === AppName)?.value,
                 }}
                 {...sizeFormItem}
             >

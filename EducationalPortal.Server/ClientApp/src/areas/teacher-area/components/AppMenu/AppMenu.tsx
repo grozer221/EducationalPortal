@@ -69,7 +69,7 @@ export const AppMenu: FC = () => {
             <Row justify="center" style={{marginTop: '20px', textAlign: 'center'}}>
                 <Col>
                     <Title level={3} style={{color: '#3498db'}}>
-                        {(settings.find(s => s.name === AppName) as AppNameType)?.value}
+                        {(settings?.find(s => s.name === AppName) as AppNameType)?.value}
                     </Title>
                 </Col>
                 <Col>

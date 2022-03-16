@@ -16,7 +16,7 @@ export const ClientLayout: FC = () => {
     return (
         <Row justify={'center'} align={'middle'} style={{height: '100vh'}}>
             <Col>
-                <Title>{(settings.find(s => s.name === AppName) as AppNameType).value}</Title>
+                <Title>{(settings?.find(s => s.name === AppName) as AppNameType)?.value}</Title>
                 <Title level={2}>Тут скоро буде крутий сайт :)</Title>
                 {isAuth && <Title level={3}>Hey, {me?.user.lastName} {me?.user.firstName}</Title>}
                 {isAuth && <Button onClick={() => dispatch(authActions.logout())}>Вийти</Button>}

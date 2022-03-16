@@ -46,7 +46,7 @@ export const LoginPage: FC = () => {
                 onFinish={onFinish}
                 form={form}
             >
-                <h2 className={s.title}>{settings.find(setting => setting.name === AppName)?.value}</h2>
+                <h2 className={s.title}>{settings?.find(setting => setting.name === AppName)?.value}</h2>
                 <Form.Item
                     name="login"
                     rules={[{required: true, message: 'Введіть ваш Логін!'}]}
