@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {createSearchParams, Navigate, useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {GET_GRADE_WITH_STUDENTS_QUERY, GetGradeWithStudentsData, GetGradeWithStudentsVars} from '../../grades.queries';
+import {GET_GRADE_WITH_STUDENTS_QUERY, GetGradeWithStudentsData, GetGradeWithStudentsVars} from '../../../../../../gql/modules/grades/grades.queries';
 import {Space, Table} from 'antd';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {User} from '../../../users/users.types';
+import {User} from '../../../../../../gql/modules/users/users.types';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
 

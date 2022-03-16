@@ -4,7 +4,7 @@ import {
     GET_EDUCATIONAL_YEAR_WITH_SUBJECTS_QUERY,
     GetEducationalYearWithSubjectsData,
     GetEducationalYearWithSubjectsVars,
-} from '../../educationalYears.queries';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.queries';
 import {Link, Navigate, useParams, useSearchParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space, Table, Tag} from 'antd';
@@ -12,7 +12,7 @@ import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {ColumnsType} from 'antd/es/table';
-import {Subject} from '../../../subjects/subjects.types';
+import {Subject} from '../../../../../../gql/modules/subjects/subjects.types';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {useAppSelector} from '../../../../../../store/store';
 

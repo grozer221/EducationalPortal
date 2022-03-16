@@ -4,7 +4,7 @@ import {
     GET_EDUCATIONAL_YEAR_QUERY,
     GetEducationalYearData,
     GetEducationalYearVars,
-} from '../../educationalYears.queries';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.queries';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {DatePicker, Form, Input, message, Switch} from 'antd';
@@ -12,7 +12,7 @@ import {
     UPDATE_EDUCATIONAL_YEAR_MUTATION,
     UpdateEducationalYearData,
     UpdateEducationalYearVars,
-} from '../../educationalYears.mutations';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.mutations';
 import moment from 'moment';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';

@@ -4,7 +4,7 @@ import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
-import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../users.queries';
+import {GET_USER_WITH_GRADE_QUERY, GetUserWithGradeData, GetUserWithGradeVars} from '../../../../../../gql/modules/users/users.queries';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 

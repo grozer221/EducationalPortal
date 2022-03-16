@@ -13,8 +13,8 @@ import {
     GET_MY_SUBJECTS_QUERY,
     GetMySubjectsData,
     GetMySubjectsVars,
-} from '../../../../../teacher-area/modules/subjects/subjects.queries';
-import {Subject} from '../../../../../teacher-area/modules/subjects/subjects.types';
+} from '../../../../../../gql/modules/subjects/subjects.queries';
+import {Subject} from '../../../../../../gql/modules/subjects/subjects.types';
 
 export const SubjectsMyIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();

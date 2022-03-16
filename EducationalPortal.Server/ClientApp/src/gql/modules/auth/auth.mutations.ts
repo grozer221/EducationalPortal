@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client';
 import {Auth} from './auth.types';
-import {USER_FRAGMENT} from '../../areas/teacher-area/modules/users/users.fragments';
+import {USER_FRAGMENT} from '../users/users.fragments';
 
 export type LoginData = { login: Auth }
 

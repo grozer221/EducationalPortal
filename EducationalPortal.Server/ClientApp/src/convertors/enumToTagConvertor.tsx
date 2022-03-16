@@ -1,8 +1,8 @@
-import {SubjectPostType} from '../areas/teacher-area/modules/subjectPosts/subjectPosts.types';
+import {SubjectPostType} from '../gql/modules/subjectPosts/subjectPosts.types';
 import {Tag, Tooltip} from 'antd';
 import {BookOutlined, InfoCircleOutlined} from '@ant-design/icons';
-import {Role} from '../areas/teacher-area/modules/users/users.types';
-import {HomeworkStatus} from '../areas/teacher-area/modules/homeworks/homework.types';
+import {Role} from '../gql/modules/users/users.types';
+import {HomeworkStatus} from '../gql/modules/homeworks/homework.types';
 import {homeworkStatusWithTranslateToString} from './enumWithTranslateToStringConvertor';
 
 export const subjectPostTypeToTag = (subjectPostType: SubjectPostType) => {

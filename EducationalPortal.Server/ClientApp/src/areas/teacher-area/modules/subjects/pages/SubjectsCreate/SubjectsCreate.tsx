@@ -4,14 +4,14 @@ import {AutoComplete, Form, Input, message, Space, Tag} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {CREATE_SUBJECT_MUTATION, CreateSubjectData, CreateSubjectVars} from '../../subjects.mutations';
+import {CREATE_SUBJECT_MUTATION, CreateSubjectData, CreateSubjectVars} from '../../../../../../gql/modules/subjects/subjects.mutations';
 import Title from 'antd/es/typography/Title';
-import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
+import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../../../../gql/modules/grades/grades.queries';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
-import {Grade} from '../../../grades/grades.types';
-import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../users/users.queries';
-import {Role, User} from '../../../users/users.types';
+import {Grade} from '../../../../../../gql/modules/grades/grades.types';
+import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../../../../gql/modules/users/users.queries';
+import {Role, User} from '../../../../../../gql/modules/users/users.types';
 
 type FormValues = {
     name: string,

@@ -2,8 +2,8 @@ import React, {FC, useState} from 'react';
 import {Form, Input, message, Modal, Select} from 'antd';
 import {sizeFormItem} from '../../../../../../styles/form';
 import {useMutation} from '@apollo/client';
-import {CREATE_SUBJECT_POST_MUTATION, CreateSubjectPostData, CreateSubjectPostVars} from '../../subjectPosts.mutations';
-import {SubjectPostType} from '../../subjectPosts.types';
+import {CREATE_SUBJECT_POST_MUTATION, CreateSubjectPostData, CreateSubjectPostVars} from '../../../../../../gql/modules/subjectPosts/subjectPosts.mutations';
+import {SubjectPostType} from '../../../../../../gql/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 
 type Props = {

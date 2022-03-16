@@ -6,9 +6,9 @@ import {Form, Input, message, Radio} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
-import {HomeworkStatus} from '../../homework.types';
-import {UPDATE_HOMEWORK_MUTATION, UpdateHomeworkData, UpdateHomeworkVars} from '../../homeworks.mutations';
-import {GET_HOMEWORK_QUERY, GetHomeworkData, GetHomeworkVars} from '../../homeworks.queries';
+import {HomeworkStatus} from '../../../../../../gql/modules/homeworks/homework.types';
+import {UPDATE_HOMEWORK_MUTATION, UpdateHomeworkData, UpdateHomeworkVars} from '../../../../../../gql/modules/homeworks/homeworks.mutations';
+import {GET_HOMEWORK_QUERY, GetHomeworkData, GetHomeworkVars} from '../../../../../../gql/modules/homeworks/homeworks.queries';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
 
 type FormValues = {

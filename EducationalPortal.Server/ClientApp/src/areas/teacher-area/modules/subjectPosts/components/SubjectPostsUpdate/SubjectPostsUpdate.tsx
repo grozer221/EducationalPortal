@@ -6,8 +6,8 @@ import {
     UPDATE_SUBJECT_POST_MUTATION,
     UpdateSubjectPostData,
     UpdateSubjectPostVars,
-} from '../../subjectPosts.mutations';
-import {SubjectPost, SubjectPostType} from '../../subjectPosts.types';
+} from '../../../../../../gql/modules/subjectPosts/subjectPosts.mutations';
+import {SubjectPost, SubjectPostType} from '../../../../../../gql/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 
 type Props = {

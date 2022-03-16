@@ -4,9 +4,9 @@ import {
     GET_EDUCATIONAL_YEARS_QUERY,
     GetEducationalYearsData,
     GetEducationalYearsVars,
-} from '../../educationalYears.queries';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.queries';
 import {ColumnsType} from 'antd/es/table';
-import {EducationalYear} from '../../educationalYears.types';
+import {EducationalYear} from '../../../../../../gql/modules/educationalYears/educationalYears.types';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
@@ -15,7 +15,7 @@ import {
     REMOVE_EDUCATIONAL_YEAR_MUTATION,
     RemoveEducationalYearData,
     RemoveEducationalYearVars,
-} from '../../educationalYears.mutations';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.mutations';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';

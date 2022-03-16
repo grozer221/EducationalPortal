@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Setting} from '../areas/teacher-area/modules/settings/settings.types';
+import {Setting} from '../gql/modules/settings/settings.types';
 
 const initialState = {
     settings: [] as Setting[],

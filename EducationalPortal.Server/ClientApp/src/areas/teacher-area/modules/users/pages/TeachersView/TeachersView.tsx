@@ -4,7 +4,7 @@ import {Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {Space} from 'antd';
 import Title from 'antd/es/typography/Title';
-import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../users.queries';
+import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../../../../../gql/modules/users/users.queries';
 import '../../../../../../styles/table.css';
 import {stringToUkraineDate} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {roleToTag} from '../../../../../../convertors/enumToTagConvertor';

@@ -4,9 +4,9 @@ import {subjectPostTypeToTag} from '../../../../../../convertors/enumToTagConver
 import Title from 'antd/es/typography/Title';
 import parse from 'html-react-parser';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
-import {Subject} from '../../../../../teacher-area/modules/subjects/subjects.types';
+import {Subject} from '../../../../../../gql/modules/subjects/subjects.types';
 import '../../../../../../styles/text.css';
-import {SubjectPost, SubjectPostType} from '../../../../../teacher-area/modules/subjectPosts/subjectPosts.types';
+import {SubjectPost, SubjectPostType} from '../../../../../../gql/modules/subjectPosts/subjectPosts.types';
 import {HomeworksCreate} from '../../../homeworks/components/HomeworksCreate/HomeworksCreate';
 
 type Props = {

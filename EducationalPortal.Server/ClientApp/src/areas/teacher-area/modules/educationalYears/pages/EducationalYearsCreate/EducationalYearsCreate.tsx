@@ -4,7 +4,7 @@ import {
     CREATE_EDUCATIONAL_YEAR_MUTATION,
     CreateEducationalYearData,
     CreateEducationalYearVars,
-} from '../../educationalYears.mutations';
+} from '../../../../../../gql/modules/educationalYears/educationalYears.mutations';
 import {DatePicker, Form, Input, message} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';

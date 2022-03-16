@@ -5,8 +5,8 @@ import {Loading} from '../../../../../../components/Loading/Loading';
 import {Form, Input, message} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {UPDATE_GRADE_MUTATION, UpdateGradeData, UpdateGradeVars} from '../../grades.mutations';
-import {GET_GRADE_QUERY, GetGradeData, GetGradeVars} from '../../grades.queries';
+import {UPDATE_GRADE_MUTATION, UpdateGradeData, UpdateGradeVars} from '../../../../../../gql/modules/grades/grades.mutations';
+import {GET_GRADE_QUERY, GetGradeData, GetGradeVars} from '../../../../../../gql/modules/grades/grades.queries';
 import Title from 'antd/es/typography/Title';
 
 type FormValues = {

@@ -10,7 +10,7 @@ import {
     CREATE_OR_UPDATE_SETTING_MUTATION,
     CreateOrUpdateSettingData,
     CreateOrUpdateSettingVars,
-} from '../../settings.mutations';
+} from '../../../../../../gql/modules/settings/settings.mutations';
 
 type AppNameFormType = {
     name: string,

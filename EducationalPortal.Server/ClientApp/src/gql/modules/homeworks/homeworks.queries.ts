@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 import {HOMEWORK_FRAGMENT} from './homeworks.fragments';
 import {Homework, HomeworkStatus} from './homework.types';
-import {Order} from '../../../../gql/enums/order';
+import {Order} from '../../enums/order';
 
 export type GetHomeworkData = { getHomework: Homework }
 export type GetHomeworkVars = { id: string }

@@ -8,7 +8,7 @@ import {
     CREATE_HOMEWORK_MUTATION,
     CreateHomeworkData,
     CreateHomeworkVars,
-} from '../../../../../teacher-area/modules/homeworks/homeworks.mutations';
+} from '../../../../../../gql/modules/homeworks/homeworks.mutations';
 
 type Props = {
     subjectPostId: string,

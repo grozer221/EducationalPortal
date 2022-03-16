@@ -9,7 +9,7 @@ import {
     GET_SUBJECT_WITH_POSTS_QUERY,
     GetSubjectWithPostsData,
     GetSubjectWithPostsVars,
-} from '../../../../../teacher-area/modules/subjects/subjects.queries';
+} from '../../../../../../gql/modules/subjects/subjects.queries';
 import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIndex/SubjectPostsIndex';
 
 export const SubjectsView = () => {

@@ -3,18 +3,18 @@ import {Navigate, Route, Routes} from 'react-router-dom';
 import {authActions} from './store/auth.slice';
 import {Loading} from './components/Loading/Loading';
 import {TeacherLayout} from './areas/teacher-area/TeacherLayout/TeacherLayout';
-import {LoginPage} from './gql/auth/pages/LoginPage/LoginPage';
+import {LoginPage} from './gql/modules/auth/pages/LoginPage/LoginPage';
 import {useAppDispatch, useAppSelector} from './store/store';
 import {WithTeacherRoleOrRender} from './hocs/WithTeacherRoleOrRender';
 import {ClientLayout} from './areas/client-area/ClientLayout/ClientLayout';
-import {ME_QUERY, MeData, MeVars} from './gql/auth/auth.queries';
+import {ME_QUERY, MeData, MeVars} from './gql/modules/auth/auth.queries';
 import 'antd/dist/antd.css';
 import './App.css';
 import {
     GET_SETTINGS_QUERY,
     GetSettingsData,
     GetSettingsVars,
-} from './areas/teacher-area/modules/settings/settings.queries';
+} from './gql/modules/settings/settings.queries';
 import {client} from './gql/client';
 import {AppName, settingsActions} from './store/settings.slice';
 import {WithStudentRoleOrRender} from './hocs/WithStudentRoleOrRender';

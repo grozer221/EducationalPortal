@@ -4,7 +4,7 @@ import {Form, Input, message} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {CREATE_GRADE_MUTATION, CreateGradeData, CreateGradeVars} from '../../grades.mutations';
+import {CREATE_GRADE_MUTATION, CreateGradeData, CreateGradeVars} from '../../../../../../gql/modules/grades/grades.mutations';
 import Title from 'antd/es/typography/Title';
 
 type FormValues = {

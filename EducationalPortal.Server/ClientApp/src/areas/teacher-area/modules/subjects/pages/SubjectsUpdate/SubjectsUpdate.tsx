@@ -5,15 +5,15 @@ import {Loading} from '../../../../../../components/Loading/Loading';
 import {AutoComplete, Form, Input, message, Tag} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {GET_SUBJECT_QUERY, GetSubjectData, GetSubjectVars} from '../../subjects.queries';
-import {UPDATE_SUBJECT_MUTATION, UpdateSubjectData, UpdateSubjectVars} from '../../subjects.mutations';
+import {GET_SUBJECT_QUERY, GetSubjectData, GetSubjectVars} from '../../../../../../gql/modules/subjects/subjects.queries';
+import {UPDATE_SUBJECT_MUTATION, UpdateSubjectData, UpdateSubjectVars} from '../../../../../../gql/modules/subjects/subjects.mutations';
 import Title from 'antd/es/typography/Title';
-import {Grade} from '../../../grades/grades.types';
+import {Grade} from '../../../../../../gql/modules/grades/grades.types';
 import Search from 'antd/es/input/Search';
-import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../grades/grades.queries';
+import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../../../../gql/modules/grades/grades.queries';
 import debounce from 'lodash.debounce';
-import {Role, User} from '../../../users/users.types';
-import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../users/users.queries';
+import {Role, User} from '../../../../../../gql/modules/users/users.types';
+import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../../../../gql/modules/users/users.queries';
 
 type FormValues = {
     id: string,

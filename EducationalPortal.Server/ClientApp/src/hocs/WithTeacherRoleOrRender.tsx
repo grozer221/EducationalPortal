@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {useAppSelector} from '../store/store';
-import {Role} from '../areas/teacher-area/modules/users/users.types';
+import {Role} from '../gql/modules/users/users.types';
 
 type Props = {
     render: React.ReactNode;

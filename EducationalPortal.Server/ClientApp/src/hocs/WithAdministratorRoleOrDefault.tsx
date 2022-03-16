@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {useAppSelector} from '../store/store';
-import {Role} from '../areas/teacher-area/modules/users/users.types';
+import {Role} from '../gql/modules/users/users.types';
 
 export const WithAdministratorRoleOrDefault: FC = ({children}) => {
     const me = useAppSelector(s => s.auth.me);
