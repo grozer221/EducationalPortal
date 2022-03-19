@@ -34,15 +34,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseMySql(GetConnectionString(), new MySqlServerVersion(new Version(8, 0, 27))));
-builder.Services.AddScoped(typeof(BaseRepository<>));
-builder.Services.AddScoped<EducationalYearRepository>();
-builder.Services.AddScoped<GradeRepository>();
-builder.Services.AddScoped<HomeworkRepository>();
-builder.Services.AddScoped<SettingRepository>();
-builder.Services.AddScoped<SubjectPostRepository>();
-builder.Services.AddScoped<SubjectRepository>();
-builder.Services.AddScoped<UserRepository>();
+    options => options.UseMySql(GetConnectionString(), new MySqlServerVersion(new Version(8, 0, 27))), ServiceLifetime.Singleton);
+builder.Services.AddSingleton(typeof(BaseRepository<>));
+builder.Services.AddSingleton<EducationalYearRepository>();
+builder.Services.AddSingleton<GradeRepository>();
+builder.Services.AddSingleton<HomeworkRepository>();
+builder.Services.AddSingleton<SettingRepository>();
+builder.Services.AddSingleton<SubjectPostRepository>();
+builder.Services.AddSingleton<SubjectRepository>();
+builder.Services.AddSingleton<UserRepository>();
 
 builder.Services.AddAuthentication(options =>
 {

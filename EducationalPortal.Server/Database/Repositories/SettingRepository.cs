@@ -42,8 +42,8 @@ namespace EducationalPortal.Server.Database.Repositories
             }
             else
             {
-                checkUniqueSettingName[0].Id = newSetting.Id;
-                checkUniqueSettingName[0].CreatedAt = newSetting.CreatedAt;
+                checkUniqueSettingName[0].Name = newSetting.Name;
+                checkUniqueSettingName[0].Value = newSetting.Value;
                 await _context.SaveChangesAsync();
             }
             return checkUniqueSettingName[0];
