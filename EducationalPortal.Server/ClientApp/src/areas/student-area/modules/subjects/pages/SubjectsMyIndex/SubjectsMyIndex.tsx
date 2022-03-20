@@ -49,6 +49,7 @@ export const SubjectsMyIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text: string, subject: Subject) => (
                 <ButtonsVUR viewUrl={`../${subject?.id}`}/>
             ),

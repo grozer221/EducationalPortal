@@ -83,7 +83,8 @@ export const SubjectsIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
-            render: (text: string, subject: Subject) => (
+            width: '130px',
+            render: (text, subject: Subject) => (
                 // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>

@@ -1,19 +1,16 @@
 import React, {FC, useState} from 'react';
 import {Col, Layout, Menu, Row} from 'antd';
 import {
-    AppstoreAddOutlined,
     BookOutlined,
     BoxPlotOutlined,
     LineChartOutlined,
     LogoutOutlined,
-    QuestionOutlined,
     ScheduleOutlined,
     SettingOutlined,
     ShopOutlined,
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
-import s from './AppMenu.module.css';
 import {Link, useLocation} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../../../store/store';
 import {authActions} from '../../../../store/auth.slice';
@@ -21,11 +18,12 @@ import {isAdministrator} from '../../../../utils/permissions';
 import {AppName, AppNameType} from '../../../../store/settings.slice';
 import Title from 'antd/es/typography/Title';
 import {roleToTag} from '../../../../convertors/enumToTagConvertor';
+import s from './TeacherMenu.module.css';
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
 
-export const AppMenu: FC = () => {
+export const TeacherMenu: FC = () => {
     const [collapsed, setCollapsed] = useState(false);
     const me = useAppSelector(state => state.auth.me);
     const dispatch = useAppDispatch();
@@ -87,12 +85,16 @@ export const AppMenu: FC = () => {
                 <Menu.Item key="subjects/my" icon={<BookOutlined/>}>
                     <Link to={'subjects/my'}>Мої предмети</Link>
                 </Menu.Item>
-                {isAdministrator() &&
-                <SubMenu key="sub1" icon={<AppstoreAddOutlined/>} title="Сайт">
-                    <Menu.Item key="sub1_1" icon={<QuestionOutlined/>}>Модуль 1</Menu.Item>
-                    <Menu.Item key="sub1_2" icon={<QuestionOutlined/>}>Модуль 2</Menu.Item>
-                </SubMenu>
-                }
+                <Menu.Item key="homeworks/my" icon={<BookOutlined/>}>
+                    {/*<Link to={'homeworks/my'}>Мої ДЗ</Link>*/}
+                    Мої домашні роботи
+                </Menu.Item>
+                {/*{isAdministrator() &&*/}
+                {/*<SubMenu key="sub1" icon={<AppstoreAddOutlined/>} title="Сайт">*/}
+                {/*    <Menu.Item key="sub1_1" icon={<QuestionOutlined/>}>Модуль 1</Menu.Item>*/}
+                {/*    <Menu.Item key="sub1_2" icon={<QuestionOutlined/>}>Модуль 2</Menu.Item>*/}
+                {/*</SubMenu>*/}
+                {/*}*/}
                 <SubMenu key="portal" icon={<ShopOutlined/>} title="Портал">
                     <Menu.Item key="subjects" icon={<BookOutlined/>}>
                         <Link to={'subjects'}>Предмети</Link>
@@ -128,9 +130,9 @@ export const AppMenu: FC = () => {
                         <Link to={'settings/my'}>Налаштування</Link>
                     </Menu.Item>
                 }
-                <Menu.Item key="site" icon={<UserOutlined/>}>
-                    <Link to={'/'}>На сайт</Link>
-                </Menu.Item>
+                {/*<Menu.Item key="site" icon={<UserOutlined/>}>*/}
+                {/*    <Link to={'/'}>На сайт</Link>*/}
+                {/*</Menu.Item>*/}
                 <Menu.Item key="logout" icon={<LogoutOutlined/>} onClick={() => dispatch(authActions.logout())}>
                     Вийти
                 </Menu.Item>

@@ -1,13 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link, useSearchParams} from 'react-router-dom';
-import {GET_MY_SUBJECTS_QUERY, GetMySubjectsData, GetMySubjectsVars} from '../../../../../../gql/modules/subjects/subjects.queries';
+import {
+    GET_MY_SUBJECTS_QUERY,
+    GetMySubjectsData,
+    GetMySubjectsVars,
+} from '../../../../../../gql/modules/subjects/subjects.queries';
 import {Subject} from '../../../../../../gql/modules/subjects/subjects.types';
-import {REMOVE_SUBJECT_MUTATION, RemoveSubjectData, RemoveSubjectVars} from '../../../../../../gql/modules/subjects/subjects.mutations';
+import {
+    REMOVE_SUBJECT_MUTATION,
+    RemoveSubjectData,
+    RemoveSubjectVars,
+} from '../../../../../../gql/modules/subjects/subjects.mutations';
 import Title from 'antd/es/typography/Title';
 import {useAppSelector} from '../../../../../../store/store';
 import debounce from 'lodash.debounce';
@@ -51,7 +59,8 @@ export const SubjectsMyIndex = () => {
                     <div>{subject?.name}</div>
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
-                        {subject.teachersHaveAccessCreatePosts.some(t => t.id === currentUser?.id) && <Tag color={'cyan'}>Надано доступ</Tag>}
+                        {subject.teachersHaveAccessCreatePosts.some(t => t.id === currentUser?.id) &&
+                        <Tag color={'cyan'}>Надано доступ</Tag>}
                     </div>
                 </Space>
             ),
@@ -66,12 +75,13 @@ export const SubjectsMyIndex = () => {
                         <Tag>{grade.name}</Tag>
                     </Link>
                 ))
-            )
+            ),
         },
         {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text: string, subject: Subject) => (
                 <ButtonsVUR viewUrl={`../${subject?.id}`} updateUrl={`../update/${subject?.id}`}
                             onRemove={() => onRemove(subject?.id)}/>

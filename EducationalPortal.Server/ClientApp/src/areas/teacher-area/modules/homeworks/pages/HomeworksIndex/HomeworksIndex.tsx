@@ -11,6 +11,7 @@ import {Homework, HomeworkStatus} from '../../../../../../gql/modules/homeworks/
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {Order} from '../../../../../../gql/enums/order';
 import {homeworkStatusToTag} from '../../../../../../convertors/enumToTagConvertor';
+import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
 
 export const HomeworksIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -72,7 +73,7 @@ export const HomeworksIndex = () => {
             render: (text, homework) => homeworkStatusToTag(text),
             filters: (Object.values(HomeworkStatus) as Array<HomeworkStatus>).map((value) => ({
                 value: value,
-                text: Object.keys(HomeworkStatus)[Object.values(HomeworkStatus).indexOf(value)],
+                text: homeworkStatusWithTranslateToString(value),
             })),
             defaultFilteredValue: searchParams.get('statuses')?.split('|'),
         },
@@ -87,6 +88,7 @@ export const HomeworksIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text, homework) => (
                 // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}

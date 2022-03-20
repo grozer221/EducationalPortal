@@ -26,9 +26,9 @@ export const StudentMenu: FC = () => {
             <Menu.Item key="settings/my" icon={<SettingOutlined/>}>
                 <Link to={'settings/my'}>Налаштування</Link>
             </Menu.Item>
-            <Menu.Item key="site" icon={<UserOutlined/>}>
-                <Link to={'/'}>На сайт</Link>
-            </Menu.Item>
+            {/*<Menu.Item key="site" icon={<UserOutlined/>}>*/}
+            {/*    <Link to={'/'}>На сайт</Link>*/}
+            {/*</Menu.Item>*/}
             <Menu.Item key="140" icon={<LogoutOutlined/>} onClick={() => dispatch(authActions.logout())}>
                 Вийти
             </Menu.Item>

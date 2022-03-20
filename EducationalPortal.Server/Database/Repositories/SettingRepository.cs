@@ -39,14 +39,15 @@ namespace EducationalPortal.Server.Database.Repositories
             if (checkUniqueSettingName.Count == 0)
             {
                 await base.CreateAsync(newSetting);
+                return newSetting;
             }
             else
             {
                 checkUniqueSettingName[0].Name = newSetting.Name;
                 checkUniqueSettingName[0].Value = newSetting.Value;
                 await _context.SaveChangesAsync();
+                return checkUniqueSettingName[0];
             }
-            return checkUniqueSettingName[0];
         }
     }
 }

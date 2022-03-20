@@ -42,6 +42,7 @@ export const GradesView = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text, user) => (
                 // isAdministrator()
                 //     ? <ButtonsVUR viewUrl={`../../students/${user.id}`} updateUrl={`../../students/update/${user.id}`}/>

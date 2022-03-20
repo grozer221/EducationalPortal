@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Layout} from 'antd';
 import {Navigate, Route, Routes} from 'react-router-dom';
-import {AppMenu} from '../components/AppMenu/AppMenu';
+import {TeacherMenu} from '../components/TeacherMenu/TeacherMenu';
 import {AppBreadcrumb} from '../components/AppBreadcrumb/AppBreadcrumb';
 import {Error} from '../../../components/Error/Error';
 import {HomeworksIndex} from '../modules/homeworks/pages/HomeworksIndex/HomeworksIndex';
@@ -37,7 +37,7 @@ const {Content} = Layout;
 export const TeacherLayout: FC = () => {
     return (
         <Layout className={s.layout}>
-            <AppMenu/>
+            <TeacherMenu/>
             <Layout className="site-layout">
                 <Content className={s.content}>
                     <AppBreadcrumb/>

@@ -58,6 +58,7 @@ export const EducationalYearsView = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text: string, subject: Subject) => (
                 // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
                 //     ? <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`} updateUrl={`../../subjects/update/${subject?.id}`}

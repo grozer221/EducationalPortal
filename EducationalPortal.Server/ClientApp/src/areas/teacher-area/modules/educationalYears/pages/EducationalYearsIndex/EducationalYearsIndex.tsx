@@ -82,6 +82,7 @@ export const EducationalYearsIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
+            width: '130px',
             render: (text: string, educationalYear: EducationalYear) => (
                 // isAdministrator()
                 //     ? <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}

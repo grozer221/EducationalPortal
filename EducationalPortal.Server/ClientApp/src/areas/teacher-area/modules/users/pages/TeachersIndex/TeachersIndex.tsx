@@ -58,7 +58,8 @@ export const TeachersIndex = () => {
             title: 'Дії',
             dataIndex: 'actions',
             key: 'actions',
-            render: (text: string, teacher) => (
+            width: '130px',
+            render: (text, teacher) => (
                 // isAdministrator()
                 //     ? <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
                 //                   onRemove={() => onRemove(teacher?.id)}/>

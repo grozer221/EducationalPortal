@@ -10,22 +10,20 @@ import {ClientLayout} from './areas/client-area/ClientLayout/ClientLayout';
 import {ME_QUERY, MeData, MeVars} from './gql/modules/auth/auth.queries';
 import 'antd/dist/antd.css';
 import './App.css';
-import {
-    GET_SETTINGS_QUERY,
-    GetSettingsData,
-    GetSettingsVars,
-} from './gql/modules/settings/settings.queries';
+import {GET_SETTINGS_QUERY, GetSettingsData, GetSettingsVars} from './gql/modules/settings/settings.queries';
 import {client} from './gql/client';
 import {AppName, settingsActions} from './store/settings.slice';
 import {WithStudentRoleOrRender} from './hocs/WithStudentRoleOrRender';
 import {StudentLayout} from './areas/student-area/StudentLayout/StudentLayout';
 import {Error} from './components/Error/Error';
+import {Role} from './gql/modules/users/users.types';
 
 export const App = () => {
     const dispatch = useAppDispatch();
     const [isMeDone, setMeDone] = useState(false);
     const [isGetSettingsDone, setIsGetSettingsDone] = useState(false);
     const isAuth = useAppSelector(s => s.auth.isAuth);
+    const me = useAppSelector(s => s.auth.me);
 
     useEffect(() => {
         client.query<MeData, MeVars>({query: ME_QUERY})
@@ -48,8 +46,6 @@ export const App = () => {
             });
     }, []);
 
-    const settings = useAppSelector(s => s.settings.settings);
-
     if (!isMeDone || !isGetSettingsDone)
         return <Loading/>;
 
@@ -66,7 +62,12 @@ export const App = () => {
                     <StudentLayout/>
                 </WithStudentRoleOrRender>
             }/>
-            <Route path="/*" element={<ClientLayout/>}/>
+            {/*<Route path="/*" element={<ClientLayout/>}/>*/}
+            <Route path="/*" element={isAuth
+                ? me?.user.role === Role.Student
+                    ? <StudentLayout/>
+                    : <TeacherLayout/>
+                : <Navigate to={'/login'}/>}/>
         </Routes>
     );
 };
