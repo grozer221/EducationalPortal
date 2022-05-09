@@ -1,61 +1,53 @@
-﻿using EducationalPortal.Server.Database.Abstractions;
-using EducationalPortal.Server.Database.Enums;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Abstractions;
+using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
-using EducationalPortal.Server.GraphQL.Modules.Users.DTO;
 using GraphQL;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UsersQueries : ObjectGraphType, IQueryMarker
     {
-        public UsersQueries(UserRepository usersRepository)
+        public UsersQueries(IUserRepository usersRepository)
         {
             Field<NonNullGraphType<GetEntitiesResponseType<UserType, UserModel>>, GetEntitiesResponse<UserModel>>()
                 .Name("GetUsers")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Users")
                 .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Users")
                 .Argument<ListGraphType<UserRoleType>, List<UserRoleEnum>?>("Roles", "Argument for get Users")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
                     List<UserRoleEnum>? roles = context.GetArgument<List<UserRoleEnum>?>("Roles");
-                    if (roles == null || roles.Count() == 0)
-                        return usersRepository.Get(u => u.LastName, Order.Ascend, page, 
-                            u => (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                            || (u.LastName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                            || (u.MiddleName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                            || (u.Login?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                            || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                        );
-                    else
-                        return usersRepository.Get(u => u.LastName, Order.Ascend, page, 
-                            u => roles.Contains(u.Role) 
-                            && (
-                                (u.FirstName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                                || (u.LastName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                                || (u.MiddleName?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                                || (u.Login?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                                || (u.Email?.Contains(like, StringComparison.OrdinalIgnoreCase) ?? false)
-                            ));
+                    Expression<Func<UserModel, bool>> condition = roles == null || roles.Count == 0
+                        ? u => (u.FirstName == null ? false : u.FirstName.ToLower().Contains(like.ToLower()))
+                            || (u.LastName == null ? false : u.LastName.ToLower().Contains(like.ToLower()))
+                            || (u.MiddleName == null ? false : u.MiddleName.ToLower().Contains(like.ToLower()))
+                            || (u.Login == null ? false : u.Login.ToLower().Contains(like.ToLower()))
+                            || (u.Email == null ? false : u.Email.ToLower().Contains(like.ToLower()))
+                        : u => roles.Contains(u.Role) && (
+                            (u.FirstName == null ? false : u.FirstName.ToLower().Contains(like.ToLower()))
+                            || (u.LastName == null ? false : u.LastName.ToLower().Contains(like.ToLower()))
+                            || (u.MiddleName == null ? false : u.MiddleName.ToLower().Contains(like.ToLower()))
+                            || (u.Login == null ? false : u.Login.ToLower().Contains(like.ToLower()))
+                            || (u.Email == null ? false : u.Email.ToLower().Contains(like.ToLower())));
+
+                    return await usersRepository.WhereAsync(u => u.LastName, Order.Ascend, page, condition);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("GetUser")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get User")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return usersRepository.GetById(id);
+                    return await usersRepository.GetByIdAsync(id);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
         }

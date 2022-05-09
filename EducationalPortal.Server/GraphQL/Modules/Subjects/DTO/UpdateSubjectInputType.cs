@@ -1,9 +1,4 @@
-﻿using EducationalPortal.Server.Database.Models;
-using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Subjects.DTO
 {

@@ -1,0 +1,17 @@
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.PostgreSql.deps.json
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.PostgreSql.runtimeconfig.json
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.PostgreSql.dll
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.PostgreSql.pdb
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.Business.dll
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\bin\Debug\net6.0\EducationalPortal.Business.pdb
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.csproj.AssemblyReference.cache
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.AssemblyInfoInputs.cache
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.AssemblyInfo.cs
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.csproj.CoreCompileInputs.cache
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.csproj.CopyComplete
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.dll
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\refint\EducationalPortal.PostgreSql.dll
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.pdb
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\EducationalPortal.PostgreSql.genruntimeconfig.cache
+D:\Projects\EducationalPortal\EducationalPortal.PostgreSql\obj\Debug\net6.0\ref\EducationalPortal.PostgreSql.dll

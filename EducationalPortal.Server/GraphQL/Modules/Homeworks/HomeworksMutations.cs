@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO;
@@ -10,7 +10,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworksMutations : ObjectGraphType, IMutationMarker
     {
-        public HomeworksMutations(HomeworkRepository homeworkRepository, SubjectPostRepository subjectPostRepository, IHttpContextAccessor httpContextAccessor)
+        public HomeworksMutations(IHomeworkRepository homeworkRepository, ISubjectPostRepository subjectPostRepository, IHttpContextAccessor httpContextAccessor)
         {
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("CreateHomework")

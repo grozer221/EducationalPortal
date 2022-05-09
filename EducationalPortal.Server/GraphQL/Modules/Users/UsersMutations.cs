@@ -1,20 +1,16 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Users.DTO;
 using GraphQL;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UsersMutations : ObjectGraphType, IMutationMarker
     {
-        public UsersMutations(UserRepository usersRepository)
+        public UsersMutations(IUserRepository usersRepository)
         {
             Field<NonNullGraphType<UserType>, UserModel>()
                 .Name("CreateUser")

@@ -1,9 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Business.Models;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Grades.DTO
 {

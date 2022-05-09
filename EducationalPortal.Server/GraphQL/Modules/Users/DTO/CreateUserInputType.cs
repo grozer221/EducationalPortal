@@ -1,10 +1,6 @@
-﻿using EducationalPortal.Server.Database.Enums;
-using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Users.DTO
 {

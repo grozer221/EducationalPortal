@@ -1,0 +1,12 @@
+D:\Projects\EducationalPortal\EducationalPortal.Business\bin\Debug\net6.0\EducationalPortal.Business.deps.json
+D:\Projects\EducationalPortal\EducationalPortal.Business\bin\Debug\net6.0\EducationalPortal.Business.dll
+D:\Projects\EducationalPortal\EducationalPortal.Business\bin\Debug\net6.0\EducationalPortal.Business.pdb
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.csproj.AssemblyReference.cache
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.AssemblyInfoInputs.cache
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.AssemblyInfo.cs
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.csproj.CoreCompileInputs.cache
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.dll
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\refint\EducationalPortal.Business.dll
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\EducationalPortal.Business.pdb
+D:\Projects\EducationalPortal\EducationalPortal.Business\obj\Debug\net6.0\ref\EducationalPortal.Business.dll

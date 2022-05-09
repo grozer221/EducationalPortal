@@ -1,7 +1,6 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Business.Models;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using GraphQL.Types;
-using Newtonsoft.Json;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Settings
 {

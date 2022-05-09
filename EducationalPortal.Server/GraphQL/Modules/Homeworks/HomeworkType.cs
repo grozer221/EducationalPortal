@@ -1,17 +1,16 @@
-﻿using EducationalPortal.Server.Database.Enums;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.SubjectPosts;
 using EducationalPortal.Server.GraphQL.Modules.Users;
 using GraphQL.Types;
-using Newtonsoft.Json;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworkType : BaseType<HomeworkModel>
     {
-        public HomeworkType(SubjectPostRepository subjectPostRepository, UserRepository userRepository) : base()
+        public HomeworkType(ISubjectPostRepository subjectPostRepository, IUserRepository userRepository) : base()
         {
             Field<StringGraphType, string?>()
                .Name("Text")
@@ -35,7 +34,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<SubjectPostType, SubjectPostModel?>()
                .Name("SubjectPost")
-               .Resolve(context => subjectPostRepository.GetById(context.Source.SubjectPostId));
+               .ResolveAsync(async context => await subjectPostRepository.GetByIdAsync(context.Source.SubjectPostId));
             
             Field<IdGraphType, Guid?>()
                .Name("StudentId")
@@ -43,7 +42,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<UserType, UserModel?>()
                .Name("Student")
-               .Resolve(context => userRepository.GetById(context.Source.StudentId));
+               .ResolveAsync(async context => await userRepository.GetByIdAsync(context.Source.StudentId));
         }
     }
 
