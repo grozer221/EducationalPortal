@@ -1,6 +1,6 @@
-﻿using EducationalPortal.Server.Database.Enums;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Subjects;
 using EducationalPortal.Server.GraphQL.Modules.Users;
@@ -10,7 +10,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 {
     public class SubjectPostType : BaseType<SubjectPostModel>
     {
-        public SubjectPostType(UserRepository usersRepository, SubjectRepository subjectRepository) : base()
+        public SubjectPostType(IUserRepository usersRepository, ISubjectRepository subjectRepository) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Title")
@@ -30,7 +30,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
             
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .Resolve(context => usersRepository.GetByIdOrDefault(context.Source.TeacherId));
+               .ResolveAsync(async context => await usersRepository.GetByIdOrDefaultAsync(context.Source.TeacherId));
 
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("SubjectId")
@@ -38,7 +38,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("Subject")
-                .Resolve(context => subjectRepository.GetById(context.Source.SubjectId));
+                .ResolveAsync(async context => await subjectRepository.GetByIdAsync(context.Source.SubjectId));
         }
     }
     public class PostTypeType : EnumerationGraphType<PostType>

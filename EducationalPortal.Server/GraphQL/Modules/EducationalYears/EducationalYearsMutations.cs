@@ -1,20 +1,16 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO;
 using GraphQL;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
 {
     public class EducationalYearsMutations : ObjectGraphType, IMutationMarker
     {
-        public EducationalYearsMutations(EducationalYearRepository educationalYearRepository)
+        public EducationalYearsMutations(IEducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                 .Name("CreateEducationalYear")

@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Grades.DTO;
@@ -10,7 +10,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
 {
     public class GradesMutations : ObjectGraphType, IMutationMarker
     {
-        public GradesMutations(GradeRepository gradeRepository)
+        public GradesMutations(IGradeRepository gradeRepository)
         {
             Field<NonNullGraphType<GradeType>, GradeModel>()
                 .Name("CreateGrade")

@@ -1,5 +1,5 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Settings.DTO;
@@ -10,7 +10,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Settings
 {
     public class SettingsMutations : ObjectGraphType, IMutationMarker
     {
-        public SettingsMutations(SettingRepository settingRepository)
+        public SettingsMutations(ISettingRepository settingRepository)
         {
             Field<NonNullGraphType<SettingType>, SettingModel>()
                 .Name("CreateOrUpdateSetting")

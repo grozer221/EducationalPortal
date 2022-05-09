@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Server.Database.Models;
+﻿using EducationalPortal.Business.Models;
 using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO

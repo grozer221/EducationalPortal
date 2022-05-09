@@ -1,6 +1,6 @@
-﻿using EducationalPortal.Server.Database.Abstractions;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Abstractions;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Users;
@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
 {
     public class GradeType : BaseType<GradeModel>
     {
-        public GradeType(UserRepository userRepository) : base()
+        public GradeType(IUserRepository userRepository) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
@@ -20,11 +20,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
             Field<NonNullGraphType<GetEntitiesResponseType<UserType, UserModel>>, GetEntitiesResponse<UserModel>>()
                .Name("Students")
                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects Posts")
-               .Resolve(context =>
+               .ResolveAsync(async context =>
                {
                    int page = context.GetArgument<int>("Page");
                    Guid gradeId = context.Source.Id;
-                   return userRepository.GetOrDefault(s => s.CreatedAt, Order.Descend, page, p => p.GradeId == gradeId);
+                   return await userRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, p => p.GradeId == gradeId);
                })
                .AuthorizeWith(AuthPolicies.Teacher);
         }

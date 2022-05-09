@@ -1,27 +1,23 @@
-﻿using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
+using EducationalPortal.Server.Services;
 using GraphQL;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Auth
 {
     public class AuthQueries : ObjectGraphType, IQueryMarker
     {
-        public AuthQueries(UserRepository usersRepository, IHttpContextAccessor httpContextAccessor, AuthService authService)
+        public AuthQueries(IUserRepository usersRepository, IHttpContextAccessor httpContextAccessor, AuthService authService)
         {
             Field<NonNullGraphType<AuthResponseType>, AuthResponse>()
                 .Name("Me")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     string userLogin = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultLoginClaimType).Value;
-                    UserModel currentUser = usersRepository.GetByLogin(userLogin);
+                    UserModel currentUser = await usersRepository.GetByLoginAsync(userLogin);
                     return new AuthResponse()
                     {
                         Token = authService.GenerateAccessToken(currentUser.Id, currentUser.Login, currentUser.Role),

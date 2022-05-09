@@ -1,4 +1,4 @@
-﻿using EducationalPortal.Server.Database.Abstractions;
+﻿using EducationalPortal.Business.Abstractions;
 using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Abstraction

@@ -1,21 +1,17 @@
-﻿using EducationalPortal.Server.Database.Abstractions;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Abstractions;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Subjects;
 using GraphQL;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
 {
     public class EducationalYearType : BaseType<EducationalYearModel>
     {
-        public EducationalYearType(SubjectRepository subjectRepository) : base()
+        public EducationalYearType(ISubjectRepository subjectRepository) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("Name")
@@ -36,11 +32,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
             Field<GetEntitiesResponseType<SubjectType, SubjectModel>, GetEntitiesResponse<SubjectModel>>()
                 .Name("Subjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     Guid educationalYearId = context.Source.Id;
-                    return subjectRepository.GetOrDefault(s => s.CreatedAt, Order.Descend, page, s => s.EducationalYearId == educationalYearId);
+                    return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.EducationalYearId == educationalYearId);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
         }

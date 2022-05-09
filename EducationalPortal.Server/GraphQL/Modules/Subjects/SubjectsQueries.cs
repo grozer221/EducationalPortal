@@ -1,31 +1,25 @@
-﻿using EducationalPortal.Server.Database.Abstractions;
-using EducationalPortal.Server.Database.Enums;
-using EducationalPortal.Server.Database.Models;
-using EducationalPortal.Server.Database.Repositories;
+﻿using EducationalPortal.Business.Abstractions;
+using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
-using EducationalPortal.Server.GraphQL.Modules.EducationalYears.DTO;
-using EducationalPortal.Server.GraphQL.Modules.Subjects.DTO;
 using GraphQL;
 using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectsQueries : ObjectGraphType, IQueryMarker
     {
-        public SubjectsQueries(SubjectRepository subjectRepository, UserRepository userRepository, IHttpContextAccessor httpContextAccessor, EducationalYearRepository educationalYearRepository)
+        public SubjectsQueries(ISubjectRepository subjectRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IEducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("GetSubject")
                 .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for get Subject")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     Guid id = context.GetArgument<Guid>("Id");
-                    return subjectRepository.GetById(id);
+                    return await subjectRepository.GetByIdAsync(id);
                 })
                 .AuthorizeWith(AuthPolicies.Authenticated);
 
@@ -33,14 +27,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .Name("GetSubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                 .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get My Subjects")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
-                    return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page, s => 
+                    EducationalYearModel currentEducationalYear = await educationalYearRepository.GetCurrentAsync();
+                    return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page, s => 
                         s.EducationalYearId == currentEducationalYear.Id
-                        && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                        && s.Name.ToLower().Contains(like.ToLower())
                     );
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
@@ -49,11 +43,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                 .Name("GetMySubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get My Subjects")
                 .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get My Subjects")
-                .Resolve(context =>
+                .ResolveAsync(async context =>
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    EducationalYearModel currentEducationalYear = educationalYearRepository.GetCurrent();
+                    EducationalYearModel currentEducationalYear = await educationalYearRepository.GetCurrentAsync();
                     Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
                     UserRoleEnum currentUserRole = (UserRoleEnum)Enum.Parse(
                         typeof(UserRoleEnum),
@@ -62,18 +56,18 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     switch (currentUserRole)
                     {
                         case UserRoleEnum.Student:
-                            UserModel currentUser = userRepository.GetById(currentUserId);
-                            return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page,
+                            UserModel currentUser = await userRepository.GetByIdAsync(currentUserId);
+                            return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page,
                                 s => s.GradesHaveAccessRead.Any(g => g.Id == currentUser.GradeId)
-                                && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                                && s.Name.ToLower().Contains(like.ToLower())
                                 && s.EducationalYearId == currentEducationalYear.Id,
                                 s => s.GradesHaveAccessRead
                             );
                         case UserRoleEnum.Teacher:
                         case UserRoleEnum.Administrator:
-                            return subjectRepository.Get(s => s.CreatedAt, Order.Descend, page,
+                            return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page,
                                 s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
-                                && s.Name.Contains(like, StringComparison.OrdinalIgnoreCase)
+                                && s.Name.ToLower().Contains(like.ToLower())
                                 && s.EducationalYearId == currentEducationalYear.Id,
                                 s => s.TeachersHaveAccessCreatePosts
                             );
