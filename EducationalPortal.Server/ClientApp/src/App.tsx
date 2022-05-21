@@ -26,6 +26,7 @@ export const App = () => {
     const me = useAppSelector(s => s.auth.me);
 
     useEffect(() => {
+        console.log(process.env.ASPNETCORE_HTTPS_PORT)
         client.query<MeData, MeVars>({query: ME_QUERY})
             .then(response => {
                 dispatch(authActions.login({me: response.data.me}));

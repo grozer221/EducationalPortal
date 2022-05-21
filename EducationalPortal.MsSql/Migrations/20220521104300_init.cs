@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EducationalPortal.PostgreSql.Migrations
+namespace EducationalPortal.MsSql.Migrations
 {
     public partial class init : Migration
     {
@@ -13,13 +13,13 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "EducationalYears",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsCurrent = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,10 +30,10 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Grades",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,11 +44,11 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Settings",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,20 +59,20 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    MiddleName = table.Column<string>(type: "text", nullable: true),
-                    Login = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: true),
-                    IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    GradeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Login = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GradeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,13 +89,13 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Subjects",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: true),
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: true),
-                    EducationalYearId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TeacherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    EducationalYearId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,8 +117,8 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "GradeModelSubjectModel",
                 columns: table => new
                 {
-                    GradesHaveAccessReadId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubjectsHaveAccessReadId = table.Column<Guid>(type: "uuid", nullable: false)
+                    GradesHaveAccessReadId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectsHaveAccessReadId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,14 +141,14 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "SubjectModelUserModel",
                 columns: table => new
                 {
-                    SubjectHaveAccessCreatePostsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TeachersHaveAccessCreatePostsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    SubjectHaveAccessCreatePostsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeachersHaveAccessCreatePostsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SubjectModelUserModel", x => new { x.SubjectHaveAccessCreatePostsId, x.TeachersHaveAccessCreatePostsId });
                     table.ForeignKey(
-                        name: "FK_SubjectModelUserModel_Subjects_SubjectHaveAccessCreatePosts~",
+                        name: "FK_SubjectModelUserModel_Subjects_SubjectHaveAccessCreatePostsId",
                         column: x => x.SubjectHaveAccessCreatePostsId,
                         principalTable: "Subjects",
                         principalColumn: "Id",
@@ -165,14 +165,14 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "SubjectPosts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    SubjectId = table.Column<Guid>(type: "uuid", nullable: true),
-                    TeacherId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    SubjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TeacherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -194,15 +194,15 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Homeworks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: true),
-                    Mark = table.Column<string>(type: "text", nullable: true),
-                    ReviewResult = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    StudentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SubjectPostId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mark = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReviewResult = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SubjectPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,12 +225,13 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    HomeworkId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HomeworkId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,6 +241,11 @@ namespace EducationalPortal.PostgreSql.Migrations
                         column: x => x.HomeworkId,
                         principalTable: "Homeworks",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Files_Users_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -247,6 +253,11 @@ namespace EducationalPortal.PostgreSql.Migrations
                 table: "EducationalYears",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_CreatorId",
+                table: "Files",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Files_HomeworkId",
@@ -309,7 +320,8 @@ namespace EducationalPortal.PostgreSql.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
-                unique: true);
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_GradeId",

@@ -14,6 +14,7 @@ import Title from 'antd/es/typography/Title';
 import {ukDateFormat} from '../../../../../../utils/formats';
 import 'moment/locale/uk';
 
+// @ts-ignore
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
 type FormValues = {

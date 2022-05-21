@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace EducationalPortal.PostgreSql.Abstractions
+namespace EducationalPortal.MsSql.Abstractions
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
@@ -55,7 +55,7 @@ namespace EducationalPortal.PostgreSql.Abstractions
         {
             return includes.Aggregate(_context.Set<T>().AsQueryable(),
                 (current, include) => current.Include(include))
-                    .Where(condition).ToListAsync();
+                .Where(condition).ToListAsync();
         }
 
         public virtual async Task<GetEntitiesResponse<T>> WhereAsync(Expression<Func<T, object>> predicate, Order order, int page, Expression<Func<T, bool>>? condition = null, params Expression<Func<T, object>>[] includes)
@@ -70,8 +70,7 @@ namespace EducationalPortal.PostgreSql.Abstractions
         {
             IQueryable<T> entities = includes.Aggregate(
                 _context.Set<T>().AsQueryable(),
-                (current, include) => current.Include(include)
-            );
+                (current, include) => current.Include(include));
 
             if (condition != null)
                 entities = entities.Where(condition);

@@ -51,7 +51,7 @@ export const SubjectsIndex = () => {
                     <div>{subject?.name}</div>
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
-                        {subject.teachersHaveAccessCreatePosts.some(t => t.id === currentUser?.id) &&
+                        {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&
                         <Tag color={'cyan'}>Надано доступ</Tag>}
                     </div>
                 </Space>

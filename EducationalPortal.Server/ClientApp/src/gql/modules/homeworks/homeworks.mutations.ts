@@ -8,6 +8,7 @@ export type CreateHomeworkVars = { createHomeworkInputType: createHomeworkInputT
 export type createHomeworkInputType = {
     text: string,
     subjectPostId: string,
+    files: File[],
 }
 
 export const CREATE_HOMEWORK_MUTATION = gql`

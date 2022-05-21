@@ -3,13 +3,12 @@ using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EducationalPortal.PostgreSql
+namespace EducationalPortal.MsSql
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             Database.Migrate();
         }
 
@@ -25,7 +24,7 @@ namespace EducationalPortal.PostgreSql
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseNpgsql(GetConnectionString());
+            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_URL") ?? @"Data Source=(localdb)\ProjectModels;Initial Catalog=EducationalPortal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -80,25 +79,6 @@ namespace EducationalPortal.PostgreSql
                 }
                 ((BaseModel)entity.Entity).UpdatedAt = now;
             }
-        }
-
-        private string GetConnectionString()
-        {
-            string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            if (string.IsNullOrEmpty(connectionString))
-                return connectionString = "Host=localhost;Port=5432;Database=educational-portal;Username=postgres;Password=";
-
-            connectionString = connectionString.Split("//")[1];
-            string user = connectionString.Split(':')[0];
-            connectionString = connectionString.Replace(user, "").Substring(1);
-            string password = connectionString.Split('@')[0];
-            connectionString = connectionString.Replace(password, "").Substring(1);
-            string server = connectionString.Split(':')[0];
-            connectionString = connectionString.Replace(server, "").Substring(1);
-            string port = connectionString.Split('/')[0];
-            string database = connectionString.Split('/')[1];
-            connectionString = $"Host={server};Port={port};Database={database};Username={user};Password={password}";
-            return connectionString;
         }
     }
 }

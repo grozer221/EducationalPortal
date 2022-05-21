@@ -51,7 +51,8 @@ namespace EducationalPortal.Server.Extensions
             services.AddTransient<IQueryMarker, UsersQueries>();
             services.AddTransient<IMutationMarker, UsersMutations>();
 
-            services.AddTransient<AppSchema>();
+            services.AddTransient<AppSchema>()
+                .AddGraphQLUpload();
             services
                 .AddGraphQL(options =>
                 {
@@ -106,6 +107,7 @@ namespace EducationalPortal.Server.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<AuthService>();
+            services.AddTransient<CloudinaryService>();
             return services;
         }
     }

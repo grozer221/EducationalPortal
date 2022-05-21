@@ -1,8 +1,8 @@
 ﻿using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
-using EducationalPortal.PostgreSql.Abstractions;
+using EducationalPortal.MsSql.Abstractions;
 
-namespace EducationalPortal.PostgreSql.Repositories
+namespace EducationalPortal.MsSql.Repositories
 {
     public class UserRepository : BaseRepository<UserModel>, IUserRepository
     {

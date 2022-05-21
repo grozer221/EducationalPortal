@@ -11,10 +11,10 @@ const authLink = setContext((_, {headers}) => ({
     },
 }));
 
-const httpLink = new HttpLink({uri: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? `https://localhost:7054/graphql` : `./graphql`});
+const httpLink = new HttpLink({uri: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? `https://localhost:7246/graphql` : `./graphql`});
 
 const wsLink = new WebSocketLink({
-    uri: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? `wss://localhost:7054/graphql` : `wss://${window.location.host}/graphql`,
+    uri: !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ? `wss://localhost:7246/graphql` : `wss://${window.location.host}/graphql`,
     options: {
         reconnect: true,
         connectionParams: {

@@ -42,8 +42,8 @@ export const SubjectsView = () => {
                 <tr>
                     <td>Вчителі:</td>
                     <td>
-                        {subject?.teachersHaveAccessCreatePosts.map(teacher => (
-                            <Tag>{teacher?.lastName} {teacher.firstName}</Tag>
+                        {subject?.teachersHaveAccessCreatePosts?.map(teacher => (
+                            <Tag key={teacher.id}>{teacher?.lastName} {teacher.firstName}</Tag>
                         ))}
                     </td>
                 </tr>
@@ -62,7 +62,7 @@ export const SubjectsView = () => {
                 <tr>
                     <td>Класи:</td>
                     <td>
-                        {subject?.gradesHaveAccessRead.map(grade => <Tag>{grade?.name}</Tag>)}
+                        {subject?.gradesHaveAccessRead.map(grade => <Tag key={grade.id}>{grade?.name}</Tag>)}
                     </td>
                 </tr>
                 </tbody>

@@ -8,5 +8,7 @@ namespace EducationalPortal.Business.Models
         public string Path { get; set; }
         public Guid? HomeworkId { get; set; }
         public virtual HomeworkModel? Homework { get; set; }
+        public Guid? CreatorId { get; set; }
+        public virtual UserModel? Creator { get; set; }
     }
 }

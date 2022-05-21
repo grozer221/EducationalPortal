@@ -1,9 +1,9 @@
 ﻿using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
-using EducationalPortal.PostgreSql.Abstractions;
+using EducationalPortal.MsSql.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace EducationalPortal.PostgreSql.Repositories
+namespace EducationalPortal.MsSql.Repositories
 {
     public class SubjectRepository : BaseRepository<SubjectModel>, ISubjectRepository
     {

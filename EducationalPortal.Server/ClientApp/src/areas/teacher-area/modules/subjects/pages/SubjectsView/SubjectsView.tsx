@@ -46,7 +46,7 @@ export const SubjectsView = () => {
                 <tr>
                     <td>Вчителі:</td>
                     <td>
-                        {subject?.teachersHaveAccessCreatePosts.map(teacher => (
+                        {subject?.teachersHaveAccessCreatePosts?.map(teacher => (
                             <Tag>
                                 <Link to={`../../teachers/${teacher.id}`}>{teacher?.lastName} {teacher.firstName}</Link>
                             </Tag>

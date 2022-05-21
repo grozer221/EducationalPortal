@@ -1,9 +1,9 @@
-﻿using EducationalPortal.Business.Models;
-using GraphQL.Types;
+﻿using GraphQL.Types;
+using GraphQL.Upload.AspNetCore;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO
 {
-    public class CreateHomeworkInputType : InputObjectGraphType<HomeworkModel>
+    public class CreateHomeworkInputType : InputObjectGraphType<CreateHomeworkInput>
     {
         public CreateHomeworkInputType()
         {
@@ -14,6 +14,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("SubjectPostId")
                .Resolve(context => context.Source.SubjectPostId);
+            
+            Field<ListGraphType<UploadGraphType>, IEnumerable<IFormFile>?>()
+               .Name("Files")
+               .Resolve(context => context.Source.Files);
         }
     }
 }

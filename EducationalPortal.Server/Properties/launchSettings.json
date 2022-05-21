@@ -1,24 +1,25 @@
-{
+﻿{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:12755",
-      "sslPort": 44318
+      "applicationUrl": "http://localhost:54105",
+      "sslPort": 44381
     }
   },
   "profiles": {
     "EducationalPortal.Server": {
       "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:7246;http://localhost:5246",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
-        "AuthValidIssuer": "AuthValidIssuer",
         "AuthValidAudience": "AuthValidAudience",
-        "AuthIssuerSigningKey": "AuthIssuerSigningKey"
-      },
-      "applicationUrl": "https://localhost:7054;http://localhost:5054"
+        "AuthValidIssuer": "AuthValidIssuer",
+        "AuthIssuerSigningKey": "AuthIssuerSigningKey",
+        "CLOUDINARY_URL": "cloudinary://747821446766422:jvKQAwD9q3RpMBfwiXog7W7g4cw@hoeh3kagi"
+      }
     },
     "IIS Express": {
       "commandName": "IISExpress",

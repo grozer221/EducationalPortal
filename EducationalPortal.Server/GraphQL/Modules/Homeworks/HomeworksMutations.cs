@@ -1,8 +1,10 @@
 ﻿using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
+using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO;
+using EducationalPortal.Server.Services;
 using GraphQL;
 using GraphQL.Types;
 
@@ -10,18 +12,33 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworksMutations : ObjectGraphType, IMutationMarker
     {
-        public HomeworksMutations(IHomeworkRepository homeworkRepository, ISubjectPostRepository subjectPostRepository, IHttpContextAccessor httpContextAccessor)
+        public HomeworksMutations(IHomeworkRepository homeworkRepository, IHttpContextAccessor httpContextAccessor, CloudinaryService cloudinaryService, IFileRepository fileRepository)
         {
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("CreateHomework")
-                .Argument<NonNullGraphType<CreateHomeworkInputType>, HomeworkModel>("CreateHomeworkInputType", "Argument for create new Homework")
+                .Argument<NonNullGraphType<CreateHomeworkInputType>, CreateHomeworkInput>("CreateHomeworkInputType", "Argument for create new Homework")
                 .ResolveAsync(async (context) =>
                 {
-                    HomeworkModel homework = context.GetArgument<HomeworkModel>("CreateHomeworkInputType");
-                    //SubjectPostModel subjectPost = subjectPostRepository.GetById(homework.SubjectPostId);
-                    Guid currentStudentId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
+                    var createHomeworkInput = context.GetArgument<CreateHomeworkInput>("CreateHomeworkInputType");
+                    var homework = createHomeworkInput.ToModel();
+                    Guid currentStudentId = httpContextAccessor.HttpContext.GetUserId();
                     homework.StudentId = currentStudentId;
-                    return await homeworkRepository.CreateAsync(homework);
+                    await homeworkRepository.CreateAsync(homework);
+                    if(createHomeworkInput.Files != null)
+                    {
+                        foreach(var file in createHomeworkInput.Files)
+                        {
+                            var fileUplaod = new FileModel
+                            {
+                                Name = file.FileName,
+                                Path = await cloudinaryService.UploadFileAsync(file),
+                                HomeworkId = homework.Id,
+                                CreatorId = currentStudentId,
+                            };
+                            await fileRepository.CreateAsync(fileUplaod);
+                        }
+                    }
+                    return homework;
                 })
                 .AuthorizeWith(AuthPolicies.Student);
 

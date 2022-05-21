@@ -14,6 +14,7 @@ import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import {ukDateFormat} from '../../../../../../utils/formats';
 import 'moment/locale/uk';
 
+// @ts-ignore
 const cyrillicToTranslit = new CyrillicToTranslit({preset: 'uk'});
 
 type FormValues = {

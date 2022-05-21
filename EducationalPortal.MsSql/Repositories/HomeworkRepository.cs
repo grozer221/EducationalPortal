@@ -1,16 +1,16 @@
 ﻿using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
-using EducationalPortal.PostgreSql.Abstractions;
+using EducationalPortal.MsSql.Abstractions;
 
-namespace EducationalPortal.PostgreSql.Repositories
+namespace EducationalPortal.MsSql.Repositories
 {
     public class HomeworkRepository : BaseRepository<HomeworkModel>, IHomeworkRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext context;
         public HomeworkRepository(AppDbContext context) : base(context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public override async Task<HomeworkModel> CreateAsync(HomeworkModel homework)
@@ -26,7 +26,7 @@ namespace EducationalPortal.PostgreSql.Repositories
             addedHomework.Mark = newHomework.Mark;
             addedHomework.ReviewResult = newHomework.ReviewResult;
             addedHomework.Status = newHomework.Status;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return addedHomework;
         }
 

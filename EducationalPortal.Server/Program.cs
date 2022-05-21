@@ -1,4 +1,4 @@
-using EducationalPortal.PostgreSql.Extensions;
+using EducationalPortal.MsSql.Extensions;
 using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL;
 
@@ -10,14 +10,12 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyHeader()
                .WithMethods("POST")
-               .WithOrigins("https://localhost:44418");
+               .WithOrigins("https://localhost:44481");
     });
 });
 
 builder.Services.AddJwtAuthorization();
-
-builder.Services.AddPostgreSql();
-
+builder.Services.AddMsSql();
 builder.Services.AddGraphQLApi();
 builder.Services.AddServices();
 
@@ -42,7 +40,8 @@ app.UseAuthentication();
 
 app.UseWebSockets();
 app.UseGraphQLWebSockets<AppSchema>();
-app.UseGraphQL<AppSchema>();
+app.UseGraphQL<AppSchema>()
+    .UseGraphQLUpload<AppSchema>();
 app.UseGraphQLAltair();
 
 app.MapFallbackToFile("index.html"); ;
