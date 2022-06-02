@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 {
     public class SubjectPostType : BaseType<SubjectPostModel>
     {
-        public SubjectPostType(IUserRepository usersRepository, ISubjectRepository subjectRepository, IHomeworkRepository homeworkRepository) : base()
+        public SubjectPostType() : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Title")
@@ -31,7 +31,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
             
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .ResolveAsync(async context => await usersRepository.GetByIdOrDefaultAsync(context.Source.TeacherId));
+               .ResolveAsync(async context => 
+               {
+                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   return await userRepository.GetByIdOrDefaultAsync(context.Source.TeacherId);
+               });
 
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("SubjectId")
@@ -39,11 +43,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 
             Field<NonNullGraphType<SubjectType>, SubjectModel>()
                 .Name("Subject")
-                .ResolveAsync(async context => await subjectRepository.GetByIdAsync(context.Source.SubjectId));
+                .ResolveAsync(async context =>
+                {
+                    var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
+                    return await subjectRepository.GetByIdAsync(context.Source.SubjectId);
+                });
 
             Field<NonNullGraphType<ListGraphType<HomeworkType>>, IEnumerable<HomeworkModel>>()
                 .Name("Homeworks")
-                .ResolveAsync(async context => await homeworkRepository.GetOrDefaultAsync(h => h.SubjectPostId == context.Source.Id));
+                .ResolveAsync(async context =>
+                {
+                    var homeworkRepository = context.RequestServices.GetRequiredService<IHomeworkRepository>();
+                    return await homeworkRepository.GetOrDefaultAsync(h => h.SubjectPostId == context.Source.Id);
+                });
         }
     }
     public class PostTypeType : EnumerationGraphType<PostType>

@@ -37,6 +37,10 @@ export const SubjectsMyIndex = () => {
         getSubjects({variables: {page, like}});
     }, [searchParams]);
 
+    useEffect(() => {
+        getSubjectsOptions.error && message.error(getSubjectsOptions.error.message)
+    }, [getSubjectsOptions.error])
+
     const onRemove = (subjectId: string) => {
         removeSubjectMutation({variables: {id: subjectId}})
             .then(async (response) => {
@@ -60,7 +64,7 @@ export const SubjectsMyIndex = () => {
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
                         {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&
-                        <Tag color={'cyan'}>Надано доступ</Tag>}
+                            <Tag color={'cyan'}>Надано доступ</Tag>}
                     </div>
                 </Space>
             ),
@@ -71,7 +75,7 @@ export const SubjectsMyIndex = () => {
             key: 'grades',
             render: (text, subject) => (
                 subject.gradesHaveAccessRead.map(grade => (
-                    <Link to={`../../grades/${grade.id}`}>
+                    <Link to={`../../grades/${grade.id}`} key={grade.id}>
                         <Tag>{grade.name}</Tag>
                     </Link>
                 ))

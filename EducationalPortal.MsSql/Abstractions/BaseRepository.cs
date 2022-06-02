@@ -13,32 +13,32 @@ namespace EducationalPortal.MsSql.Abstractions
             _context = context;
         }
 
-        public virtual Task<T> GetByIdAsync(Guid? id, params Expression<Func<T, object>>[] includes)
+        public virtual async Task<T> GetByIdAsync(Guid? id, params Expression<Func<T, object>>[] includes)
         {
-            Task<T?> entity = GetByIdOrDefaultAsync(id, includes);
+            T? entity = await GetByIdOrDefaultAsync(id, includes);
             if (entity == null)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entity;
         }
         
-        public virtual Task<T?> GetByIdOrDefaultAsync(Guid? id, params Expression<Func<T, object>>[] includes)
+        public virtual async Task<T?> GetByIdOrDefaultAsync(Guid? id, params Expression<Func<T, object>>[] includes)
         {
-            return includes.Aggregate(_context.Set<T>().AsQueryable(), 
+            return await includes.Aggregate(_context.Set<T>().AsQueryable(), 
                 (current, include) => current.Include(include))
                     .FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public virtual Task<List<T>> GetAsync(params Expression<Func<T, object>>[] includes)
+        public virtual async Task<List<T>> GetAsync(params Expression<Func<T, object>>[] includes)
         {
-            Task<List<T>> entities = GetOrDefaultAsync(includes);
+            List<T> entities = await GetOrDefaultAsync(includes);
             if (entities == null)
                 throw new Exception($"Не знайдено {typeof(T).Name.Replace("Model", "")}");
             return entities;
         }
         
-        public virtual Task<List<T>> GetOrDefaultAsync(params Expression<Func<T, object>>[] includes)
+        public virtual async Task<List<T>> GetOrDefaultAsync(params Expression<Func<T, object>>[] includes)
         {
-            return includes.Aggregate(_context.Set<T>().AsQueryable(),
+            return await includes.Aggregate(_context.Set<T>().AsQueryable(),
                (current, include) => current.Include(include))
                     .ToListAsync();
         }
@@ -51,9 +51,9 @@ namespace EducationalPortal.MsSql.Abstractions
             return entities;
         }
         
-        public virtual Task<List<T>> GetOrDefaultAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
+        public virtual async Task<List<T>> GetOrDefaultAsync(Expression<Func<T, bool>> condition, params Expression<Func<T, object>>[] includes)
         {
-            return includes.Aggregate(_context.Set<T>().AsQueryable(),
+            return await includes.Aggregate(_context.Set<T>().AsQueryable(),
                 (current, include) => current.Include(include))
                 .Where(condition).ToListAsync();
         }

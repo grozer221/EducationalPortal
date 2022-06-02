@@ -2,11 +2,15 @@ import React, {useEffect} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {Col, Row, Space, Table} from 'antd';
+import {Col, message, Row, Space, Table} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link, useSearchParams} from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
-import {GET_HOMEWORKS_QUERY, GetHomeworksData, GetHomeworksVars} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
+import {
+    GET_HOMEWORKS_QUERY,
+    GetHomeworksData,
+    GetHomeworksVars
+} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
 import {Homework, HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homework.types';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {Order} from '../../../../../../graphQL/enums/order';
@@ -15,9 +19,7 @@ import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/
 
 export const HomeworksIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [getHomeworks, getHomeworksOptions] = useLazyQuery<GetHomeworksData, GetHomeworksVars>(GET_HOMEWORKS_QUERY,
-        {fetchPolicy: 'network-only'},
-    );
+    const [getHomeworks, getHomeworksOptions] = useLazyQuery<GetHomeworksData, GetHomeworksVars>(GET_HOMEWORKS_QUERY);
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
     useEffect(() => {
@@ -27,27 +29,21 @@ export const HomeworksIndex = () => {
         const order = Object.values(Order).includes(orderString?.toUpperCase() as Order)
             ? Order[orderString.charAt(0).toUpperCase() + orderString.toLowerCase().slice(1) as keyof typeof Order || Order.Descend]
             : Order.Descend;
+        const subjectPostId = searchParams.get('subjectPostId')
         getHomeworks({
             variables: {
                 page,
-                statuses: statuses,
-                order: order,
+                statuses,
+                order,
+                subjectPostId,
                 withFiles: true,
             },
         });
     }, [searchParams]);
 
-    const onRemove = (subjectId: string) => {
-        // removeSubjectMutation({variables: {id: subjectId}})
-        //     .then(async (response) => {
-        //         const page = parseInt(searchParams.get('page') || '') || 1;
-        //         const like = searchParams.get('like') || '';
-        //         await getSubjects({variables: {page, like}});
-        //     })
-        //     .catch(error => {
-        //         message.error(error.message);
-        //     });
-    };
+    useEffect(() => {
+        getHomeworksOptions.error && message.error(getHomeworksOptions.error.message)
+    }, [getHomeworksOptions.error])
 
     const columns: ColumnsType<Homework> = [
         {
@@ -95,8 +91,7 @@ export const HomeworksIndex = () => {
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>
                 //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`${homework?.id}`} updateUrl={`update/${homework?.id}`}
-                            onRemove={() => onRemove(homework?.id)}/>
+                <ButtonsVUR viewUrl={`update/${homework?.id}`}/>
             ),
         },
     ];
@@ -125,8 +120,11 @@ export const HomeworksIndex = () => {
                     onChange: page => setSearchParams({page: page.toString()}),
                 }}
                 onChange={(pagination, filters, sorter: any) => {
-                    console.log(pagination, filters, sorter);
-                    setSearchParams({statuses: filters.status?.join('|') || '', order: sorter.order});
+                    setSearchParams({
+                        statuses: filters.status?.join('|') || '',
+                        order: sorter.order,
+                        subjectPostId: searchParams.get('subjectPostId') || '',
+                    });
                 }}
             />
         </Space>

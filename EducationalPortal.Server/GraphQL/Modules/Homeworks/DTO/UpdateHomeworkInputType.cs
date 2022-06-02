@@ -1,10 +1,30 @@
 ﻿using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
+using EducationalPortal.Server.GraphQL.Abstraction;
 using GraphQL.Types;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Homeworks.DTO
 {
-    public class UpdateHomeworkInputType : InputObjectGraphType<HomeworkModel>
+    public class UpdateHomeworkInput : IModelable<HomeworkModel>
+    {
+        public Guid Id { get; set; }
+        public string? Mark { get; set; }
+        public string? ReviewResult { get; set; }
+        public HomeworkStatus Status { get; set; }
+
+        public HomeworkModel ToModel()
+        {
+            return new HomeworkModel
+            {
+                Id = Id,
+                Mark = Mark,
+                ReviewResult = ReviewResult,
+                Status = Status,
+            };
+        }
+    }
+
+    public class UpdateHomeworkInputType : InputObjectGraphType<UpdateHomeworkInput>
     {
         public UpdateHomeworkInputType()
         {

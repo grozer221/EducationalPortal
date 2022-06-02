@@ -13,7 +13,7 @@ export type CreateHomeworkInputType = {
 
 export const CREATE_HOMEWORK_MUTATION = gql`
     ${HOMEWORK_FRAGMENT}
-    mutation CreateHomework($createHomeworkInputType: CreateHomeworkInputType!, $withFiles: Boolean) {
+    mutation CreateHomework($createHomeworkInputType: CreateHomeworkInputType!, $withFiles: Boolean!) {
         createHomework(createHomeworkInputType: $createHomeworkInputType) {
             ...HomeworkFragment
         }
@@ -22,12 +22,12 @@ export const CREATE_HOMEWORK_MUTATION = gql`
 
 export type UpdateHomeworkData = { updateHomework: Homework }
 
-export type UpdateHomeworkVars = { updateHomeworkInputType: updateHomeworkInputType, withFiles: boolean }
-export type updateHomeworkInputType = { id: string, mark: string, reviewResult: string, status: HomeworkStatus }
+export type UpdateHomeworkVars = { updateHomeworkInputType: UpdateHomeworkInputType, withFiles: boolean }
+export type UpdateHomeworkInputType = { id: string, mark: string, reviewResult: string, status: HomeworkStatus }
 
 export const UPDATE_HOMEWORK_MUTATION = gql`
     ${HOMEWORK_FRAGMENT}
-    mutation UpdateHomework($updateHomeworkInputType: UpdateHomeworkInputType!, $withFiles: Boolean) {
+    mutation UpdateHomework($updateHomeworkInputType: UpdateHomeworkInputType!, $withFiles: Boolean!) {
         updateHomework(updateHomeworkInputType: $updateHomeworkInputType) {
             ...HomeworkFragment
         }

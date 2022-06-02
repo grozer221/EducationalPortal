@@ -38,6 +38,10 @@ export const EducationalYearsIndex = () => {
         getEducationalYears({variables: {page, like}});
     }, [searchParams]);
 
+    useEffect(() => {
+        getEducationalYearsOpions.error && message.error(getEducationalYearsOpions.error.message)
+    }, [getEducationalYearsOpions.error])
+
     const onRemove = (educationalYearId: string) => {
         removeEducationalYearsMutation({variables: {id: educationalYearId}})
             .then(async (response) => {

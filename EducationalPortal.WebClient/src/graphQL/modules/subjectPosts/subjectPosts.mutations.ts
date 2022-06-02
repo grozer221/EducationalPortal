@@ -4,7 +4,11 @@ import {SUBJECT_POST_FRAGMENT} from './subjectPosts.fragments';
 
 export type CreateSubjectPostData = { createSubjectPost: SubjectPost }
 
-export type CreateSubjectPostVars = { createSubjectPostInputType: createSubjectPostInputType }
+export type CreateSubjectPostVars = {
+    createSubjectPostInputType: createSubjectPostInputType,
+    withHomeworks: boolean,
+    withFiles: boolean,
+}
 export type createSubjectPostInputType = {
     title: string,
     text: string,
@@ -14,7 +18,7 @@ export type createSubjectPostInputType = {
 
 export const CREATE_SUBJECT_POST_MUTATION = gql`
     ${SUBJECT_POST_FRAGMENT}
-    mutation CreateSubjectPost($createSubjectPostInputType: CreateSubjectPostInputType!) {
+    mutation CreateSubjectPost($createSubjectPostInputType: CreateSubjectPostInputType!, $withHomeworks: Boolean!, $withFiles: Boolean!) {
         createSubjectPost(createSubjectPostInputType: $createSubjectPostInputType) {
             ...SubjectPostFragment
         }
@@ -23,12 +27,16 @@ export const CREATE_SUBJECT_POST_MUTATION = gql`
 
 export type UpdateSubjectPostData = { updateSubjectPost: SubjectPost }
 
-export type UpdateSubjectPostVars = { updateSubjectPostInputType: updateSubjectPostInputType }
+export type UpdateSubjectPostVars = {
+    updateSubjectPostInputType: updateSubjectPostInputType,
+    withHomeworks: boolean,
+    withFiles: boolean,
+}
 export type updateSubjectPostInputType = Omit<createSubjectPostInputType & { id: string }, 'subjectId'>
 
 export const UPDATE_SUBJECT_POST_MUTATION = gql`
     ${SUBJECT_POST_FRAGMENT}
-    mutation UpdateSubjectPost($updateSubjectPostInputType: UpdateSubjectPostInputType!) {
+    mutation UpdateSubjectPost($updateSubjectPostInputType: UpdateSubjectPostInputType!, $withHomeworks: Boolean!, $withFiles: Boolean!) {
         updateSubjectPost(updateSubjectPostInputType: $updateSubjectPostInputType) {
             ...SubjectPostFragment
         }

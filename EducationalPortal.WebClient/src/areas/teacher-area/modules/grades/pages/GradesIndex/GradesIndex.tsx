@@ -28,6 +28,10 @@ export const GradesIndex = () => {
         getGrades({variables: {page, like}});
     }, [searchParams]);
 
+    useEffect(() => {
+        getGradesOptions.error && message.error(getGradesOptions.error.message)
+    }, [getGradesOptions.error])
+
     const onRemove = (gradeId: string) => {
         removeGradeMutation({variables: {id: gradeId}})
             .then(async (response) => {

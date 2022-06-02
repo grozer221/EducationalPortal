@@ -13,61 +13,63 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UserType : BaseType<UserModel>
     {
-        public UserType(IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base()
+        public UserType() : base()
         {
             Field<StringGraphType, string>()
-               .Name("FirstName")
-               .Resolve(context => context.Source.FirstName);
+                .Name("FirstName")
+                .Resolve(context => context.Source.FirstName);
             
             Field<StringGraphType, string>()
-               .Name("LastName")
-               .Resolve(context => context.Source.LastName);
+                .Name("LastName")
+                .Resolve(context => context.Source.LastName);
             
             Field<StringGraphType, string>()
-               .Name("MiddleName")
-               .Resolve(context => context.Source.MiddleName);
+                .Name("MiddleName")
+                .Resolve(context => context.Source.MiddleName);
             
             Field<NonNullGraphType<StringGraphType>, string>()
-               .Name("Login")
-               .Resolve(context => context.Source.Login);
+                .Name("Login")
+                .Resolve(context => context.Source.Login);
             
             Field<StringGraphType, string>()
-               .Name("Email")
-               .Resolve(context => context.Source.Email);
+                .Name("Email")
+                .Resolve(context => context.Source.Email);
             
             Field<StringGraphType, string>()
-               .Name("PhoneNumber")
-               .Resolve(context => context.Source.PhoneNumber);
+                .Name("PhoneNumber")
+                .Resolve(context => context.Source.PhoneNumber);
 
             Field<DateTimeGraphType, DateTime>()
-               .Name("DateOfBirth")
-               .Resolve(context => context.Source.DateOfBirth);
+                .Name("DateOfBirth")
+                .Resolve(context => context.Source.DateOfBirth);
 
             Field<NonNullGraphType<UserRoleType>, UserRoleEnum>()
-               .Name("Role")
-               .Resolve(context => context.Source.Role);
+                .Name("Role")
+                .Resolve(context => context.Source.Role);
 
             Field<IdGraphType, Guid?>()
-               .Name("GradeId")
-               .Resolve(context => context.Source.GradeId);
+                .Name("GradeId")
+                .Resolve(context => context.Source.GradeId);
             
             Field<GradeType, GradeModel?>()
-               .Name("Grade")
-               .ResolveAsync(async context =>
-               {
-                   return await gradeRepository.GetByIdOrDefaultAsync(context.Source.GradeId);
-               });
+                .Name("Grade")
+                .ResolveAsync(async context =>
+                {
+                    var gradeRepository = context.RequestServices.GetRequiredService<IGradeRepository>();
+                    return await gradeRepository.GetByIdOrDefaultAsync(context.Source.GradeId);
+                });
 
             Field<GetEntitiesResponseType<SubjectType, SubjectModel>, GetEntitiesResponse<SubjectModel>>()
-               .Name("Subjects")
-               .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
-               .ResolveAsync(async context =>
-               { 
-                   int page = context.GetArgument<int>("Page");
-                   Guid userId = context.Source.Id;
-                   return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.TeacherId == userId);
-               })
-               .AuthorizeWith(AuthPolicies.Teacher);
+                .Name("Subjects")
+                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
+                .ResolveAsync(async context =>
+                { 
+                    int page = context.GetArgument<int>("Page");
+                    Guid userId = context.Source.Id;
+                    var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
+                    return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.TeacherId == userId);
+                })
+                .AuthorizeWith(AuthPolicies.Teacher);
         }
     }
 
