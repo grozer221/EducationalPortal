@@ -2,6 +2,7 @@
 using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
+using EducationalPortal.Server.GraphQL.Modules.Files;
 using EducationalPortal.Server.GraphQL.Modules.SubjectPosts;
 using EducationalPortal.Server.GraphQL.Modules.Users;
 using GraphQL.Types;
@@ -10,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworkType : BaseType<HomeworkModel>
     {
-        public HomeworkType(ISubjectPostRepository subjectPostRepository, IUserRepository userRepository) : base()
+        public HomeworkType(ISubjectPostRepository subjectPostRepository, IUserRepository userRepository, IFileRepository fileRepository) : base()
         {
             Field<StringGraphType, string?>()
                .Name("Text")
@@ -43,6 +44,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
             Field<UserType, UserModel?>()
                .Name("Student")
                .ResolveAsync(async context => await userRepository.GetByIdAsync(context.Source.StudentId));
+
+            Field<ListGraphType<NonNullGraphType<FileType>>, IEnumerable<FileModel>>()
+              .Name("Files")
+              .ResolveAsync(async context => await fileRepository.GetOrDefaultAsync(f => f.HomeworkId == context.Source.Id));
         }
     }
 

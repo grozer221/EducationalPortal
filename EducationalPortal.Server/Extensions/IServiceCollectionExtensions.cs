@@ -25,7 +25,6 @@ namespace EducationalPortal.Server.Extensions
         public static IServiceCollection AddGraphQLApi(this IServiceCollection services)
         {
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-            //services.AddTransient<IDocumentExecuter, SubscriptionDocumentExecuter>();
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
 
             services.AddTransient<IQueryMarker, AuthQueries>();
@@ -51,8 +50,8 @@ namespace EducationalPortal.Server.Extensions
             services.AddTransient<IQueryMarker, UsersQueries>();
             services.AddTransient<IMutationMarker, UsersMutations>();
 
-            services.AddTransient<AppSchema>()
-                .AddGraphQLUpload();
+            services.AddTransient<AppSchema>();
+            services.AddGraphQLUpload();
             services
                 .AddGraphQL(options =>
                 {
@@ -64,8 +63,6 @@ namespace EducationalPortal.Server.Extensions
                     };
                 })
                 .AddSystemTextJson()
-                .AddWebSockets()
-                .AddDataLoader()
                 .AddGraphTypes(typeof(AppSchema), ServiceLifetime.Transient)
                 .AddGraphQLAuthorization(options =>
                 {

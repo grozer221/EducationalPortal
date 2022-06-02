@@ -10,7 +10,7 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyHeader()
                .WithMethods("POST")
-               .WithOrigins("https://localhost:44481");
+               .WithOrigins("http://localhost:3000");
     });
 });
 
@@ -27,7 +27,6 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
@@ -38,12 +37,13 @@ app.UseRouting();
 
 app.UseAuthentication();
 
-app.UseWebSockets();
-app.UseGraphQLWebSockets<AppSchema>();
-app.UseGraphQL<AppSchema>()
-    .UseGraphQLUpload<AppSchema>();
+app.UseGraphQLUpload<AppSchema>()
+    .UseGraphQL<AppSchema>();
 app.UseGraphQLAltair();
 
-app.MapFallbackToFile("index.html"); ;
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "wwwroot";
+});
 
 app.Run();

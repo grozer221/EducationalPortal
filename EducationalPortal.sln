@@ -5,9 +5,9 @@ VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EducationalPortal.Server", "EducationalPortal.Server\EducationalPortal.Server.csproj", "{54286B62-8BF3-4666-9C9A-77297DE604DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EducationalPortal.Business", "EducationalPortal.Business\EducationalPortal.Business.csproj", "{E919D336-833A-488D-8C36-749BA9142F53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EducationalPortal.Business", "EducationalPortal.Business\EducationalPortal.Business.csproj", "{E919D336-833A-488D-8C36-749BA9142F53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EducationalPortal.MsSql", "EducationalPortal.MsSql\EducationalPortal.MsSql.csproj", "{87F29AC8-51B8-4135-83B0-17146B17B0FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EducationalPortal.MsSql", "EducationalPortal.MsSql\EducationalPortal.MsSql.csproj", "{87F29AC8-51B8-4135-83B0-17146B17B0FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

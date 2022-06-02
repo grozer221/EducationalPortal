@@ -19,12 +19,12 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                 .Argument<NonNullGraphType<CreateHomeworkInputType>, CreateHomeworkInput>("CreateHomeworkInputType", "Argument for create new Homework")
                 .ResolveAsync(async (context) =>
                 {
-                    var createHomeworkInput = context.GetArgument<CreateHomeworkInput>("CreateHomeworkInputType");
+                    CreateHomeworkInput createHomeworkInput = context.GetArgument<CreateHomeworkInput>("CreateHomeworkInputType");
                     var homework = createHomeworkInput.ToModel();
                     Guid currentStudentId = httpContextAccessor.HttpContext.GetUserId();
                     homework.StudentId = currentStudentId;
                     await homeworkRepository.CreateAsync(homework);
-                    if(createHomeworkInput.Files != null)
+                    if (createHomeworkInput.Files != null)
                     {
                         foreach(var file in createHomeworkInput.Files)
                         {
