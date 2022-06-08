@@ -29,7 +29,7 @@ namespace EducationalPortal.MsSql
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<BackupModel>().HasOne(b => b.File).WithOne(f => f.Backup).HasForeignKey<FileModel>(f => f.BackupId);
+            builder.Entity<FileModel>().HasOne(f => f.Backup).WithOne(b => b.File).HasForeignKey<BackupModel>(b => b.FileId);
             builder.Entity<BackupModel>().HasOne(b => b.File).WithOne(f => f.Backup).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<EducationalYearModel>(y => y.HasIndex(e => e.Name).IsUnique());

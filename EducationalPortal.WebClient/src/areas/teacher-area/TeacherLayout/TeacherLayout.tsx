@@ -31,6 +31,7 @@ import {TeachersCreate} from '../modules/users/pages/TeachersCreate/TeachersCrea
 import {TeachersUpdate} from '../modules/users/pages/TeachersUpdate/TeachersUpdate';
 import {WithAdministratorRoleOrRender} from '../../../hocs/WithAdministratorRoleOrRender';
 import s from './TeacherLayout.module.css';
+import {BackupsIndex} from "../modules/backups/pages/BackupsIndex/BackupsIndex";
 
 const {Content} = Layout;
 
@@ -128,6 +129,20 @@ export const TeacherLayout: FC = () => {
                                         <TeachersUpdate/>
                                     </WithAdministratorRoleOrRender>
                                 }/>
+                                <Route path={'*'} element={<Error/>}/>
+                            </Route>
+
+                            <Route path={'backups/*'}>
+                                <Route index element={
+                                    <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+                                        <BackupsIndex/>
+                                    </WithAdministratorRoleOrRender>
+                                }/>
+                                {/*<Route path={'create'} element={*/}
+                                {/*    <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>*/}
+                                {/*        <TeachersCreate/>*/}
+                                {/*    </WithAdministratorRoleOrRender>*/}
+                                {/*}/>*/}
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>
 

@@ -31,21 +31,21 @@ export const TeacherMenu: FC = () => {
     const [startUrl, setStartUrl] = useState(useLocation().pathname.replace('/teacher/', ''));
 
     const getDefaultSelectedKey = (): string => {
-        if(startUrl.match(/subjects\/my/))
+        if (startUrl.match(/subjects\/my/))
             return 'subjects/my';
-        else if(startUrl.match(/subjects/))
+        else if (startUrl.match(/subjects/))
             return 'subjects';
-        else if(startUrl.match(/grades/))
+        else if (startUrl.match(/grades/))
             return 'grades';
-        else if(startUrl.match(/students/))
+        else if (startUrl.match(/students/))
             return 'students';
-        else if(startUrl.match(/teachers/))
+        else if (startUrl.match(/teachers/))
             return 'teachers';
-        else if(startUrl.match(/educational-years/))
+        else if (startUrl.match(/educational-years/))
             return 'educational-years';
-        else if(startUrl.match(/settings\/my/))
+        else if (startUrl.match(/settings\/my/))
             return 'settings/my';
-        else if(startUrl.match(/settings\/site/))
+        else if (startUrl.match(/settings\/site/))
             return 'settings/site';
         else
             return '';
@@ -53,11 +53,11 @@ export const TeacherMenu: FC = () => {
 
     const getDefaultOpenKeys = (): string[] => {
         const defaultOpenKeys = [];
-        if((!startUrl.match(/subjects\/my/) && startUrl.match(/subjects|grades|educational-years|students|teachers/)))
+        if ((!startUrl.match(/subjects\/my/) && startUrl.match(/subjects|grades|educational-years|students|teachers/)))
             defaultOpenKeys.push('portal')
-        if(startUrl.match(/students|teachers/))
+        if (startUrl.match(/students|teachers/))
             defaultOpenKeys.push('users')
-        if(startUrl.match(/settings/))
+        if (startUrl.match(/settings/))
             defaultOpenKeys.push('settings')
         return defaultOpenKeys
     }
@@ -78,7 +78,8 @@ export const TeacherMenu: FC = () => {
                     {me?.user?.role && roleToTag(me.user.role)}
                 </Col>
             </Row>
-            <Menu theme="dark" defaultSelectedKeys={[getDefaultSelectedKey()]} defaultOpenKeys={getDefaultOpenKeys()} mode="inline">
+            <Menu theme="dark" defaultSelectedKeys={[getDefaultSelectedKey()]} defaultOpenKeys={getDefaultOpenKeys()}
+                  mode="inline">
                 <Menu.Item key="/" icon={<LineChartOutlined/>}>
                     <Link to={'./'}>Головна</Link>
                 </Menu.Item>
@@ -130,9 +131,11 @@ export const TeacherMenu: FC = () => {
                         <Link to={'settings/my'}>Налаштування</Link>
                     </Menu.Item>
                 }
-                {/*<Menu.Item key="site" icon={<UserOutlined/>}>*/}
-                {/*    <Link to={'/'}>На сайт</Link>*/}
-                {/*</Menu.Item>*/}
+                {isAdministrator() &&
+                    <Menu.Item key="backups" icon={<SettingOutlined/>}>
+                        <Link to={'backups'}>Бекапи</Link>
+                    </Menu.Item>
+                }
                 <Menu.Item key="logout" icon={<LogoutOutlined/>} onClick={() => dispatch(authActions.logout())}>
                     Вийти
                 </Menu.Item>

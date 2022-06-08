@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationalPortal.MsSql.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220608050139_added backups")]
-    partial class addedbackups
+    [Migration("20220608113321_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,6 +40,10 @@ namespace EducationalPortal.MsSql.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FileId")
+                        .IsUnique()
+                        .HasFilter("[FileId] IS NOT NULL");
 
                     b.ToTable("Backups");
                 });
@@ -83,9 +87,6 @@ namespace EducationalPortal.MsSql.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BackupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -107,10 +108,6 @@ namespace EducationalPortal.MsSql.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BackupId")
-                        .IsUnique()
-                        .HasFilter("[BackupId] IS NOT NULL");
 
                     b.HasIndex("CreatorId");
 
@@ -373,12 +370,18 @@ namespace EducationalPortal.MsSql.Migrations
                     b.ToTable("SubjectModelUserModel");
                 });
 
+            modelBuilder.Entity("EducationalPortal.Business.Models.BackupModel", b =>
+                {
+                    b.HasOne("EducationalPortal.Business.Models.FileModel", "File")
+                        .WithOne("Backup")
+                        .HasForeignKey("EducationalPortal.Business.Models.BackupModel", "FileId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("File");
+                });
+
             modelBuilder.Entity("EducationalPortal.Business.Models.FileModel", b =>
                 {
-                    b.HasOne("EducationalPortal.Business.Models.BackupModel", "Backup")
-                        .WithOne("File")
-                        .HasForeignKey("EducationalPortal.Business.Models.FileModel", "BackupId");
-
                     b.HasOne("EducationalPortal.Business.Models.UserModel", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId");
@@ -386,8 +389,6 @@ namespace EducationalPortal.MsSql.Migrations
                     b.HasOne("EducationalPortal.Business.Models.HomeworkModel", "Homework")
                         .WithMany("Files")
                         .HasForeignKey("HomeworkId");
-
-                    b.Navigation("Backup");
 
                     b.Navigation("Creator");
 
@@ -483,14 +484,14 @@ namespace EducationalPortal.MsSql.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EducationalPortal.Business.Models.BackupModel", b =>
-                {
-                    b.Navigation("File");
-                });
-
             modelBuilder.Entity("EducationalPortal.Business.Models.EducationalYearModel", b =>
                 {
                     b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("EducationalPortal.Business.Models.FileModel", b =>
+                {
+                    b.Navigation("Backup");
                 });
 
             modelBuilder.Entity("EducationalPortal.Business.Models.GradeModel", b =>

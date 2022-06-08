@@ -248,6 +248,33 @@ namespace EducationalPortal.MsSql.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Backups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Backups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Backups_Files_FileId",
+                        column: x => x.FileId,
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Backups_FileId",
+                table: "Backups",
+                column: "FileId",
+                unique: true,
+                filter: "[FileId] IS NOT NULL");
+
             migrationBuilder.CreateIndex(
                 name: "IX_EducationalYears_Name",
                 table: "EducationalYears",
@@ -338,7 +365,7 @@ namespace EducationalPortal.MsSql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Files");
+                name: "Backups");
 
             migrationBuilder.DropTable(
                 name: "GradeModelSubjectModel");
@@ -348,6 +375,9 @@ namespace EducationalPortal.MsSql.Migrations
 
             migrationBuilder.DropTable(
                 name: "SubjectModelUserModel");
+
+            migrationBuilder.DropTable(
+                name: "Files");
 
             migrationBuilder.DropTable(
                 name: "Homeworks");

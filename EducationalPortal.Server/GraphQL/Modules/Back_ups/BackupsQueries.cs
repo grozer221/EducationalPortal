@@ -20,7 +20,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
                 {
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    return await backupRepository.WhereAsync(y => y.CreatedAt, Order.Descend, page, y => y.File.Name.ToLower().Contains(like.ToLower()), b => b.File);
+                    return await backupRepository.WhereOrDefaultAsync(y => y.CreatedAt, Order.Descend, page, y => y.File.Name.ToLower().Contains(like.ToLower()), b => b.File);
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 

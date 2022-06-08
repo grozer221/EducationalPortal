@@ -46,8 +46,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
                     Guid id = context.GetArgument<Guid>("Id");
                     var backup = await backupRepository.GetByIdAsync(id, b => b.File);
                     string backupFullPath = $@"{Environment.GetEnvironmentVariable("BACKUPS_FOLDER_PATH")}\{backup.File.Name}";
-                    var webClient = new WebClient();
-                    webClient.DownloadFileAsync(new Uri(backup.File.Path), backupFullPath);
+                    using(var httpClient = new HttpClient())
+                    {
+                        byte[] fileBytes = await httpClient.GetByteArrayAsync(new Uri(backup.File.Path));
+                        await File.WriteAllBytesAsync(backupFullPath, fileBytes);
+                    }
                     await backupRepository.RestoreDatabase(backupFullPath);
                     File.Delete(backupFullPath);
                     return backup;
@@ -56,7 +59,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
 
             Field<NonNullGraphType<BooleanGraphType>, bool>()
                .Name("RemoveBackup")
-               .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for remove Backup")
+               .Argument<NonNullGraphType<GuidGraphType>, Guid>("Id", "Argument for remove Backup")
                .ResolveAsync(async context =>
                {
                    Guid id = context.GetArgument<Guid>("Id");
