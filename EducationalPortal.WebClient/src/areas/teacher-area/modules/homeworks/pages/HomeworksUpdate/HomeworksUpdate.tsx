@@ -7,33 +7,36 @@ import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpda
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
 import {HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homework.types';
-import {
-    UPDATE_HOMEWORK_MUTATION,
-    UpdateHomeworkData,
-    UpdateHomeworkInputType,
-    UpdateHomeworkVars
-} from '../../../../../../graphQL/modules/homeworks/homeworks.mutations';
-import {
-    GET_HOMEWORK_QUERY,
-    GetHomeworkData,
-    GetHomeworkVars
-} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
+import {UPDATE_HOMEWORK_MUTATION, UpdateHomeworkData, UpdateHomeworkVars} from '../../../../../../graphQL/modules/homeworks/homeworks.mutations';
+import {GET_HOMEWORK_QUERY, GetHomeworkData, GetHomeworkVars} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
-import {stringToUkraineDatetime} from "../../../../../../convertors/stringToDatetimeConvertors";
+
+type FormValues = {
+    id: string,
+    mark: string,
+    reviewResult: string,
+    status: HomeworkStatus,
+}
 
 export const HomeworksUpdate = () => {
-    const {id} = useParams();
+    const params = useParams();
+    const id = params.id as string;
     const getHomeworkQuery = useQuery<GetHomeworkData, GetHomeworkVars>(GET_HOMEWORK_QUERY,
-        {variables: {id: id || '', withFiles: true}},
+        {variables: {id: id, withFiles: true}},
     );
     const [updateHomework, updateHomeworkOptions] = useMutation<UpdateHomeworkData, UpdateHomeworkVars>(UPDATE_HOMEWORK_MUTATION);
     const [form] = Form.useForm();
     const navigate = useNavigate();
 
-    const onFinish = async (updateHomeworkInputType: UpdateHomeworkInputType) => {
+    const onFinish = async ({id, mark, reviewResult, status}: FormValues) => {
         updateHomework({
             variables: {
-                updateHomeworkInputType,
+                updateHomeworkInputType: {
+                    id,
+                    mark,
+                    reviewResult,
+                    status,
+                },
                 withFiles: false
             },
         })
@@ -51,6 +54,7 @@ export const HomeworksUpdate = () => {
     if (getHomeworkQuery.loading)
         return <Loading/>;
 
+
     const homework = getHomeworkQuery.data?.getHomework;
     return (
         <Form
@@ -65,30 +69,15 @@ export const HomeworksUpdate = () => {
             }}
             {...sizeFormItem}
         >
-            <Title level={2}>Редагування ДЗ</Title>
+            <Title level={2}>Редагування ДЗ для {homework?.subjectPost.title}</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
-            </Form.Item>
-            <Form.Item label="Пост">
-                <div>{homework?.subjectPost.title}</div>
             </Form.Item>
             <Form.Item label="Виконав">
                 <div>{homework?.student.lastName} {homework?.student.firstName}</div>
             </Form.Item>
             <Form.Item label="Текст">
                 <div>{homework?.text}</div>
-            </Form.Item>
-            <Form.Item label="Файли">
-                <div>
-                    {homework?.files.map(file => (
-                        <span>
-                            <a href={file.path} target={'_blank'}>{file.name}</a>
-                        </span>
-                    ))}
-                </div>
-            </Form.Item>
-            <Form.Item label="Надіслано">
-                <div>{homework?.createdAt && stringToUkraineDatetime(homework?.createdAt)}</div>
             </Form.Item>
             <Form.Item
                 name="mark"
@@ -107,12 +96,10 @@ export const HomeworksUpdate = () => {
                 label="Статус"
             >
                 <Radio.Group
-                    options={
-                        (Object.values(HomeworkStatus) as Array<HomeworkStatus>).map((value) => ({
-                            label: homeworkStatusWithTranslateToString(value),
-                            value: value,
-                        }))
-                    }
+                    options={(Object.values(HomeworkStatus) as Array<HomeworkStatus>).map((value) => ({
+                        label: homeworkStatusWithTranslateToString(value),
+                        value: value,
+                    }))}
                     optionType="button"
                 />
             </Form.Item>

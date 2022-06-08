@@ -17,10 +17,6 @@ export const HOMEWORK_FRAGMENT = gql`
             ...UserFragment
         }
         subjectPostId
-        subjectPost {
-            id
-            title
-        }
         files @include(if: $withFiles) {
             ...FileFragment
         }

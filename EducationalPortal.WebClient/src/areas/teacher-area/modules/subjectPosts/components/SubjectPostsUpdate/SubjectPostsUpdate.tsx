@@ -52,8 +52,6 @@ export const SubjectPostsUpdate: FC<Props> = ({
                         text,
                         type,
                     },
-                    withHomeworks: false,
-                    withFiles: false
                 },
             })
                 .then(async (response) => {

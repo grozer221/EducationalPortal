@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworksQueries : ObjectGraphType, IQueryMarker
     {
-        public HomeworksQueries(IHomeworkRepository homeworkRepository, IHttpContextAccessor httpContextAccessor, IEducationalYearRepository educationalYearRepository, ISubjectPostRepository subjectPostRepository)
+        public HomeworksQueries(IHomeworkRepository homeworkRepository, IHttpContextAccessor httpContextAccessor, IEducationalYearRepository educationalYearRepository)
         {
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("GetHomework")
@@ -28,15 +28,14 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Homeworks")
                 .Argument<ListGraphType<HomeworkStatusType>, List<HomeworkStatus>?>("Statuses", "Argument for get Homeworks")
                 .Argument<NonNullGraphType<OrderType>, Order>("Order", "Argument for get Homeworks")
-                .Argument<GuidGraphType, Guid?>("SubjectPostId", "Argument for get Homeworks")
                 .ResolveAsync(async context =>
                 {
-                    var page = context.GetArgument<int>("Page");
-                    var statuses = context.GetArgument<List<HomeworkStatus>?>("Statuses");
-                    var order = context.GetArgument<Order>("Order");
-                    var subjectPostId = context.GetArgument<Guid?>("SubjectPostId");
+                    int page = context.GetArgument<int>("Page");
+                    List<HomeworkStatus>? statuses = context.GetArgument<List<HomeworkStatus>?>("Statuses");
+                    Order order = context.GetArgument<Order>("Order");
                     return await homeworkRepository.WhereAsync(s => s.CreatedAt, order, page, 
-                        s => (subjectPostId == null ? true : s.SubjectPostId == subjectPostId) && (statuses == null || statuses.Count == 0 ? true : statuses.Contains(s.Status)));
+                        s => (statuses == null || statuses.Count == 0) ? true : statuses.Contains(s.Status)
+                    );
                 })
                .AuthorizeWith(AuthPolicies.Administrator);
 

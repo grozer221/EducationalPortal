@@ -23,6 +23,7 @@ namespace EducationalPortal.MsSql
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_URL") ?? @"Data Source=(localdb)\ProjectModels;Initial Catalog=EducationalPortal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 

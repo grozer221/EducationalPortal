@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
 {
     public class GradeType : BaseType<GradeModel>
     {
-        public GradeType() : base()
+        public GradeType(IUserRepository userRepository) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
@@ -24,7 +24,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Grades
                {
                    int page = context.GetArgument<int>("Page");
                    Guid gradeId = context.Source.Id;
-                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
                    return await userRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, p => p.GradeId == gradeId);
                })
                .AuthorizeWith(AuthPolicies.Teacher);

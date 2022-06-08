@@ -19,7 +19,7 @@ import '../../../../../../styles/text.css';
 import {useAppSelector} from '../../../../../../store/store';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {HomeOutlined} from "@ant-design/icons";
-import {Link} from "react-router-dom";
+import {Homeworks} from "../../../homeworks/components/Homeworks/Homeworks";
 
 type Props = {
     subject: Subject,
@@ -84,9 +84,7 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                             //     onRemove={() => onPostRemove(post.id)}
                             // />
                             <Space size={10}>
-                                <Link to={`../../homeworks?subjectPostId=${post.id}`}>
-                                    <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>
-                                </Link>
+                                <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>
                                 <ButtonsVUR
                                     onUpdate={() => onPostUpdate(post)}
                                     onRemove={() => onPostRemove(post.id)}
@@ -120,6 +118,10 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                 inEditingPost={inEditingPost}
                 setInEditingPost={setInEditingPost}
             />}
+            {inViewHomeworksPost && <Homeworks
+                homeworks={inViewHomeworksPost.homeworks}
+                isModalHomeworksVisible={!!inViewHomeworksPost}
+                setModalHomeworksInvisible={() => setInViewHomeworksPost(null)}/>}
         </>
     );
 };

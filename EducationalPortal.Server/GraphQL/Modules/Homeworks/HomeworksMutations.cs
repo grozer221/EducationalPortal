@@ -44,11 +44,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("UpdateHomework")
-                .Argument<NonNullGraphType<UpdateHomeworkInputType>, UpdateHomeworkInput>("UpdateHomeworkInputType", "Argument for update Grade")
+                .Argument<NonNullGraphType<UpdateHomeworkInputType>, HomeworkModel>("UpdateHomeworkInputType", "Argument for update Grade")
                 .ResolveAsync(async (context) =>
                 {
-                    var updateHomeworkInput = context.GetArgument<UpdateHomeworkInput>("UpdateHomeworkInputType");
-                    return await homeworkRepository.UpdateAsync(updateHomeworkInput.ToModel());
+                    HomeworkModel homework = context.GetArgument<HomeworkModel>("UpdateHomeworkInputType");
+                    return await homeworkRepository.UpdateAsync(homework);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 

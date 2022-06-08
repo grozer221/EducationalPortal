@@ -37,10 +37,6 @@ export const SubjectsIndex = () => {
         getSubjects({variables: {page, like}});
     }, [searchParams]);
 
-    useEffect(() => {
-        getSubjectsOptions.error && message.error(getSubjectsOptions.error.message)
-    }, [getSubjectsOptions.error])
-
     const onRemove = (subjectId: string) => {
         removeSubjectMutation({variables: {id: subjectId}})
             .then(async (response) => {

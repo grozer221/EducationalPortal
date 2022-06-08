@@ -1,41 +1,33 @@
-import React, {useEffect} from 'react';
-import {useLazyQuery} from '@apollo/client';
+import React, {FC} from 'react';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {Col, Row, Space, Table} from 'antd';
+import {Col, Modal, Row, Space, Table} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link, useSearchParams} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
-import {GET_HOMEWORKS_QUERY, GetHomeworksData, GetHomeworksVars} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
 import {Homework, HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homework.types';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
-import {Order} from '../../../../../../graphQL/enums/order';
 import {homeworkStatusToTag} from '../../../../../../convertors/enumToTagConvertor';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
 
-export const HomeworksIndex = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [getHomeworks, getHomeworksOptions] = useLazyQuery<GetHomeworksData, GetHomeworksVars>(GET_HOMEWORKS_QUERY,
-        {fetchPolicy: 'network-only'},
-    );
+type Props = {
+    isModalHomeworksVisible: boolean,
+    setModalHomeworksInvisible: () => void,
+    homeworks: Homework[],
+    page?: number,
+    statuses?: string[],
+    loading?: boolean,
+    pageSize?: number,
+    total?: number,
+    setSearchParams?: (obj: any) => void
+}
+
+export const Homeworks: FC<Props> = ({homeworks, page, statuses, loading, pageSize, total, setSearchParams, isModalHomeworksVisible, setModalHomeworksInvisible}) => {
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
-    useEffect(() => {
-        const page = parseInt(searchParams.get('page') || '') || 1;
-        const statuses = searchParams.get('statuses')?.split('|').filter(s => Object.values(HomeworkStatus).includes(s as HomeworkStatus)) as HomeworkStatus[];
-        const orderString = searchParams.get('order') || '';
-        const order = Object.values(Order).includes(orderString?.toUpperCase() as Order)
-            ? Order[orderString.charAt(0).toUpperCase() + orderString.toLowerCase().slice(1) as keyof typeof Order || Order.Descend]
-            : Order.Descend;
-        getHomeworks({
-            variables: {
-                page,
-                statuses: statuses,
-                order: order,
-                withFiles: true,
-            },
-        });
-    }, [searchParams]);
+    const handleCancel = () => {
+        setModalHomeworksInvisible();
+    };
 
     const onRemove = (subjectId: string) => {
         // removeSubjectMutation({variables: {id: subjectId}})
@@ -76,7 +68,7 @@ export const HomeworksIndex = () => {
                 value: value,
                 text: homeworkStatusWithTranslateToString(value),
             })),
-            defaultFilteredValue: searchParams.get('statuses')?.split('|'),
+            defaultFilteredValue: statuses,
         },
         {
             title: 'Надіслано',
@@ -102,6 +94,14 @@ export const HomeworksIndex = () => {
     ];
 
     return (
+        <Modal
+            title="ДЗ"
+            visible={isModalHomeworksVisible}
+            okText={'Оновити'}
+            onCancel={handleCancel}
+            cancelText={'Відміна'}
+            width={'70%'}
+        >
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Домашні роботи</Title>
             <Row justify="space-between">
@@ -115,20 +115,21 @@ export const HomeworksIndex = () => {
             </Row>
             <Table
                 rowKey={'id'}
-                loading={getHomeworksOptions.loading /*|| removeSubjectMutationOptions.loading*/}
-                dataSource={getHomeworksOptions.data?.getHomeworks.entities}
+                loading={loading /*|| removeSubjectMutationOptions.loading*/}
+                dataSource={homeworks}
                 columns={columns}
                 pagination={{
-                    current: parseInt(searchParams.get('page') || '') || 1,
-                    defaultPageSize: getHomeworksOptions.data?.getHomeworks.pageSize,
-                    total: getHomeworksOptions.data?.getHomeworks.total,
-                    onChange: page => setSearchParams({page: page.toString()}),
+                    current: page,
+                    defaultPageSize: pageSize,
+                    total: total,
+                    onChange: page => setSearchParams && setSearchParams({page: page.toString()}),
                 }}
                 onChange={(pagination, filters, sorter: any) => {
-                    console.log(pagination, filters, sorter);
-                    setSearchParams({statuses: filters.status?.join('|') || '', order: sorter.order});
+                    setSearchParams && setSearchParams({statuses: filters.status?.join('|') || '', order: sorter.order});
                 }}
             />
         </Space>
+        </Modal>
+
     );
 };

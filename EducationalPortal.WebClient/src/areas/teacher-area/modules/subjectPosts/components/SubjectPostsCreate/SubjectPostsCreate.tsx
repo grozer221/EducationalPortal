@@ -36,8 +36,6 @@ export const SubjectPostsCreate: FC<Props> = ({
                         type,
                         subjectId,
                     },
-                    withHomeworks: false,
-                    withFiles: false,
                 },
             })
                 .then(async (response) => {
