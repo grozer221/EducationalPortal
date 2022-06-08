@@ -13,7 +13,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectType : BaseType<SubjectModel>
     {
-        public SubjectType(IUserRepository usersRepository, IEducationalYearRepository educationalYearRepository, ISubjectPostRepository subjectPostRepository, ISubjectRepository subjectRepository) : base()
+        public SubjectType() : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
@@ -30,6 +30,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                {
                    int page = context.GetArgument<int>("Page");
                    Guid subjectId = context.Source.Id;
+                   var subjectPostRepository = context.RequestServices.GetRequiredService<ISubjectPostRepository>();
                    return await subjectPostRepository.WhereOrDefaultAsync(p => p.CreatedAt, Order.Descend, page, p => p.SubjectId == subjectId);
                });
 
@@ -37,6 +38,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("GradesHaveAccessRead")
                .ResolveAsync(async context =>
                {
+                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                    SubjectModel subject = await subjectRepository.GetByIdAsync(context.Source.Id, s => s.GradesHaveAccessRead);
                    return subject.GradesHaveAccessRead;
                });
@@ -45,6 +47,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("TeachersHaveAccessCreatePosts")
                .ResolveAsync(async context =>
                {
+                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                    SubjectModel subject = await subjectRepository.GetByIdAsync(context.Source.Id, s => s.TeachersHaveAccessCreatePosts);
                    return subject.TeachersHaveAccessCreatePosts;
                });
@@ -55,7 +58,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<UserType>, UserModel>()
                .Name("Teacher")
-               .ResolveAsync(async context => await usersRepository.GetByIdOrDefaultAsync(context.Source.TeacherId));
+               .ResolveAsync(async context =>
+               {
+                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   return await userRepository.GetByIdOrDefaultAsync(context.Source.TeacherId);
+               });
             
             Field<NonNullGraphType<IdGraphType>, Guid?>()
                .Name("EducationalYearId")
@@ -63,7 +70,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 
             Field<NonNullGraphType<EducationalYearType>, EducationalYearModel>()
                .Name("EducationalYear")
-               .ResolveAsync(async context => await educationalYearRepository.GetByIdOrDefaultAsync(context.Source.EducationalYearId));
+               .ResolveAsync(async context =>
+               {
+                   var educationalYearRepository = context.RequestServices.GetRequiredService<IEducationalYearRepository>();
+                   return await educationalYearRepository.GetByIdOrDefaultAsync(context.Source.EducationalYearId);
+               });
         }
     }
 }

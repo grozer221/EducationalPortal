@@ -3,7 +3,7 @@ using CloudinaryDotNet.Actions;
 
 namespace EducationalPortal.Server.Services
 {
-    public class CloudinaryService 
+    public class CloudinaryService
     {
         private readonly Cloudinary cloudinary;
 
@@ -12,9 +12,9 @@ namespace EducationalPortal.Server.Services
             cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
         }
 
-        public Task<string> UploadFileAsync(IFormFile file)
+        public Task<string> UploadFileAsync(IFormFile file, bool withHash = true)
         {
-            string fileName = Guid.NewGuid() + file.FileName;
+            string fileName = withHash ? Guid.NewGuid().ToString() : string.Empty + file.FileName;
             var uploadParams = CreateUploadParams<ImageUploadParams>(file, $"{nameof(file)}s/{fileName}");
             return UploadAsync(uploadParams);
         }
@@ -49,7 +49,7 @@ namespace EducationalPortal.Server.Services
             return uploadResult.Url.ToString();
         }
 
-        private T CreateUploadParams<T>(IFormFile file, string name) 
+        private T CreateUploadParams<T>(IFormFile file, string name)
             where T : RawUploadParams
         {
             Stream stream = file.OpenReadStream();

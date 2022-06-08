@@ -9,6 +9,7 @@ namespace EducationalPortal.MsSql.Extensions
         public static IServiceCollection AddMsSql(this IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(ServiceLifetime.Transient);
+            services.AddTransient<IBackupRepository, BackupRepository>();
             services.AddTransient<IEducationalYearRepository, EducationalYearRepository>();
             services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IGradeRepository, GradeRepository>();

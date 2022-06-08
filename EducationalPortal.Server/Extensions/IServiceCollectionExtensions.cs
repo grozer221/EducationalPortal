@@ -2,6 +2,7 @@
 using EducationalPortal.Server.GraphQL;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
+using EducationalPortal.Server.GraphQL.Modules.Back_ups;
 using EducationalPortal.Server.GraphQL.Modules.EducationalYears;
 using EducationalPortal.Server.GraphQL.Modules.Grades;
 using EducationalPortal.Server.GraphQL.Modules.Homeworks;
@@ -26,6 +27,9 @@ namespace EducationalPortal.Server.Extensions
         {
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+
+            services.AddTransient<IQueryMarker, BackupsQueries>();
+            services.AddTransient<IMutationMarker, BackupsMutations>();
 
             services.AddTransient<IQueryMarker, AuthQueries>();
             services.AddTransient<IMutationMarker, AuthMutations>();

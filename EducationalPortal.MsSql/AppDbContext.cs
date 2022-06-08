@@ -12,6 +12,7 @@ namespace EducationalPortal.MsSql
             Database.Migrate();
         }
 
+        public DbSet<BackupModel> Backups { get; set; }
         public DbSet<EducationalYearModel> EducationalYears { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<GradeModel> Grades { get; set; }
@@ -23,12 +24,14 @@ namespace EducationalPortal.MsSql
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_URL") ?? @"Data Source=(localdb)\ProjectModels;Initial Catalog=EducationalPortal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<BackupModel>().HasOne(b => b.File).WithOne(f => f.Backup).HasForeignKey<FileModel>(f => f.BackupId);
+            builder.Entity<BackupModel>().HasOne(b => b.File).WithOne(f => f.Backup).OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<EducationalYearModel>(y => y.HasIndex(e => e.Name).IsUnique());
             builder.Entity<EducationalYearModel>().HasMany(y => y.Subjects).WithOne(s => s.EducationalYear).OnDelete(DeleteBehavior.Cascade);
 

@@ -17,7 +17,8 @@
         "AuthValidAudience": "AuthValidAudience",
         "AuthValidIssuer": "AuthValidIssuer",
         "AuthIssuerSigningKey": "AuthIssuerSigningKey",
-        "CLOUDINARY_URL": "cloudinary://747821446766422:jvKQAwD9q3RpMBfwiXog7W7g4cw@hoeh3kagi"
+        "CLOUDINARY_URL": "cloudinary://747821446766422:jvKQAwD9q3RpMBfwiXog7W7g4cw@hoeh3kagi",
+        "BACKUPS_FOLDER_PATH": "C:\\Users\\ipz20"
       }
     },
     "IIS Express": {

@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworkType : BaseType<HomeworkModel>
     {
-        public HomeworkType(ISubjectPostRepository subjectPostRepository, IUserRepository userRepository, IFileRepository fileRepository) : base()
+        public HomeworkType() : base()
         {
             Field<StringGraphType, string?>()
                .Name("Text")
@@ -35,7 +35,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<SubjectPostType, SubjectPostModel?>()
                .Name("SubjectPost")
-               .ResolveAsync(async context => await subjectPostRepository.GetByIdAsync(context.Source.SubjectPostId));
+               .ResolveAsync(async context =>
+               {
+                   var subjectPostRepository = context.RequestServices.GetRequiredService<ISubjectPostRepository>();
+                   return await subjectPostRepository.GetByIdAsync(context.Source.SubjectPostId);
+               });
             
             Field<IdGraphType, Guid?>()
                .Name("StudentId")
@@ -43,11 +47,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<UserType, UserModel?>()
                .Name("Student")
-               .ResolveAsync(async context => await userRepository.GetByIdAsync(context.Source.StudentId));
+               .ResolveAsync(async context =>
+               {
+                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   return await userRepository.GetByIdAsync(context.Source.StudentId);
+               });
 
             Field<ListGraphType<NonNullGraphType<FileType>>, IEnumerable<FileModel>>()
               .Name("Files")
-              .ResolveAsync(async context => await fileRepository.GetOrDefaultAsync(f => f.HomeworkId == context.Source.Id));
+              .ResolveAsync(async context =>
+              {
+                  var fileRepository = context.RequestServices.GetRequiredService<IFileRepository>();
+                  return await fileRepository.GetOrDefaultAsync(f => f.HomeworkId == context.Source.Id);
+              });
         }
     }
 

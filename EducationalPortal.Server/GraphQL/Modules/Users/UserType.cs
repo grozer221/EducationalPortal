@@ -13,7 +13,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UserType : BaseType<UserModel>
     {
-        public UserType(IGradeRepository gradeRepository, ISubjectRepository subjectRepository) : base()
+        public UserType() : base()
         {
             Field<StringGraphType, string>()
                .Name("FirstName")
@@ -55,6 +55,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("Grade")
                .ResolveAsync(async context =>
                {
+                   var gradeRepository = context.RequestServices.GetRequiredService<IGradeRepository>();
                    return await gradeRepository.GetByIdOrDefaultAsync(context.Source.GradeId);
                });
 
@@ -65,6 +66,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                { 
                    int page = context.GetArgument<int>("Page");
                    Guid userId = context.Source.Id;
+                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                    return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.TeacherId == userId);
                })
                .AuthorizeWith(AuthPolicies.Teacher);
