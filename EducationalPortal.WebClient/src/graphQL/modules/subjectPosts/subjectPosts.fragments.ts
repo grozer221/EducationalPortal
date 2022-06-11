@@ -17,6 +17,11 @@ export const SUBJECT_POST_FRAGMENT = gql`
         homeworks @include(if: $withHomeworks){
             ...HomeworkFragment
         }
+        statistics @include(if: $withStatistics){
+            key
+            value
+            hashColor
+        }
         createdAt
         updatedAt
     }

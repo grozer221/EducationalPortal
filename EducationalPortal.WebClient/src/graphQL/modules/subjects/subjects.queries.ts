@@ -35,11 +35,11 @@ export const GET_SUBJECTS_QUERY = gql`
 
 
 export type GetSubjectWithPostsData = { getSubject: Subject }
-export type GetSubjectWithPostsVars = { id: string, postsPage: number, withHomeworks: boolean, withFiles: boolean }
+export type GetSubjectWithPostsVars = { id: string, postsPage: number, withHomeworks: boolean, withFiles: boolean, withStatistics: boolean }
 
 export const GET_SUBJECT_WITH_POSTS_QUERY = gql`
     ${SUBJECT_WITH_POSTS_FRAGMENT}
-    query GetSubject($id: ID!, $postsPage: Int!, $withHomeworks: Boolean!, $withFiles: Boolean!) {
+    query GetSubject($id: ID!, $postsPage: Int!, $withHomeworks: Boolean!, $withFiles: Boolean!, $withStatistics: Boolean!) {
         getSubject(id: $id) {
             ...SubjectWithPostsFragment
         }

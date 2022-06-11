@@ -8,7 +8,8 @@ export type SubjectPost = {
     type: SubjectPostType,
     teacherId: string,
     teacher: User,
-    homeworks: Homework[]
+    homeworks: Homework[],
+    statistics: SubjectPostStatistic[],
     createdAt: string,
     updatedAt: string,
 }
@@ -16,4 +17,10 @@ export type SubjectPost = {
 export enum SubjectPostType {
     Info = 'INFO',
     Homework = 'HOMEWORK',
+}
+
+export type SubjectPostStatistic = {
+    key: string,
+    value: number,
+    hashColor: string,
 }

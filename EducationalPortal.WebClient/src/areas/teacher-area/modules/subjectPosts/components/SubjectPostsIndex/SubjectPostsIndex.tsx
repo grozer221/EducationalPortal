@@ -10,16 +10,20 @@ import {
     RemoveSubjectPostVars
 } from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
 import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
-import {SubjectPost} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
+import {SubjectPost, SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {subjectPostTypeToTag} from '../../../../../../convertors/enumToTagConvertor';
 import Title from 'antd/es/typography/Title';
 import parse from 'html-react-parser';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import '../../../../../../styles/text.css';
-import {useAppSelector} from '../../../../../../store/store';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {HomeOutlined} from "@ant-design/icons";
 import {Homeworks} from "../../../homeworks/components/Homeworks/Homeworks";
+import {Doughnut} from "react-chartjs-2";
+import {Chart, registerables} from 'chart.js'
+import s from './SubjectPostsIndex.module.css';
+
+Chart.register(...registerables);
 
 type Props = {
     subject: Subject,
@@ -29,7 +33,6 @@ type Props = {
 };
 
 export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, postsPage, setPostsPage}) => {
-    const currentUser = useAppSelector(s => s.auth.me?.user);
     const [isModalPostCreateVisible, setIsModalPostCreateVisible] = useState(false);
     const [isModalPostUpdateVisible, setIsModalPostUpdateVisible] = useState(false);
     const [inEditingPost, setInEditingPost] = useState<SubjectPost | null>(null);
@@ -93,6 +96,32 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                         }
                     >
                         <div>{parse(post.text)}</div>
+                        {post.type === SubjectPostType.Homework &&
+                            <Space size={1}>
+                                <Doughnut
+                                    data={{
+                                        labels: post.statistics.map(s => s.key),
+                                        datasets: [{
+                                            data: post.statistics.map(s => s.value),
+                                            backgroundColor: post.statistics.map(s => s.hashColor),
+                                            hoverBackgroundColor: post.statistics.map(s => s.hashColor)
+                                        }]
+                                    }}
+                                    options={{
+                                        plugins: {
+                                            legend: {
+                                                display: true,
+                                                position: 'right',
+                                                labels: {
+                                                    boxWidth: 10,
+                                                    boxHeight: 10,
+                                                },
+                                                maxWidth: 100
+                                            }
+                                        },
+                                    }} className={s.doughnut}/>
+                            </Space>
+                        }
                         <div className={'small'}>
                             <div>Створено: {stringToUkraineDatetime(post.createdAt)}, {post.teacher.lastName} {post.teacher.firstName}</div>
                             <div>Оновлено: {stringToUkraineDatetime(post.updatedAt)}</div>

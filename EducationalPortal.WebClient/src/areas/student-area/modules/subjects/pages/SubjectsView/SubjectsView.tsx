@@ -17,7 +17,7 @@ export const SubjectsView = () => {
     const id = params.id as string;
     const [postsPage, setPostsPage] = useState(1);
     const getSubjectQuery = useQuery<GetSubjectWithPostsData, GetSubjectWithPostsVars>(GET_SUBJECT_WITH_POSTS_QUERY,
-        {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true}},
+        {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
     );
 
     if (!id)
@@ -68,11 +68,11 @@ export const SubjectsView = () => {
                 </tbody>
             </table>
             {subject &&
-            <SubjectPostsIndex
-                subject={subject}
-                postsPage={postsPage}
-                setPostsPage={setPostsPage}
-            />}
+                <SubjectPostsIndex
+                    subject={subject}
+                    postsPage={postsPage}
+                    setPostsPage={setPostsPage}
+                />}
         </Space>
     );
 };

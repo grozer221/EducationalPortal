@@ -1,10 +1,7 @@
 import React, {FC} from 'react';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {Col, Modal, Row, Space, Table} from 'antd';
-import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link} from 'react-router-dom';
-import Title from 'antd/es/typography/Title';
+import {Modal, Table} from 'antd';
 import {Homework, HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homework.types';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {homeworkStatusToTag} from '../../../../../../convertors/enumToTagConvertor';
@@ -22,7 +19,17 @@ type Props = {
     setSearchParams?: (obj: any) => void
 }
 
-export const Homeworks: FC<Props> = ({homeworks, page, statuses, loading, pageSize, total, setSearchParams, isModalHomeworksVisible, setModalHomeworksInvisible}) => {
+export const Homeworks: FC<Props> = ({
+                                         homeworks,
+                                         page,
+                                         statuses,
+                                         loading,
+                                         pageSize,
+                                         total,
+                                         setSearchParams,
+                                         isModalHomeworksVisible,
+                                         setModalHomeworksInvisible
+                                     }) => {
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
     const handleCancel = () => {
@@ -95,24 +102,12 @@ export const Homeworks: FC<Props> = ({homeworks, page, statuses, loading, pageSi
 
     return (
         <Modal
-            title="ДЗ"
+            title="Домашні роботи"
             visible={isModalHomeworksVisible}
-            okText={'Оновити'}
             onCancel={handleCancel}
-            cancelText={'Відміна'}
+            footer={false}
             width={'70%'}
         >
-        <Space size={20} direction={'vertical'} style={{width: '100%'}}>
-            <Title level={2}>Домашні роботи</Title>
-            <Row justify="space-between">
-                <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
-                </Col>
-                <Col>
-                </Col>
-            </Row>
             <Table
                 rowKey={'id'}
                 loading={loading /*|| removeSubjectMutationOptions.loading*/}
@@ -125,10 +120,12 @@ export const Homeworks: FC<Props> = ({homeworks, page, statuses, loading, pageSi
                     onChange: page => setSearchParams && setSearchParams({page: page.toString()}),
                 }}
                 onChange={(pagination, filters, sorter: any) => {
-                    setSearchParams && setSearchParams({statuses: filters.status?.join('|') || '', order: sorter.order});
+                    setSearchParams && setSearchParams({
+                        statuses: filters.status?.join('|') || '',
+                        order: sorter.order
+                    });
                 }}
             />
-        </Space>
         </Modal>
 
     );

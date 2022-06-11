@@ -32,13 +32,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
                     EducationalYearModel currentEducationalYear = await educationalYearRepository.GetCurrentAsync();
-                    return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page, s => 
+                    return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s =>
                         s.EducationalYearId == currentEducationalYear.Id
                         && s.Name.ToLower().Contains(like.ToLower())
                     );
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
-            
+
             Field<NonNullGraphType<GetEntitiesResponseType<SubjectType, SubjectModel>>, GetEntitiesResponse<SubjectModel>>()
                 .Name("GetMySubjects")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get My Subjects")
@@ -57,7 +57,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     {
                         case UserRoleEnum.Student:
                             UserModel currentUser = await userRepository.GetByIdAsync(currentUserId);
-                            return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page,
+                            return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page,
                                 s => s.GradesHaveAccessRead.Any(g => g.Id == currentUser.GradeId)
                                 && s.Name.ToLower().Contains(like.ToLower())
                                 && s.EducationalYearId == currentEducationalYear.Id,
@@ -65,7 +65,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                             );
                         case UserRoleEnum.Teacher:
                         case UserRoleEnum.Administrator:
-                            return await subjectRepository.WhereAsync(s => s.CreatedAt, Order.Descend, page,
+                            return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page,
                                 s => (s.TeacherId == currentUserId || s.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentUserId))
                                 && s.Name.ToLower().Contains(like.ToLower())
                                 && s.EducationalYearId == currentEducationalYear.Id,
@@ -74,7 +74,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                         default:
                             throw new Exception("Невідома роль");
                     }
-                   
                 })
                .AuthorizeWith(AuthPolicies.Authenticated);
         }

@@ -4,8 +4,8 @@ import {SUBJECT_POST_FRAGMENT} from './subjectPosts.fragments';
 
 export type CreateSubjectPostData = { createSubjectPost: SubjectPost }
 
-export type CreateSubjectPostVars = { createSubjectPostInputType: createSubjectPostInputType }
-export type createSubjectPostInputType = {
+export type CreateSubjectPostVars = { createSubjectPostInputType: CreateSubjectPostInputType, withHomeworks: boolean, withFiles: boolean, withStatistics: boolean }
+export type CreateSubjectPostInputType = {
     title: string,
     text: string,
     type: SubjectPostType,
@@ -14,7 +14,7 @@ export type createSubjectPostInputType = {
 
 export const CREATE_SUBJECT_POST_MUTATION = gql`
     ${SUBJECT_POST_FRAGMENT}
-    mutation CreateSubjectPost($createSubjectPostInputType: CreateSubjectPostInputType!) {
+    mutation CreateSubjectPost($createSubjectPostInputType: CreateSubjectPostInputType!, $withHomeworks: Boolean!, $withFiles: Boolean!, $withStatistics: Boolean!) {
         createSubjectPost(createSubjectPostInputType: $createSubjectPostInputType) {
             ...SubjectPostFragment
         }
@@ -23,12 +23,12 @@ export const CREATE_SUBJECT_POST_MUTATION = gql`
 
 export type UpdateSubjectPostData = { updateSubjectPost: SubjectPost }
 
-export type UpdateSubjectPostVars = { updateSubjectPostInputType: updateSubjectPostInputType }
-export type updateSubjectPostInputType = Omit<createSubjectPostInputType & { id: string }, 'subjectId'>
+export type UpdateSubjectPostVars = { updateSubjectPostInputType: UpdateSubjectPostInputType, withHomeworks: boolean, withFiles: boolean, withStatistics: boolean }
+export type UpdateSubjectPostInputType = Omit<CreateSubjectPostInputType & { id: string }, 'subjectId'>
 
 export const UPDATE_SUBJECT_POST_MUTATION = gql`
     ${SUBJECT_POST_FRAGMENT}
-    mutation UpdateSubjectPost($updateSubjectPostInputType: UpdateSubjectPostInputType!) {
+    mutation UpdateSubjectPost($updateSubjectPostInputType: UpdateSubjectPostInputType!, $withHomeworks: Boolean!, $withFiles: Boolean!, $withStatistics: Boolean!) {
         updateSubjectPost(updateSubjectPostInputType: $updateSubjectPostInputType) {
             ...SubjectPostFragment
         }

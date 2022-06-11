@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from '@apollo/client';
 import {Link, Navigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {GET_SUBJECT_WITH_POSTS_QUERY, GetSubjectWithPostsData, GetSubjectWithPostsVars} from '../../../../../../graphQL/modules/subjects/subjects.queries';
+import {
+    GET_SUBJECT_WITH_POSTS_QUERY,
+    GetSubjectWithPostsData,
+    GetSubjectWithPostsVars
+} from '../../../../../../graphQL/modules/subjects/subjects.queries';
 import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIndex/SubjectPostsIndex';
-import {Space, Tag} from 'antd';
+import {message, Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
 
@@ -14,8 +18,12 @@ export const SubjectsView = () => {
     const [postsPage, setPostsPage] = useState(1);
 
     const getSubjectQuery = useQuery<GetSubjectWithPostsData, GetSubjectWithPostsVars>(GET_SUBJECT_WITH_POSTS_QUERY,
-        {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true}},
+        {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
     );
+
+    useEffect(() => {
+        getSubjectQuery.error && message.error(getSubjectQuery.error.message)
+    }, [getSubjectQuery.error])
 
     const refetchSubjectAsync = async () => {
         await getSubjectQuery.refetch({id: id, postsPage: postsPage});
@@ -81,12 +89,12 @@ export const SubjectsView = () => {
                 </tbody>
             </table>
             {subject &&
-            <SubjectPostsIndex
-                subject={subject}
-                refetchSubjectAsync={refetchSubjectAsync}
-                postsPage={postsPage}
-                setPostsPage={setPostsPage}
-            />}
+                <SubjectPostsIndex
+                    subject={subject}
+                    refetchSubjectAsync={refetchSubjectAsync}
+                    postsPage={postsPage}
+                    setPostsPage={setPostsPage}
+                />}
         </Space>
     );
 };
