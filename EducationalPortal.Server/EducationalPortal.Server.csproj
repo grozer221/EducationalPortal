@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\EducationalPortal.Business\EducationalPortal.Business.csproj" />
+		<ProjectReference Include="..\EducationalPortal.Mongo\EducationalPortal.Mongo.csproj" />
 		<ProjectReference Include="..\EducationalPortal.MsSql\EducationalPortal.MsSql.csproj" />
 	</ItemGroup>
 	

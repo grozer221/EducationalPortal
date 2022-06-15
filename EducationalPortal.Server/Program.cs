@@ -1,4 +1,5 @@
 using EducationalPortal.MsSql.Extensions;
+using EducationalPortal.Mongo.Extensions;
 using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL;
 
@@ -15,6 +16,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddJwtAuthorization();
+//builder.Services.AddMongo();
 builder.Services.AddMsSql();
 builder.Services.AddGraphQLApi();
 builder.Services.AddServices();

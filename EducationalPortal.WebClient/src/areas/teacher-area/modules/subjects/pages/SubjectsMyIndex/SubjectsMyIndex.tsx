@@ -70,7 +70,7 @@ export const SubjectsMyIndex = () => {
             dataIndex: 'grades',
             key: 'grades',
             render: (text, subject) => (
-                subject.gradesHaveAccessRead.map(grade => (
+                subject.gradesHaveAccessRead?.map(grade => (
                     <Link to={`../../grades/${grade.id}`}>
                         <Tag>{grade.name}</Tag>
                     </Link>
