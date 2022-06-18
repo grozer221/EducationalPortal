@@ -24,7 +24,7 @@ namespace EducationalPortal.MsSql
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_URL") ?? @"Data Source=(localdb)\ProjectModels;Initial Catalog=EducationalPortal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("MS_SQL_DATABASE_URL") ?? @"Data Source=(localdb)\ProjectModels;Initial Catalog=EducationalPortal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

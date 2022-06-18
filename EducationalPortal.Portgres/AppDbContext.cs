@@ -2,6 +2,7 @@
 using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EducationalPortal.Portgres
 {
@@ -25,7 +26,7 @@ namespace EducationalPortal.Portgres
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(GetConnectionString());
+            optionsBuilder.UseNpgsql(GetConnectionString()).LogTo(Console.WriteLine, LogLevel.Debug);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
