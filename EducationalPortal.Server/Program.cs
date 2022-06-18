@@ -2,6 +2,7 @@ using EducationalPortal.MsSql.Extensions;
 using EducationalPortal.Mongo.Extensions;
 using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL;
+using EducationalPortal.Portgres.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddJwtAuthorization();
 //builder.Services.AddMongo();
-builder.Services.AddMsSql();
+//builder.Services.AddMsSql();
+builder.Services.AddPostgres();
 builder.Services.AddGraphQLApi();
 builder.Services.AddServices();
 
