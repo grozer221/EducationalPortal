@@ -9,6 +9,7 @@ namespace EducationalPortal.Portgres
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             Database.Migrate();
         }
 
