@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
 {
     public class EducationalYearType : BaseType<EducationalYearModel>
     {
-        public EducationalYearType() : base()
+        public EducationalYearType(IServiceProvider serviceProvider) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                 .Name("Name")
@@ -34,9 +34,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.EducationalYears
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                 .ResolveAsync(async context =>
                 {
+                    using var scope = serviceProvider.CreateScope();
+                    var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
                     int page = context.GetArgument<int>("Page");
                     Guid educationalYearId = context.Source.Id;
-                    var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                     return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.EducationalYearId == educationalYearId);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);

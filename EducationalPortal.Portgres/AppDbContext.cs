@@ -26,7 +26,7 @@ namespace EducationalPortal.Portgres
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(GetConnectionString()).LogTo(Console.WriteLine, LogLevel.Debug);
+            optionsBuilder.UseNpgsql(GetConnectionString());
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -86,7 +86,7 @@ namespace EducationalPortal.Portgres
             }
         }
 
-        private string GetConnectionString()
+        public static string GetConnectionString()
         {
             string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             if (string.IsNullOrEmpty(connectionString))

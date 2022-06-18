@@ -18,8 +18,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddJwtAuthorization();
 //builder.Services.AddMongo();
-builder.Services.AddMsSql();
-//builder.Services.AddPostgres();
+//builder.Services.AddMsSql();
+builder.Services.AddPostgres();
 builder.Services.AddGraphQLApi();
 builder.Services.AddServices();
 

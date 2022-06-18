@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 {
     public class SubjectPostType : BaseType<SubjectPostModel>
     {
-        public SubjectPostType() : base()
+        public SubjectPostType(IServiceProvider serviceProvider) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Title")
@@ -33,7 +33,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                .Name("Teacher")
                .ResolveAsync(async context =>
                {
-                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                    return await userRepository.GetByIdOrDefaultAsync(context.Source.TeacherId);
                });
 
@@ -45,7 +46,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                 .Name("Subject")
                 .ResolveAsync(async context =>
                 {
-                    var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
+                    using var scope = serviceProvider.CreateScope();
+                    var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
                     return await subjectRepository.GetByIdAsync(context.Source.SubjectId);
                 });
 
@@ -53,7 +55,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                 .Name("Homeworks")
                 .ResolveAsync(async context =>
                 {
-                    var homeworkRepository = context.RequestServices.GetRequiredService<IHomeworkRepository>();
+                    using var scope = serviceProvider.CreateScope();
+                    var homeworkRepository = scope.ServiceProvider.GetRequiredService<IHomeworkRepository>();
                     return await homeworkRepository.GetOrDefaultAsync(h => h.SubjectPostId == context.Source.Id);
                 });
             
@@ -64,13 +67,16 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                     if (context.Source.Type != PostType.Homework)
                         return new List<SubjectPostStatistic>();
 
+                    using var scope = serviceProvider.CreateScope();
+                    var homeworkRepository = scope.ServiceProvider.GetRequiredService<IHomeworkRepository>();
+                    var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
+                    var gradeRepository = scope.ServiceProvider.GetRequiredService<IGradeRepository>();
+
                     var subjectId = context.Source.SubjectId;
                     var subjectPostId = context.Source.Id;
 
-                    var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                     var subject = await subjectRepository.GetByIdAsync(subjectId, s => s.GradesHaveAccessRead);
 
-                    var gradeRepository = context.RequestServices.GetRequiredService<IGradeRepository>();
                     int studentsHaveAccessReadCount = 0;
                     foreach (var gradeHaveAccessRead in subject.GradesHaveAccessRead)
                     {
@@ -78,7 +84,6 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
                         studentsHaveAccessReadCount += grade.Students.Count;
                     }
 
-                    var homeworkRepository = context.RequestServices.GetRequiredService<IHomeworkRepository>();
                     var homeworks = await homeworkRepository.GetOrDefaultAsync(h => h.SubjectPostId == subjectPostId);
 
                     int sentCount = homeworks.DistinctBy(h => h.StudentId).Count();
@@ -86,8 +91,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.SubjectPosts
 
                     return new List<SubjectPostStatistic>
                     {
-                        new SubjectPostStatistic { Key = "Надіслали", Value = sentCount, HashColor = "#FF6384" },
-                        new SubjectPostStatistic { Key = "Не надіслали", Value = notSentCount, HashColor = "#2ecc71" },
+                        new SubjectPostStatistic { Key = "Надіслали", Value = sentCount, HashColor = "#2ecc71" },
+                        new SubjectPostStatistic { Key = "Не надіслали", Value = notSentCount, HashColor = "#FF6384" },
                     };
                 });
         }

@@ -132,20 +132,11 @@ export const TeacherLayout: FC = () => {
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>
 
-                            <Route path={'backups/*'}>
-                                <Route index element={
-                                    <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
-                                        <BackupsIndex/>
-                                    </WithAdministratorRoleOrRender>
-                                }/>
-                                {/*<Route path={'create'} element={*/}
-                                {/*    <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>*/}
-                                {/*        <TeachersCreate/>*/}
-                                {/*    </WithAdministratorRoleOrRender>*/}
-                                {/*}/>*/}
-                                <Route path={'*'} element={<Error/>}/>
-                            </Route>
-
+                            <Route path={'backups'} element={
+                                <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+                                    <BackupsIndex/>
+                                </WithAdministratorRoleOrRender>
+                            }/>
                             <Route index element={<Navigate to={'subjects/my'}/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>

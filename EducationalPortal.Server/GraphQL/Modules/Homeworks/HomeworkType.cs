@@ -11,7 +11,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 {
     public class HomeworkType : BaseType<HomeworkModel>
     {
-        public HomeworkType() : base()
+        public HomeworkType(IServiceProvider serviceProvider) : base()
         {
             Field<StringGraphType, string?>()
                .Name("Text")
@@ -37,7 +37,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                .Name("SubjectPost")
                .ResolveAsync(async context =>
                {
-                   var subjectPostRepository = context.RequestServices.GetRequiredService<ISubjectPostRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var subjectPostRepository = scope.ServiceProvider.GetRequiredService<ISubjectPostRepository>();
                    return await subjectPostRepository.GetByIdAsync(context.Source.SubjectPostId);
                });
             
@@ -49,7 +50,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                .Name("Student")
                .ResolveAsync(async context =>
                {
-                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                    return await userRepository.GetByIdAsync(context.Source.StudentId);
                });
 
@@ -57,7 +59,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
               .Name("Files")
               .ResolveAsync(async context =>
               {
-                  var fileRepository = context.RequestServices.GetRequiredService<IFileRepository>();
+                  using var scope = serviceProvider.CreateScope();
+                  var fileRepository = scope.ServiceProvider.GetRequiredService<IFileRepository>();
                   return await fileRepository.GetOrDefaultAsync(f => f.HomeworkId == context.Source.Id);
               });
         }

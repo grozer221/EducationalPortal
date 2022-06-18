@@ -30,11 +30,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
                         Path = urlPath,
                         CreatorId = currentUserId,
                     });
-                    File.Delete(backupFullPath);
                     return await backupRepository.CreateAsync(new BackupModel
                     {
                         FileId = file.Id,
-                    }); 
+                    });
                 })
                 .AuthorizeWith(AuthPolicies.Administrator);
             
@@ -45,14 +44,17 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
                 {
                     Guid id = context.GetArgument<Guid>("Id");
                     var backup = await backupRepository.GetByIdAsync(id, b => b.File);
-                    string backupFullPath = $@"{Environment.GetEnvironmentVariable("BACKUPS_FOLDER_PATH")}\{backup.File.Name}";
-                    using(var httpClient = new HttpClient())
+                    var backupFullPath = Path.Combine(Environment.CurrentDirectory, "Backups", backup.File.Name);
+                    if (!File.Exists(backupFullPath))
+                    {
+                           using(var httpClient = new HttpClient())
                     {
                         byte[] fileBytes = await httpClient.GetByteArrayAsync(new Uri(backup.File.Path));
                         await File.WriteAllBytesAsync(backupFullPath, fileBytes);
                     }
+                    }
+                 
                     await backupRepository.RestoreDatabase(backupFullPath);
-                    File.Delete(backupFullPath);
                     return backup;
                 })
                 .AuthorizeWith(AuthPolicies.Administrator);

@@ -2,7 +2,6 @@ import {gql} from '@apollo/client';
 import {USER_FRAGMENT} from '../users/users.fragments';
 import {FILE_FRAGMENT} from "../files/files.fragments";
 
-// @ts-ignore
 export const HOMEWORK_FRAGMENT = gql`
     ${USER_FRAGMENT}
     ${FILE_FRAGMENT}
@@ -17,6 +16,10 @@ export const HOMEWORK_FRAGMENT = gql`
             ...UserFragment
         }
         subjectPostId
+        subjectPost {
+            id
+            title
+        }
         files @include(if: $withFiles) {
             ...FileFragment
         }

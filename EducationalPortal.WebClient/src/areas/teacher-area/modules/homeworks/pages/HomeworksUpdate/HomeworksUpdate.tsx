@@ -79,6 +79,11 @@ export const HomeworksUpdate = () => {
             <Form.Item label="Текст">
                 <div>{homework?.text}</div>
             </Form.Item>
+            <Form.Item label="Файли">
+                {homework?.files.map(file => (
+                    <a href={file.path}>{file.name}</a>
+                ))}
+            </Form.Item>
             <Form.Item
                 name="mark"
                 label="Оцінка"

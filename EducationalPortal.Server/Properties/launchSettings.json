@@ -19,7 +19,8 @@
         "AuthIssuerSigningKey": "AuthIssuerSigningKey",
         "CLOUDINARY_URL": "cloudinary://747821446766422:jvKQAwD9q3RpMBfwiXog7W7g4cw@hoeh3kagi",
         "BACKUPS_FOLDER_PATH": "C:\\Users\\ipz20",
-        "ATLAS_URI": "mongodb+srv://maingoose:maingoose@cluster0.4gamz.mongodb.net/?retryWrites=true&w=majority"
+        "ATLAS_URI": "mongodb+srv://maingoose:maingoose@cluster0.4gamz.mongodb.net/?retryWrites=true&w=majority",
+        "PG_PATH": "C:\\OpenServer\\modules\\database\\PostgreSQL-13.3-Win10\\bin"
       }
     },
     "IIS Express": {

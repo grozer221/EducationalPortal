@@ -17,7 +17,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("CreateHomework")
                 .Argument<NonNullGraphType<CreateHomeworkInputType>, CreateHomeworkInput>("CreateHomeworkInputType", "Argument for create new Homework")
-                .ResolveAsync(async (context) =>
+                .ResolveAsync(async context =>
                 {
                     CreateHomeworkInput createHomeworkInput = context.GetArgument<CreateHomeworkInput>("CreateHomeworkInputType");
                     var homework = createHomeworkInput.ToModel();

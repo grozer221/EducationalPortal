@@ -56,7 +56,7 @@ export const SubjectsIndex = () => {
             key: 'name',
             render: (text, subject) => (
                 <Space>
-                    <div>{subject?.name}</div>
+                    <div>{subject.name}</div>
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
                         {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&

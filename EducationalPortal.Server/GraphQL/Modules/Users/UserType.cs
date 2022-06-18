@@ -13,7 +13,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
 {
     public class UserType : BaseType<UserModel>
     {
-        public UserType() : base()
+        public UserType(IServiceProvider serviceProvider) : base()
         {
             Field<StringGraphType, string>()
                .Name("FirstName")
@@ -55,7 +55,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("Grade")
                .ResolveAsync(async context =>
                {
-                   var gradeRepository = context.RequestServices.GetRequiredService<IGradeRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var gradeRepository = scope.ServiceProvider.GetRequiredService<IGradeRepository>();
                    return await gradeRepository.GetByIdOrDefaultAsync(context.Source.GradeId);
                });
 
@@ -63,10 +64,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Users
                .Name("Subjects")
                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects")
                .ResolveAsync(async context =>
-               { 
+               {
+                   using var scope = serviceProvider.CreateScope();
+                   var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
                    int page = context.GetArgument<int>("Page");
                    Guid userId = context.Source.Id;
-                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
                    return await subjectRepository.WhereOrDefaultAsync(s => s.CreatedAt, Order.Descend, page, s => s.TeacherId == userId);
                })
                .AuthorizeWith(AuthPolicies.Teacher);

@@ -36,5 +36,9 @@
 		<ProjectReference Include="..\EducationalPortal.MsSql\EducationalPortal.MsSql.csproj" />
 		<ProjectReference Include="..\EducationalPortal.Portgres\EducationalPortal.Portgres.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Backups\" />
+	</ItemGroup>
 	
 </Project>

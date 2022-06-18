@@ -150,7 +150,9 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
             {inViewHomeworksPost && <Homeworks
                 homeworks={inViewHomeworksPost.homeworks}
                 isModalHomeworksVisible={!!inViewHomeworksPost}
-                setModalHomeworksInvisible={() => setInViewHomeworksPost(null)}/>}
+                setModalHomeworksInvisible={() => setInViewHomeworksPost(null)}
+                path={'../../homeworks'}
+            />}
         </>
     );
 };

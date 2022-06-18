@@ -13,7 +13,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
 {
     public class SubjectType : BaseType<SubjectModel>
     {
-        public SubjectType() : base()
+        public SubjectType(IServiceProvider serviceProvider) : base()
         {
             Field<NonNullGraphType<StringGraphType>, string>()
                .Name("Name")
@@ -28,9 +28,10 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Subjects Posts")
                .ResolveAsync(async context =>
                {
+                   using var scope = serviceProvider.CreateScope();
+                   var subjectPostRepository = scope.ServiceProvider.GetRequiredService<ISubjectPostRepository>();
                    int page = context.GetArgument<int>("Page");
                    Guid subjectId = context.Source.Id;
-                   var subjectPostRepository = context.RequestServices.GetRequiredService<ISubjectPostRepository>();
                    return await subjectPostRepository.WhereOrDefaultAsync(p => p.CreatedAt, Order.Descend, page, p => p.SubjectId == subjectId);
                });
 
@@ -38,7 +39,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("GradesHaveAccessRead")
                .ResolveAsync(async context =>
                {
-                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
                    SubjectModel subject = await subjectRepository.GetByIdAsync(context.Source.Id, s => s.GradesHaveAccessRead);
                    return subject.GradesHaveAccessRead;
                });
@@ -47,7 +49,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("TeachersHaveAccessCreatePosts")
                .ResolveAsync(async context =>
                {
-                   var subjectRepository = context.RequestServices.GetRequiredService<ISubjectRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var subjectRepository = scope.ServiceProvider.GetRequiredService<ISubjectRepository>();
                    SubjectModel subject = await subjectRepository.GetByIdAsync(context.Source.Id, s => s.TeachersHaveAccessCreatePosts);
                    return subject.TeachersHaveAccessCreatePosts;
                });
@@ -60,7 +63,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("Teacher")
                .ResolveAsync(async context =>
                {
-                   var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                    return await userRepository.GetByIdOrDefaultAsync(context.Source.TeacherId);
                });
             
@@ -72,7 +76,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                .Name("EducationalYear")
                .ResolveAsync(async context =>
                {
-                   var educationalYearRepository = context.RequestServices.GetRequiredService<IEducationalYearRepository>();
+                   using var scope = serviceProvider.CreateScope();
+                   var educationalYearRepository = scope.ServiceProvider.GetRequiredService<IEducationalYearRepository>();
                    return await educationalYearRepository.GetByIdOrDefaultAsync(context.Source.EducationalYearId);
                });
         }

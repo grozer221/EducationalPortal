@@ -16,7 +16,8 @@ type Props = {
     loading?: boolean,
     pageSize?: number,
     total?: number,
-    setSearchParams?: (obj: any) => void
+    setSearchParams?: (obj: any) => void,
+    path: string,
 }
 
 export const Homeworks: FC<Props> = ({
@@ -28,7 +29,8 @@ export const Homeworks: FC<Props> = ({
                                          total,
                                          setSearchParams,
                                          isModalHomeworksVisible,
-                                         setModalHomeworksInvisible
+                                         setModalHomeworksInvisible,
+                                         path= ''
                                      }) => {
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
@@ -94,7 +96,7 @@ export const Homeworks: FC<Props> = ({
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>
                 //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`${homework?.id}`} updateUrl={`update/${homework?.id}`}
+                <ButtonsVUR viewUrl={`${homework?.id}`} updateUrl={`${path}/update/${homework?.id}`}
                             onRemove={() => onRemove(homework?.id)}/>
             ),
         },
