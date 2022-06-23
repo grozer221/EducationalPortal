@@ -1,5 +1,6 @@
 ﻿using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
+using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
 using EducationalPortal.Server.Services;
@@ -16,7 +17,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                 .Name("Me")
                 .ResolveAsync(async context =>
                 {
-                    string userLogin = httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultLoginClaimType).Value;
+                    string userLogin = httpContextAccessor.HttpContext.GetUserLogin();
                     UserModel currentUser = await usersRepository.GetByLoginAsync(userLogin);
                     return new AuthResponse()
                     {

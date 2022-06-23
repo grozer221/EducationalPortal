@@ -1,6 +1,6 @@
-import React, {ChangeEvent, FC, useState} from 'react';
+import React, {ChangeEvent, FC, FormEvent, useState} from 'react';
 import {useMutation} from '@apollo/client';
-import {Form, Input, message} from 'antd';
+import {Avatar, Form, Input, message, Space} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
@@ -9,6 +9,9 @@ import {
     CreateHomeworkData,
     CreateHomeworkVars,
 } from '../../../../../../graphQL/modules/homeworks/homeworks.mutations';
+import {FilesList} from "../../../../../../components/FilesList/FilesList";
+import {UploadOutlined} from "@ant-design/icons";
+import s from "./HomeworksCreate.module.css";
 
 type Props = {
     subjectPostId: string,
@@ -31,10 +34,10 @@ export const HomeworksCreate: FC<Props> = ({subjectPostId, subjectPostTitle, aft
     const [form] = Form.useForm();
     const [files, setFiles] = useState<File[]>([]);
 
-    const filesChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.length) {
-            console.log(e.target.files);
-            const newFiles = Array.from(e.target.files)
+    const filesChangeHandler = (e: FormEvent<HTMLLabelElement>) => {
+        const fileEvent = e.nativeEvent as ChangeEvent<HTMLInputElement> & Event;
+        if (fileEvent.target.files?.length) {
+            const newFiles = Array.from(fileEvent.target.files)
             setFiles([...files, ...newFiles]);
         }
     };
@@ -60,6 +63,10 @@ export const HomeworksCreate: FC<Props> = ({subjectPostId, subjectPostTitle, aft
             });
     };
 
+    const removeFileHandler = (removeFile: File) => {
+        setFiles(files.filter(file => file !== removeFile));
+    }
+
     return (
         <Form
             name="HomeworksCreateForm"
@@ -67,7 +74,7 @@ export const HomeworksCreate: FC<Props> = ({subjectPostId, subjectPostTitle, aft
             form={form}
             {...sizeFormItem}
         >
-            <Title level={2}>Створити ДЗ для {subjectPostTitle}</Title>
+            <Title level={2}>Відправити домашню роботу для {subjectPostTitle}</Title>
             <Form.Item
                 name="text"
                 label="Текст"
@@ -79,7 +86,15 @@ export const HomeworksCreate: FC<Props> = ({subjectPostId, subjectPostTitle, aft
                 name="files"
                 label="Файли"
             >
-                <input type="file" onChange={filesChangeHandler}/>
+                <Space direction={'vertical'}>
+                    <label onChange={filesChangeHandler}>
+                        <input type="file" multiple hidden/>
+                        <div className={s.buttonUpload}>
+                            <Avatar size={28} icon={<UploadOutlined/>}/>
+                        </div>
+                    </label>
+                    <FilesList files={files} onRemove={removeFileHandler}/>
+                </Space>
             </Form.Item>
             <Form.Item {...sizeButtonItem}>
                 <ButtonCreate loading={createHomeworkOption.loading} isSubmit={true}/>

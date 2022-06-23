@@ -9,6 +9,11 @@ namespace EducationalPortal.Server.Extensions
         {
             return new Guid(httpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
         }
+        
+        public static string GetUserLogin(this HttpContext httpContext)
+        {
+            return httpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultLoginClaimType).Value;
+        }
 
         public static UserRoleEnum GetRole(this HttpContext httpContext)
         {

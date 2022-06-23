@@ -26,7 +26,7 @@ namespace EducationalPortal.Portgres.Repositories
             string connectionString = AppDbContext.GetConnectionString();
             string database = connectionString.Split(";").First(p => p.StartsWith("Database")).Replace("Database=", string.Empty);
             string username = connectionString.Split(";").First(p => p.StartsWith("Username")).Replace("Username=", string.Empty);
-            var command = $"pg_dump -c -C -U {username} -d {database} > {outputFileFullPath}";
+            var command = $@"pg_dump -c -C -U {username} -d {database} > ""{outputFileFullPath}""";
             DatabaseAction(Environment.GetEnvironmentVariable("PG_PATH"), command);
             return Task.FromResult(outputFileFullPath);
         }
@@ -37,7 +37,7 @@ namespace EducationalPortal.Portgres.Repositories
             string database = connectionString.Split(";").First(p => p.StartsWith("Database")).Replace("Database=", string.Empty);
             string username = connectionString.Split(";").First(p => p.StartsWith("Username")).Replace("Username=", string.Empty);
             //var command = $"pg_restore -c -C -d {database} -U {username} -C {backupUrl}";
-            var command = $"psql -U {username} -d {database} < {backupPath}";
+            var command = $@"psql -U {username} -d {database} < ""{backupPath}""";
             DatabaseAction(Environment.GetEnvironmentVariable("PG_PATH"), command);
             return Task.CompletedTask;
         }

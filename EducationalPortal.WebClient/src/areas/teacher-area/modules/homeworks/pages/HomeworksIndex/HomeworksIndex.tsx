@@ -95,8 +95,7 @@ export const HomeworksIndex = () => {
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>
                 //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`${homework?.id}`} updateUrl={`update/${homework?.id}`}
-                            onRemove={() => onRemove(homework?.id)}/>
+                <ButtonsVUR updateUrl={`update/${homework?.id}`} onRemove={() => onRemove(homework?.id)}/>
             ),
         },
     ];

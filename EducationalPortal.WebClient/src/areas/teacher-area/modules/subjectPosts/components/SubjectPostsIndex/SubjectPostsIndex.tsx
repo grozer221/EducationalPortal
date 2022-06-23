@@ -87,7 +87,8 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                             //     onRemove={() => onPostRemove(post.id)}
                             // />
                             <Space size={10}>
-                                <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>
+                                {post.type === SubjectPostType.Homework
+                                    && <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>}
                                 <ButtonsVUR
                                     onUpdate={() => onPostUpdate(post)}
                                     onRemove={() => onPostRemove(post.id)}

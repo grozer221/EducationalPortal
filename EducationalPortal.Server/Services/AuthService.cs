@@ -19,14 +19,6 @@ namespace EducationalPortal.Server.Services
             _usersRepository = usersRepository;
         }
 
-        public async Task<string> AuthenticateAsync(LoginAuthInput loginAuthInput)
-        {
-            UserModel? user = await _usersRepository.GetByLoginOrDefaultAsync(loginAuthInput.Login);
-            if (user == null || user.Password != loginAuthInput.Password)
-                throw new Exception("Не правильний логін або пароль");
-            return GenerateAccessToken(user.Id, user.Login, user.Role);
-        }
-
         public string GenerateAccessToken(Guid userId, string userLogin, UserRoleEnum userRole)
         {
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("AuthIssuerSigningKey")));

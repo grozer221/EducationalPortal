@@ -2,6 +2,7 @@
 using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
+using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
 using GraphQL;
@@ -48,11 +49,8 @@ namespace EducationalPortal.Server.GraphQL.Modules.Subjects
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
                     EducationalYearModel currentEducationalYear = await educationalYearRepository.GetCurrentAsync();
-                    Guid currentUserId = new Guid(httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultIdClaimType).Value);
-                    UserRoleEnum currentUserRole = (UserRoleEnum)Enum.Parse(
-                        typeof(UserRoleEnum),
-                        httpContextAccessor.HttpContext.User.Claims.First(c => c.Type == AuthClaimsIdentity.DefaultRoleClaimType).Value
-                    );
+                    Guid currentUserId = httpContextAccessor.HttpContext.GetUserId();
+                    UserRoleEnum currentUserRole = httpContextAccessor.HttpContext.GetRole();
                     switch (currentUserRole)
                     {
                         case UserRoleEnum.Student:

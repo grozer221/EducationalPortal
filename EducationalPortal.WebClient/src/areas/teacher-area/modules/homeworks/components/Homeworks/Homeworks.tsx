@@ -30,7 +30,7 @@ export const Homeworks: FC<Props> = ({
                                          setSearchParams,
                                          isModalHomeworksVisible,
                                          setModalHomeworksInvisible,
-                                         path= ''
+                                         path = ''
                                      }) => {
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
@@ -96,8 +96,7 @@ export const Homeworks: FC<Props> = ({
                 //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
                 //                   onRemove={() => onRemove(subject?.id)}/>
                 //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`${homework?.id}`} updateUrl={`${path}/update/${homework?.id}`}
-                            onRemove={() => onRemove(homework?.id)}/>
+                <ButtonsVUR updateUrl={`${path}/update/${homework?.id}`} onRemove={() => onRemove(homework?.id)}/>
             ),
         },
     ];

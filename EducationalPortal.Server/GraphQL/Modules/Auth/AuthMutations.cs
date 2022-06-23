@@ -19,10 +19,13 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                 .ResolveAsync(async context =>
                 {
                     LoginAuthInput loginAuthInput = context.GetArgument<LoginAuthInput>("LoginAuthInputType");
+                    UserModel? user = await usersRepository.GetByLoginOrDefaultAsync(loginAuthInput.Login);
+                    if (user == null || user.Password != loginAuthInput.Password)
+                        throw new Exception("Не правильний логін або пароль");
                     return new AuthResponse()
                     {
-                        Token = await authService.AuthenticateAsync(loginAuthInput),
-                        User = await usersRepository.GetByLoginAsync(loginAuthInput.Login),
+                        Token = authService.GenerateAccessToken(user.Id, user.Login, user.Role),
+                        User = user,
                     };
                 });
 
@@ -44,7 +47,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                     });
                     return new AuthResponse()
                     {
-                        Token = await authService.AuthenticateAsync(loginAuthInput),
+                        Token = authService.GenerateAccessToken(user.Id, user.Login, user.Role),
                         User = user,
                     };
                 });

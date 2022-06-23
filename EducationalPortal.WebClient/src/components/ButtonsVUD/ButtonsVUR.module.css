@@ -7,6 +7,7 @@
 .buttonView span {
     background-color: #009432;
     transition: .5s all ease;
+    cursor: pointer;
 }
 
 .buttonView:hover span {
@@ -27,6 +28,7 @@
 .buttonUpdate span {
     background-color: #0652DD;
     transition: .5s all ease;
+    cursor: pointer;
 }
 
 .buttonUpdate:hover span {
@@ -47,6 +49,7 @@
 .buttonRemove span {
     background-color: red;
     transition: .5s all ease;
+    cursor: pointer;
 }
 
 .buttonRemove:hover span {

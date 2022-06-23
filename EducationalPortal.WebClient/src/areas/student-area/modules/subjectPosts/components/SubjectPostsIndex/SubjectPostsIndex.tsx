@@ -59,7 +59,7 @@ export const SubjectPostsIndex: FC<Props> = ({subject, postsPage, setPostsPage})
                 }
             </Space>
             <Drawer
-                title="Відправити ДЗ"
+                width={720}
                 onClose={onCreateHomeworkFormClose}
                 visible={createHomeworkForSubjectPostFormVisible}
             >
