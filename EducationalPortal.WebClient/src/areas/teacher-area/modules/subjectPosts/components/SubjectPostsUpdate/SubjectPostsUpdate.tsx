@@ -9,6 +9,7 @@ import {
 } from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
 import {SubjectPost, SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
+import {subjectPostTypeWithTranslateToString} from "../../../../../../convertors/enumWithTranslateToStringConvertor";
 
 type Props = {
     isModalPostUpdateVisible: boolean,
@@ -119,7 +120,7 @@ export const SubjectPostsUpdate: FC<Props> = ({
                     <Select style={{width: '100%'}} value={type} onChange={setType}>
                         {(Object.values(SubjectPostType) as Array<SubjectPostType>).map((value) => (
                             <Select.Option key={value} value={value}>
-                                {Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}
+                                {subjectPostTypeWithTranslateToString(value)}
                             </Select.Option>
                         ))}
                     </Select>

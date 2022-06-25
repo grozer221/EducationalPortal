@@ -6,6 +6,7 @@ import {Homework, HomeworkStatus} from '../../../../../../graphQL/modules/homewo
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {homeworkStatusToTag} from '../../../../../../convertors/enumToTagConvertor';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
+import {useSearchParams} from "react-router-dom";
 
 type Props = {
     isModalHomeworksVisible: boolean,
@@ -16,7 +17,6 @@ type Props = {
     loading?: boolean,
     pageSize?: number,
     total?: number,
-    setSearchParams?: (obj: any) => void,
     path: string,
 }
 
@@ -27,12 +27,12 @@ export const Homeworks: FC<Props> = ({
                                          loading,
                                          pageSize,
                                          total,
-                                         setSearchParams,
                                          isModalHomeworksVisible,
                                          setModalHomeworksInvisible,
                                          path = ''
                                      }) => {
     // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleCancel = () => {
         setModalHomeworksInvisible();
@@ -118,10 +118,10 @@ export const Homeworks: FC<Props> = ({
                     current: page,
                     defaultPageSize: pageSize,
                     total: total,
-                    onChange: page => setSearchParams && setSearchParams({page: page.toString()}),
+                    onChange: page => setSearchParams({page: page.toString()}),
                 }}
                 onChange={(pagination, filters, sorter: any) => {
-                    setSearchParams && setSearchParams({
+                    setSearchParams({
                         statuses: filters.status?.join('|') || '',
                         order: sorter.order
                     });

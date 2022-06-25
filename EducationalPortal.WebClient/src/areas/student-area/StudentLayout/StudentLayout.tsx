@@ -7,6 +7,7 @@ import s from './StudentLayout.module.css';
 import {StudentMenu} from '../components/StudentMenu/StudentMenu';
 import {SubjectsMyIndex} from '../modules/subjects/pages/SubjectsMyIndex/SubjectsMyIndex';
 import {SubjectsView} from '../modules/subjects/pages/SubjectsView/SubjectsView';
+import {Settings} from "../modules/Settings/Settings";
 
 const {Content} = Layout;
 
@@ -24,7 +25,7 @@ export const StudentLayout: FC = () => {
                                 <Route path={':id'} element={<SubjectsView/>}/>
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>
-                            <Route path={'settings/*'} element={<div>settings</div>}/>
+                            <Route path={'settings/*'} element={<Settings/>}/>
                             <Route path={'/'} element={<Navigate to={'subjects/my'}/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>

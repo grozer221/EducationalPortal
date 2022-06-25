@@ -1,8 +1,8 @@
 import React, {FC} from 'react';
 import {Tabs} from 'antd';
-import {SettingsChangePassword} from '../../../../../../components/SettingsChangePassword/SettingsChangePassword';
+import {SettingsChangePassword} from "../../../../components/SettingsChangePassword/SettingsChangePassword";
 
-export const SettingsMy: FC = () => {
+export const Settings: FC = () => {
     return (
         <Tabs tabPosition={'top'}>
             <Tabs.TabPane tab="Зміна паролю" key="1">

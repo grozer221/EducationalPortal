@@ -1,6 +1,7 @@
 ﻿using EducationalPortal.Business.Enums;
 using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
+using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
 using EducationalPortal.Server.Services;
@@ -11,7 +12,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
 {
     public class AuthMutations : ObjectGraphType, IMutationMarker
     {
-        public AuthMutations(IUserRepository usersRepository, AuthService authService)
+        public AuthMutations(IUserRepository usersRepository, AuthService authService, IHttpContextAccessor httpContextAccessor)
         {
             Field<NonNullGraphType<AuthResponseType>, AuthResponse>()
                 .Name("Login")
@@ -57,9 +58,18 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                 .Argument<NonNullGraphType<ChangePasswordInputType>, ChangePassword>("ChangePasswordInputType", "Argument for change User password")
                 .ResolveAsync(async context =>
                 {
-                    LoginAuthInput loginAuthInput = context.GetArgument<LoginAuthInput>("LoginAuthInputType");
+                    var changePassword = context.GetArgument<ChangePassword>("ChangePasswordInputType");
+                    string userLogin = httpContextAccessor.HttpContext.GetUserLogin();
+                    UserModel user = await usersRepository.GetByLoginAsync(userLogin);
+                    if (user.Password != changePassword.OldPassword)
+                        throw new Exception("Bad old password");
+                    if(changePassword.NewPassword.Length < 3)
+                        throw new Exception("Lenght of new password must be grater then 3 symbols");
+                    user.Password = changePassword.NewPassword;
+                    await usersRepository.UpdateAsync(user);
                     return true;
-                });
+                })
+                .AuthorizeWith(AuthPolicies.Authenticated);
         }
     }
 }

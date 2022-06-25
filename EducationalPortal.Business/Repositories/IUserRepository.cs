@@ -7,6 +7,5 @@ namespace EducationalPortal.Business.Repositories
     {
         Task<UserModel> GetByLoginAsync(string login);
         Task<UserModel?> GetByLoginOrDefaultAsync(string login);
-        Task<UserModel> UpdateProfileAsync(UserModel newUser);
     }
 }

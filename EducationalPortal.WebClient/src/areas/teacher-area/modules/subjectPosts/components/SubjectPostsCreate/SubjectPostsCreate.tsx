@@ -2,9 +2,14 @@ import React, {FC, useState} from 'react';
 import {Form, Input, message, Modal, Select} from 'antd';
 import {sizeFormItem} from '../../../../../../styles/form';
 import {useMutation} from '@apollo/client';
-import {CREATE_SUBJECT_POST_MUTATION, CreateSubjectPostData, CreateSubjectPostVars} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
+import {
+    CREATE_SUBJECT_POST_MUTATION,
+    CreateSubjectPostData,
+    CreateSubjectPostVars
+} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
 import {SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
+import {subjectPostTypeWithTranslateToString} from "../../../../../../convertors/enumWithTranslateToStringConvertor";
 
 type Props = {
     isModalPostCreateVisible: boolean,
@@ -100,7 +105,7 @@ export const SubjectPostsCreate: FC<Props> = ({
                     <Select style={{width: '100%'}} value={type} onChange={setType}>
                         {(Object.values(SubjectPostType) as Array<SubjectPostType>).map((value) => (
                             <Select.Option key={value} value={value}>
-                                {Object.keys(SubjectPostType)[Object.values(SubjectPostType).indexOf(value)]}
+                                {subjectPostTypeWithTranslateToString(value)}
                             </Select.Option>
                         ))}
                     </Select>

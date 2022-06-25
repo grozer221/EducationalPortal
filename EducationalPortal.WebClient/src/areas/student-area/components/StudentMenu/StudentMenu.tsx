@@ -1,21 +1,27 @@
 import React, {FC, useState} from 'react';
 import {Menu} from 'antd';
-import {BookOutlined, LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {BookOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import {Link, useLocation} from 'react-router-dom';
 import {authActions} from '../../../../store/auth.slice';
 import {useAppDispatch} from '../../../../store/store';
+import {client} from "../../../../graphQL/client";
 
 export const StudentMenu: FC = () => {
     const dispatch = useAppDispatch();
     const [startUrl, setStartUrl] = useState(useLocation().pathname.replace('/student/', ''));
 
     const getDefaultSelectedKey = (): string => {
-        if(startUrl.match(/subjects\/my/))
+        if (startUrl.match(/subjects\/my/))
             return 'subjects/my';
-        else if(startUrl.match(/settings\/my/))
+        else if (startUrl.match(/settings\/my/))
             return 'settings/my';
         else
             return '';
+    }
+
+    const logoutHandler = async () => {
+        dispatch(authActions.logout());
+        await client.resetStore();
     }
 
     return (
@@ -29,7 +35,7 @@ export const StudentMenu: FC = () => {
             {/*<Menu.Item key="site" icon={<UserOutlined/>}>*/}
             {/*    <Link to={'/'}>На сайт</Link>*/}
             {/*</Menu.Item>*/}
-            <Menu.Item key="140" icon={<LogoutOutlined/>} onClick={() => dispatch(authActions.logout())}>
+            <Menu.Item key="140" icon={<LogoutOutlined/>} onClick={logoutHandler}>
                 Вийти
             </Menu.Item>
         </Menu>

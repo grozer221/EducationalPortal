@@ -70,13 +70,5 @@ namespace EducationalPortal.MsSql.Repositories
                 return null;
             return users[0];
         }
-
-        public async Task<UserModel> UpdateProfileAsync(UserModel newUser)
-        {
-            UserModel oldUser = await GetByIdAsync(newUser.Id);
-            newUser.Role = oldUser.Role;
-            await UpdateAsync(newUser);
-            return newUser;
-        }
     }
 }

@@ -14,7 +14,7 @@ namespace EducationalPortal.Server.Services
 
         public async Task<string> UploadFileAsync(IFormFile file, bool withHash = true)
         {
-            string fileName = withHash ? Guid.NewGuid().ToString() : string.Empty + file.FileName;
+            string fileName = withHash ? $"{Guid.NewGuid()}_{file.FileName}" : file.FileName;
             var uploadParams = CreateUploadParams<RawUploadParams>(file, $"{nameof(file)}s/{fileName}");
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
             return uploadResult.Url.ToString();

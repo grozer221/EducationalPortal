@@ -21,3 +21,18 @@ export const LOGIN_MUTATION = gql`
         }
     }
 `;
+
+
+export type ChangePasswordData = { changePassword: boolean }
+
+export type ChangePasswordVars = { changePasswordInputType: ChangePasswordInputType }
+export type ChangePasswordInputType = {
+    oldPassword: string,
+    newPassword: string,
+}
+
+export const CHANGE_PASSWORD_MUTATION = gql`
+    mutation ChangePassword($changePasswordInputType: ChangePasswordInputType!) {
+        changePassword(changePasswordInputType: $changePasswordInputType)
+    }
+`;

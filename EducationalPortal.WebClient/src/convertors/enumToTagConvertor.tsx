@@ -9,7 +9,7 @@ export const subjectPostTypeToTag = (subjectPostType: SubjectPostType) => {
     switch (subjectPostType) {
         case SubjectPostType.Homework:
             return (
-                <Tooltip title={'ДЗ'}>
+                <Tooltip title={'Домашнє завдання'}>
                     <Tag color="red"><BookOutlined/></Tag>
                 </Tooltip>
             );

@@ -8,6 +8,7 @@ import {
     ScheduleOutlined,
     SettingOutlined,
     ShopOutlined,
+    SlidersOutlined,
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
@@ -19,6 +20,7 @@ import {AppName, AppNameType} from '../../../../store/settings.slice';
 import Title from 'antd/es/typography/Title';
 import {roleToTag} from '../../../../convertors/enumToTagConvertor';
 import s from './TeacherMenu.module.css';
+import {client} from "../../../../graphQL/client";
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -60,6 +62,11 @@ export const TeacherMenu: FC = () => {
         if (startUrl.match(/settings/))
             defaultOpenKeys.push('settings')
         return defaultOpenKeys
+    }
+
+    const logoutHandler = async () => {
+        dispatch(authActions.logout());
+        await client.resetStore();
     }
 
     return (
@@ -132,11 +139,11 @@ export const TeacherMenu: FC = () => {
                     </Menu.Item>
                 }
                 {isAdministrator() &&
-                    <Menu.Item key="backups" icon={<SettingOutlined/>}>
+                    <Menu.Item key="backups" icon={<SlidersOutlined/>}>
                         <Link to={'backups'}>Бекапи</Link>
                     </Menu.Item>
                 }
-                <Menu.Item key="logout" icon={<LogoutOutlined/>} onClick={() => dispatch(authActions.logout())}>
+                <Menu.Item key="logout" icon={<LogoutOutlined/>} onClick={logoutHandler}>
                     Вийти
                 </Menu.Item>
                 <div style={{height: '48px'}}/>

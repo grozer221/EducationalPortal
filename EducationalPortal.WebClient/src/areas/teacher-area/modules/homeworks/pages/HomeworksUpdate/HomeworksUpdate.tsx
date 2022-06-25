@@ -2,7 +2,7 @@ import React from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
-import {Form, Input, message, Radio} from 'antd';
+import {Form, Input, message, Radio, Space} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
@@ -80,9 +80,11 @@ export const HomeworksUpdate = () => {
                 <div>{homework?.text}</div>
             </Form.Item>
             <Form.Item label="Файли">
-                {homework?.files.map(file => (
-                    <a href={file.path}>{file.name}</a>
-                ))}
+                <Space size={10}>
+                    {homework?.files.map(file => (
+                        <a href={file.path}>{file.name}</a>
+                    ))}
+                </Space>
             </Form.Item>
             <Form.Item
                 name="mark"

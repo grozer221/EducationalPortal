@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC, FormEvent, useState} from 'react';
 import {useMutation} from '@apollo/client';
-import {Avatar, Form, Input, message, Space} from 'antd';
+import {Avatar, Form, message, Space} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
 import Title from 'antd/es/typography/Title';
@@ -12,6 +12,7 @@ import {
 import {FilesList} from "../../../../../../components/FilesList/FilesList";
 import {UploadOutlined} from "@ant-design/icons";
 import s from "./HomeworksCreate.module.css";
+import TextArea from "antd/es/input/TextArea";
 
 type Props = {
     subjectPostId: string,
@@ -80,7 +81,7 @@ export const HomeworksCreate: FC<Props> = ({subjectPostId, subjectPostTitle, aft
                 label="Текст"
                 rules={[{required: true, message: 'Введіть текст!'}]}
             >
-                <Input placeholder="Назва"/>
+                <TextArea placeholder="Назва"/>
             </Form.Item>
             <Form.Item
                 name="files"

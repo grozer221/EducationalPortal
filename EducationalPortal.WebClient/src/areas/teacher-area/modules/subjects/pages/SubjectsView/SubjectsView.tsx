@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {useQuery} from '@apollo/client';
-import {Link, Navigate, useParams} from 'react-router-dom';
+import {useMutation, useQuery} from '@apollo/client';
+import {Link, Navigate, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {
     GET_SUBJECT_WITH_POSTS_QUERY,
@@ -11,15 +11,24 @@ import {SubjectPostsIndex} from '../../../subjectPosts/components/SubjectPostsIn
 import {message, Space, Tag} from 'antd';
 import Title from 'antd/es/typography/Title';
 import '../../../../../../styles/table.css';
+import {ButtonsVUR} from "../../../../../../components/ButtonsVUD/ButtonsVUR";
+import {
+    REMOVE_SUBJECT_MUTATION,
+    RemoveSubjectData,
+    RemoveSubjectVars
+} from "../../../../../../graphQL/modules/subjects/subjects.mutations";
+import {Subject} from "../../../../../../graphQL/modules/subjects/subjects.types";
 
 export const SubjectsView = () => {
     const params = useParams();
     const id = params.id as string;
+    const navigate = useNavigate();
     const [postsPage, setPostsPage] = useState(1);
 
     const getSubjectQuery = useQuery<GetSubjectWithPostsData, GetSubjectWithPostsVars>(GET_SUBJECT_WITH_POSTS_QUERY,
         {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
     );
+    const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
 
     useEffect(() => {
         getSubjectQuery.error && message.error(getSubjectQuery.error.message)
@@ -29,17 +38,30 @@ export const SubjectsView = () => {
         await getSubjectQuery.refetch({id: id, postsPage: postsPage});
     };
 
+    const onRemove = (subjectId: string) => {
+        removeSubjectMutation({variables: {id: subjectId}})
+            .then(async (response) => {
+                navigate('-1');
+            })
+            .catch(error => {
+                message.error(error.message);
+            });
+    }
+
     if (!id)
         return <Navigate to={'/error'}/>;
 
     if (getSubjectQuery.loading)
         return <Loading/>;
 
-    const subject = getSubjectQuery.data?.getSubject;
+    const subject = getSubjectQuery.data?.getSubject as Subject;
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
             <Title level={2}>Перегляд предмету</Title>
-            <Title level={3}>{subject?.name}</Title>
+            <Space align={'center'}>
+                <Title level={3}>{subject?.name}</Title>
+                <ButtonsVUR updateUrl={`../update/${subject?.id}`} onRemove={() => onRemove(subject?.id)}/>
+            </Space>
             <table className="infoTable">
                 <tbody>
                 <tr>
