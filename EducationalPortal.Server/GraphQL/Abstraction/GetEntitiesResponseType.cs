@@ -10,7 +10,7 @@ namespace EducationalPortal.Server.GraphQL.Abstraction
         {
             Name = $"Get{typeof(TReturnType).Name.Replace("Model", "")}ResponseType";
 
-            Field<NonNullGraphType<ListGraphType<TGraphType>>, List<TReturnType>>()
+            Field<NonNullGraphType<ListGraphType<TGraphType>>, IEnumerable<TReturnType>>()
                 .Name("Entities")
                 .Resolve(context => context.Source.Entities);
             

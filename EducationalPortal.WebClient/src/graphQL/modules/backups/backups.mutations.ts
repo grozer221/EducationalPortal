@@ -1,38 +1,29 @@
 import {gql} from '@apollo/client';
-import {BACKUP_FRAGMENT} from "./backups.fragments";
-import {Backup} from "./backup.types";
 
-export type CreateBackupData = { createBackup: Backup }
+export type CreateBackupData = { createBackup: boolean }
 
 export type CreateBackupVars = {}
 
 export const CREATE_BACKUP_MUTATION = gql`
-    ${BACKUP_FRAGMENT}
     mutation CreateBackup {
-        createBackup{
-            ...BackupFragment
-        }
+        createBackup
     }
-
 `;
 
-export type RestoreBackupData = { restoreBackup: Backup }
-export type RestoreBackupVars = { id: string }
+export type RestoreBackupData = { restoreBackup: boolean }
+export type RestoreBackupVars = { url: string }
 
 export const RESTORE_BACKUP_MUTATION = gql`
-    ${BACKUP_FRAGMENT}
-    mutation RestoreBackup($id: Guid!) {
-        restoreBackup(id: $id) {
-            ...BackupFragment
-        }
+    mutation RestoreBackup($url: String!) {
+        restoreBackup(url: $url)
     }
 `;
 
 export type RemoveBackupData = { removeBackup: boolean }
-export type RemoveBackupVars = { id: string }
+export type RemoveBackupVars = { url: string }
 
 export const REMOVE_BACKUP_MUTATION = gql`
-    mutation RemoveBackup($id: Guid!) {
-        removeBackup(id: $id)
+    mutation RemoveBackup($url: String!) {
+        removeBackup(url: $url)
     }
 `;

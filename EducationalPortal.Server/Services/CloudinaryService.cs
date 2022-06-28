@@ -1,5 +1,8 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using EducationalPortal.Business.Abstractions;
+using EducationalPortal.Business.Models;
+using EducationalPortal.Server.GraphQL.Modules.Back_ups;
 
 namespace EducationalPortal.Server.Services
 {
@@ -10,6 +13,17 @@ namespace EducationalPortal.Server.Services
         public CloudinaryService()
         {
             cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+        }
+
+        public async Task<IEnumerable<BackupModel>> GetFilesLinks(string searchExpression)
+        {
+            var result = await cloudinary.Search()
+                .Expression(searchExpression)
+                .SortBy("public_id", "desc")
+                .MaxResults(500)
+                .ExecuteAsync();
+
+            return result.Resources?.Select(b => new BackupModel { Url = b.Url }) ?? new List<BackupModel>();
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, bool withHash = true)
@@ -36,14 +50,27 @@ namespace EducationalPortal.Server.Services
             return uploadResult.Url.ToString();
         }
 
-        public Task DeleteAsync(string url)
+        public async Task RemoveAsync(string url)
         {
             if (string.IsNullOrEmpty(url))
-                throw new Exception("Empty url");
-            string publicId = string.Join("/", url.Split("/")[^2..]);
-            var deletionParams = new DeletionParams(publicId);
-            return cloudinary.DestroyAsync(deletionParams);
+                return;
+            ResourceType resourceType;
+            if (!url.Contains("/files/"))
+                url = url[..url.LastIndexOf(".")];
+
+            var publicId = string.Join("/", url.Split("/")[^2..]);
+
+            if (url.Contains("/images/"))
+                resourceType = ResourceType.Image;
+            else if (url.Contains("/videos/"))
+                resourceType = ResourceType.Video;
+            else
+                resourceType = ResourceType.Raw;
+            publicId = publicId.Contains(".bak") ? publicId : $"{publicId}.bak";
+            var a = await cloudinary.DestroyAsync(new DeletionParams(publicId) { ResourceType = resourceType });
+            int b = 1;
         }
+
 
         private T CreateUploadParams<T>(IFormFile file, string name)
             where T : RawUploadParams

@@ -1,7 +1,5 @@
 ﻿using EducationalPortal.Business.Repositories;
-using EducationalPortal.Business.Services;
 using EducationalPortal.Portgres.Repositories;
-using EducationalPortal.Portgres.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EducationalPortal.Portgres.Extensions
@@ -20,9 +18,6 @@ namespace EducationalPortal.Portgres.Extensions
             services.AddScoped<ISubjectPostRepository, SubjectPostRepository>();
             services.AddScoped<ISubjectRepository, SubjectRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-
-            services.AddSingleton<IBackupService, BackupService>();
-            //services.AddHostedService<BackupService>();
             return services;
         }
     }

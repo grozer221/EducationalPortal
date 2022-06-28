@@ -3,6 +3,7 @@ using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.GraphQL.Abstraction;
 using EducationalPortal.Server.GraphQL.Modules.Auth;
+using EducationalPortal.Server.Services;
 using GraphQL;
 using GraphQL.Types;
 
@@ -10,17 +11,19 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
 {
     public class BackupsQueries : ObjectGraphType, IQueryMarker
     {
-        public BackupsQueries(IBackupRepository backupRepository)
+        public BackupsQueries(IBackupRepository backupRepository, CloudinaryService cloudinaryService)
         {
-            Field<NonNullGraphType<GetEntitiesResponseType<BackupType, BackupModel>>, GetEntitiesResponse<BackupModel>>()
+            Field<NonNullGraphType<ListGraphType<BackupType>>, IEnumerable<BackupModel>>()
                 .Name("GetBackups")
                 .Argument<NonNullGraphType<IntGraphType>, int>("Page", "Argument for get Backups")
                 .Argument<NonNullGraphType<StringGraphType>, string>("Like", "Argument for get Backups")
                 .ResolveAsync(async context =>
                 {
+                    var backups = await cloudinaryService.GetFilesLinks("format:bak");
                     int page = context.GetArgument<int>("Page");
                     string like = context.GetArgument<string>("Like");
-                    return await backupRepository.WhereOrDefaultAsync(y => y.CreatedAt, Order.Descend, page, y => y.File.Name.ToLower().Contains(like.ToLower()), b => b.File);
+                    //return await backupRepository.WhereOrDefaultAsync(y => y.CreatedAt, Order.Descend, page, y => y.File.Name.ToLower().Contains(like.ToLower()), b => b.File);
+                    return backups;
                 })
                .AuthorizeWith(AuthPolicies.Teacher);
 

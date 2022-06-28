@@ -4,7 +4,7 @@ using EducationalPortal.Mongo.Abstractions;
 
 namespace EducationalPortal.Mongo.Repositories
 {
-    public class BackupRepository : BaseRepository<BackupModel>, IBackupRepository
+    public class BackupRepository : IBackupRepository
     {
         public async Task<string> BackupDatabase()
         {

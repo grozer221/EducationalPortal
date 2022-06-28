@@ -14,7 +14,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
     {
         public BackupsMutations(IBackupRepository backupRepository, CloudinaryService cloudinaryService, IFileRepository fileRepository, IHttpContextAccessor httpContextAccessor)
         {
-            Field<NonNullGraphType<BackupType>, BackupModel>()
+            Field<NonNullGraphType<BooleanGraphType>, bool>()
                 .Name("CreateBackup")
                 .ResolveAsync(async context =>
                 {
@@ -23,49 +23,38 @@ namespace EducationalPortal.Server.GraphQL.Modules.Back_ups
                     string backupName = Path.GetFileName(backupFullPath);
                     FormFile formFile = new FormFile(stream, 0, stream.Length, backupName, backupName);
                     string urlPath = await cloudinaryService.UploadFileAsync(formFile, false);
-                    Guid currentUserId = httpContextAccessor.HttpContext.GetUserId();
-                    var file = await fileRepository.CreateAsync(new FileModel
-                    {
-                        Name = backupName,
-                        Path = urlPath,
-                        CreatorId = currentUserId,
-                    });
-                    return await backupRepository.CreateAsync(new BackupModel
-                    {
-                        FileId = file.Id,
-                    });
+                    return true;
                 })
                 .AuthorizeWith(AuthPolicies.Administrator);
-            
-            Field<NonNullGraphType<BackupType>, BackupModel>()
+
+            Field<NonNullGraphType<BooleanGraphType>, bool>()
                 .Name("RestoreBackup")
-                .Argument<NonNullGraphType<GuidGraphType>, Guid>("Id", "Argument for Restore Backup")
+                .Argument<NonNullGraphType<StringGraphType>, string>("Url", "Argument for Restore Backup")
                 .ResolveAsync(async context =>
                 {
-                    Guid id = context.GetArgument<Guid>("Id");
-                    var backup = await backupRepository.GetByIdAsync(id, b => b.File);
-                    var backupFullPath = Path.Combine(Environment.CurrentDirectory, "Backups", backup.File.Name);
+                    var url = context.GetArgument<string>("Url");
+                    string filename = Path.GetFileName(url);
+                    var backupFullPath = Path.Combine(Environment.CurrentDirectory, "Backups", filename);
                     if (!File.Exists(backupFullPath))
                     {
-                           using(var httpClient = new HttpClient())
-                    {
-                        byte[] fileBytes = await httpClient.GetByteArrayAsync(new Uri(backup.File.Path));
-                        await File.WriteAllBytesAsync(backupFullPath, fileBytes);
+                        using (var httpClient = new HttpClient())
+                        {
+                            byte[] fileBytes = await httpClient.GetByteArrayAsync(new Uri(url));
+                            await File.WriteAllBytesAsync(backupFullPath, fileBytes);
+                        }
                     }
-                    }
-                 
                     await backupRepository.RestoreDatabase(backupFullPath);
-                    return backup;
+                    return true;
                 })
                 .AuthorizeWith(AuthPolicies.Administrator);
 
             Field<NonNullGraphType<BooleanGraphType>, bool>()
                .Name("RemoveBackup")
-               .Argument<NonNullGraphType<GuidGraphType>, Guid>("Id", "Argument for remove Backup")
+               .Argument<NonNullGraphType<StringGraphType>, string>("Url", "Argument for remove Backup")
                .ResolveAsync(async context =>
                {
-                   Guid id = context.GetArgument<Guid>("Id");
-                   await backupRepository.RemoveAsync(id);
+                   string url = context.GetArgument<string>("Url");
+                   await cloudinaryService.RemoveAsync(url);
                    return true;
                })
                .AuthorizeWith(AuthPolicies.Administrator);

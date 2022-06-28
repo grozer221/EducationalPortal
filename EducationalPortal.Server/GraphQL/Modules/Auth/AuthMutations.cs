@@ -64,7 +64,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                     if (user.Password != changePassword.OldPassword)
                         throw new Exception("Bad old password");
                     if(changePassword.NewPassword.Length < 3)
-                        throw new Exception("Lenght of new password must be grater then 3 symbols");
+                        throw new Exception("Lenght of new password must be greater then 3 symbols");
                     user.Password = changePassword.NewPassword;
                     await usersRepository.UpdateAsync(user);
                     return true;

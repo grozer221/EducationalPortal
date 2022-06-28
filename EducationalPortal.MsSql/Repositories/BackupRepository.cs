@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EducationalPortal.MsSql.Repositories
 {
-    public class BackupRepository : BaseRepository<BackupModel>, IBackupRepository
+    public class BackupRepository : IBackupRepository
     {
         private readonly AppDbContext context;
 
-        public BackupRepository(AppDbContext context) : base(context)
+        public BackupRepository(AppDbContext context) 
         {
             this.context = context;
         }

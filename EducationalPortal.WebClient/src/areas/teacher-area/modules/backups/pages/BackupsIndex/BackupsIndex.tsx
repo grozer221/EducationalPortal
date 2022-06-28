@@ -47,8 +47,8 @@ export const BackupsIndex = () => {
         getBackups({variables: {page, like}});
     }, [searchParams]);
 
-    const onRemove = (backupId: string) => {
-        removeBackup({variables: {id: backupId}})
+    const onRemove = (backupUrl: string) => {
+        removeBackup({variables: {url: backupUrl}})
             .then(async (response) => {
                 const page = parseInt(searchParams.get('page') || '') || 1;
                 const like = searchParams.get('like') || '';
@@ -70,8 +70,8 @@ export const BackupsIndex = () => {
             });
     }
 
-    const restoreHandler = (backupId: string): Promise<void> => {
-        return restoreBackup({variables: {id: backupId}})
+    const restoreHandler = (backupUrl: string): Promise<void> => {
+        return restoreBackup({variables: {url: backupUrl}})
             .then(response => {
                 message.success("Restore успішно виконано");
             })
@@ -99,13 +99,12 @@ export const BackupsIndex = () => {
             title: 'Назва',
             dataIndex: 'name',
             key: 'name',
-            render: (text: string, backup) => <span>{backup.file?.name}</span>,
+            render: (text, backup) => <>{backup.url.split("/").pop()}</>
         },
         {
             title: 'Посилання',
-            dataIndex: 'path',
-            key: 'path',
-            render: (text: string, backup) => <span>{backup.file?.path}</span>,
+            dataIndex: 'url',
+            key: 'url',
         },
         {
             title: 'Дії',
@@ -117,8 +116,8 @@ export const BackupsIndex = () => {
                     <Tooltip title={`Restore`}>
                         <Popconfirm
                             title="Створити бекап для поточних данних?"
-                            onConfirm={() => restoreWithBackupHandler(backup.id)}
-                            onCancel={() => restoreHandler(backup.id)}
+                            onConfirm={() => restoreWithBackupHandler(backup.url)}
+                            onCancel={() => restoreHandler(backup.url)}
                             okText="Так"
                             cancelText="Ні"
                         >
@@ -128,7 +127,7 @@ export const BackupsIndex = () => {
                         </Popconfirm>
 
                     </Tooltip>
-                    <ButtonsVUR viewUrlA={`${backup.file?.path}`} onRemove={() => onRemove(backup.id)}/>
+                    <ButtonsVUR viewUrlA={`${backup.url}`} /*onRemove={() => onRemove(backup.url)}*//>
                 </Space>
             ),
         },
@@ -163,14 +162,9 @@ export const BackupsIndex = () => {
                 style={{width: '100%'}}
                 rowKey={'id'}
                 loading={getBackupsOptions.loading || removeBackupOptions.loading || createBackupOptions.loading || restoreBackupOptions.loading}
-                dataSource={getBackupsOptions.data?.getBackups.entities}
+                dataSource={getBackupsOptions.data?.getBackups}
                 columns={columns}
-                pagination={{
-                    current: parseInt(searchParams.get('page') || '') || 1,
-                    defaultPageSize: getBackupsOptions.data?.getBackups.pageSize,
-                    total: getBackupsOptions.data?.getBackups.total,
-                    onChange: page => setSearchParams({page: page.toString()}),
-                }}
+                pagination={false}
             />
         </Space>
     );

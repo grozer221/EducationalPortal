@@ -25,6 +25,7 @@ namespace EducationalPortal.Server.Extensions
     {
         public static IServiceCollection AddGraphQLApi(this IServiceCollection services)
         {
+            services.AddMemoryCache();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
 

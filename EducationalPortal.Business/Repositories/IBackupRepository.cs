@@ -3,7 +3,7 @@ using EducationalPortal.Business.Models;
 
 namespace EducationalPortal.Business.Repositories
 {
-    public interface IBackupRepository : IBaseRepository<BackupModel>
+    public interface IBackupRepository
     {
         Task<string> BackupDatabase();
         Task RestoreDatabase(string backupFullPath);

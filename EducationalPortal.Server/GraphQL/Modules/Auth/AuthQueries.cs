@@ -6,19 +6,25 @@ using EducationalPortal.Server.GraphQL.Modules.Auth.DTO;
 using EducationalPortal.Server.Services;
 using GraphQL;
 using GraphQL.Types;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EducationalPortal.Server.GraphQL.Modules.Auth
 {
     public class AuthQueries : ObjectGraphType, IQueryMarker
     {
-        public AuthQueries(IUserRepository usersRepository, IHttpContextAccessor httpContextAccessor, AuthService authService)
+        public AuthQueries(IUserRepository usersRepository, IHttpContextAccessor httpContextAccessor, AuthService authService, IMemoryCache memoryCache)
         {
             Field<NonNullGraphType<AuthResponseType>, AuthResponse>()
                 .Name("Me")
                 .ResolveAsync(async context =>
                 {
-                    string userLogin = httpContextAccessor.HttpContext.GetUserLogin();
-                    UserModel currentUser = await usersRepository.GetByLoginAsync(userLogin);
+                    var userId = httpContextAccessor.HttpContext.GetUserId();
+                    string key = $"users/{userId}";
+                    if (!memoryCache.TryGetValue(key, out UserModel currentUser))
+                    {
+                        currentUser = await usersRepository.GetByIdAsync(userId);
+                        memoryCache.Set(key, currentUser, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                    }
                     return new AuthResponse()
                     {
                         Token = authService.GenerateAccessToken(currentUser.Id, currentUser.Login, currentUser.Role),

@@ -9,7 +9,6 @@ namespace EducationalPortal.Business.Models
 
         public Guid? HomeworkId { get; set; }
         public virtual HomeworkModel? Homework { get; set; }
-        public virtual BackupModel? Backup { get; set; }
         public Guid? CreatorId { get; set; }
         public virtual UserModel? Creator { get; set; }
     }
