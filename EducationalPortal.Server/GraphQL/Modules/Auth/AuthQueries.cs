@@ -20,10 +20,11 @@ namespace EducationalPortal.Server.GraphQL.Modules.Auth
                 {
                     var userId = httpContextAccessor.HttpContext.GetUserId();
                     string key = $"users/{userId}";
-                    if (!memoryCache.TryGetValue(key, out UserModel currentUser))
+                    UserModel currentUser;
+                    if (!memoryCache.TryGetValue(key, out currentUser))
                     {
                         currentUser = await usersRepository.GetByIdAsync(userId);
-                        memoryCache.Set(key, currentUser, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                        memoryCache.Set(key, currentUser, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
                     }
                     return new AuthResponse()
                     {
