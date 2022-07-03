@@ -33,6 +33,8 @@ import {WithAdministratorRoleOrRender} from '../../../hocs/WithAdministratorRole
 import s from './TeacherLayout.module.css';
 import {BackupsIndex} from "../modules/backups/pages/BackupsIndex/BackupsIndex";
 import {HomeworksMyIndex} from "../modules/homeworks/pages/HomeworksMyIndex/HomeworksMyIndex";
+import {SubjectPostsCreate} from "../modules/subjectPosts/components/SubjectPostsCreate/SubjectPostsCreate";
+import {SubjectPostsUpdate} from "../modules/subjectPosts/components/SubjectPostsUpdate/SubjectPostsUpdate";
 
 const {Content} = Layout;
 
@@ -114,10 +116,11 @@ export const TeacherLayout: FC = () => {
                             <Route path={'subjects/*'}>
                                 <Route index element={<SubjectsIndex/>}/>
                                 <Route path={'my'} element={<SubjectsMyIndex/>}/>
-                                <Route path={':id'} element={<SubjectsView/>}/>
-                                <Route path={':id/modal'} element={<MyModal/>}/>
+                                <Route path={':subjectId'} element={<SubjectsView/>}/>
+                                <Route path={':subjectId/subject-posts/create'} element={<SubjectPostsCreate/>}/>
+                                <Route path={':subjectId/subject-posts/update/:subjectPostId'} element={<SubjectPostsUpdate/>}/>
                                 <Route path={'create'} element={<SubjectsCreate/>}/>
-                                <Route path={'update/:id'} element={<SubjectsUpdate/>}/>
+                                <Route path={'update/:subjectId'} element={<SubjectsUpdate/>}/>
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>
 
@@ -163,7 +166,8 @@ export const TeacherLayout: FC = () => {
                         </Routes>
                         {background && (
                             <Routes>
-                                <Route path="subjects/:id/modal" element={<MyModal/>}/>
+                                <Route path="subjects/:subjectId/subject-posts/create" element={<SubjectPostsCreate/>}/>
+                                <Route path="subjects/:subjectId/subject-posts/update/:subjectPostId" element={<SubjectPostsUpdate/>}/>
                             </Routes>
                         )}
                     </div>

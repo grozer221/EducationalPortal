@@ -23,11 +23,11 @@ type FormValues = {
 
 export const SubjectsUpdate = () => {
     const params = useParams();
-    const id = params.id as string;
+    const subjectId = params.subjectId as string;
     const [updateSubjectMutation, updateSubjectMutationOption] = useMutation<UpdateSubjectData, UpdateSubjectVars>(UPDATE_SUBJECT_MUTATION);
     const [form] = Form.useForm();
     const getSubjectQuery = useQuery<GetSubjectData, GetSubjectVars>(GET_SUBJECT_QUERY,
-        {variables: {id: id}},
+        {variables: {id: subjectId}},
     );
     const navigate = useNavigate();
     const [gradePage, setGradePage] = useState(1);
@@ -135,7 +135,7 @@ export const SubjectsUpdate = () => {
         setTeachers(newTeachers);
     };
 
-    if (!id)
+    if (!subjectId)
         return <Navigate to={'/error'}/>;
 
     if (getSubjectQuery.loading)

@@ -47,6 +47,7 @@ namespace EducationalPortal.Server.Extensions
             services.AddTransient<IQueryMarker, HomeworksQueries>();
             services.AddTransient<IMutationMarker, HomeworksMutations>();
 
+            services.AddTransient<IQueryMarker, SubjectPostsQueries>();
             services.AddTransient<IMutationMarker, SubjectPostsMutations>();
 
             services.AddTransient<IQueryMarker, SubjectsQueries>();

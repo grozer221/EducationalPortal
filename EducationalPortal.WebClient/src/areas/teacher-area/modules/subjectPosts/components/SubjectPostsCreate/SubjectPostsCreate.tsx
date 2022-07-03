@@ -10,25 +10,21 @@ import {
 import {SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 import {subjectPostTypeWithTranslateToString} from "../../../../../../convertors/enumWithTranslateToStringConvertor";
+import {useNavigate, useParams} from "react-router-dom";
 
 type Props = {
-    isModalPostCreateVisible: boolean,
-    setIsModalPostCreateVisible: (flag: boolean) => void,
-    subjectId: string,
-    refetchSubjectAsync: () => void,
+    onSuccess?: () => void,
 };
 
-export const SubjectPostsCreate: FC<Props> = ({
-                                                  isModalPostCreateVisible,
-                                                  setIsModalPostCreateVisible,
-                                                  subjectId,
-                                                  refetchSubjectAsync,
-                                              }) => {
+export const SubjectPostsCreate: FC<Props> = ({onSuccess}) => {
+    const params = useParams();
+    const subjectId = params.subjectId as string;
     const [createSubjectPostMutation, createSubjectPostMutationOptions] = useMutation<CreateSubjectPostData, CreateSubjectPostVars>(CREATE_SUBJECT_POST_MUTATION);
     const [form] = Form.useForm();
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [type, setType] = useState<SubjectPostType>(SubjectPostType.Info);
+    const navigate = useNavigate();
 
     const handleOk = async () => {
         try {
@@ -47,11 +43,7 @@ export const SubjectPostsCreate: FC<Props> = ({
                 },
             })
                 .then(async (response) => {
-                    setIsModalPostCreateVisible(false);
-                    setTitle('');
-                    setText('');
-                    setType(SubjectPostType.Info);
-                    await refetchSubjectAsync();
+                    handleCancel()
                 })
                 .catch(error => {
                     message.error(error.message);
@@ -61,15 +53,14 @@ export const SubjectPostsCreate: FC<Props> = ({
     };
 
     const handleCancel = () => {
-        setIsModalPostCreateVisible(false);
-        form.resetFields();
+        navigate(-1);
     };
 
     return (
         <Modal
             confirmLoading={createSubjectPostMutationOptions.loading}
             title="Створити пост"
-            visible={isModalPostCreateVisible}
+            visible={true}
             onOk={handleOk}
             okText={'Створити'}
             onCancel={handleCancel}

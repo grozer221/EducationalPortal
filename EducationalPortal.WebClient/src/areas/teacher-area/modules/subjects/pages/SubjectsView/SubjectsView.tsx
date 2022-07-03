@@ -22,22 +22,26 @@ import {useAppSelector} from "../../../../../../store/store";
 
 export const SubjectsView = () => {
     const params = useParams();
-    const id = params.id as string;
+    const subjectId = params.subjectId as string;
     const navigate = useNavigate();
     const [postsPage, setPostsPage] = useState(1);
     const currentUser = useAppSelector(s => s.auth.me?.user);
     const getSubjectQuery = useQuery<GetSubjectWithPostsData, GetSubjectWithPostsVars>(GET_SUBJECT_WITH_POSTS_QUERY,
-        {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
+        {variables: {id: subjectId, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
     );
     const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
     const location = useLocation();
+
+    useEffect(() => {
+        getSubjectQuery.refetch();
+    }, [location])
 
     useEffect(() => {
         getSubjectQuery.error && message.error(getSubjectQuery.error.message)
     }, [getSubjectQuery.error])
 
     const refetchSubjectAsync = async () => {
-        await getSubjectQuery.refetch({id: id, postsPage: postsPage});
+        await getSubjectQuery.refetch({id: subjectId, postsPage: postsPage});
     };
 
     const onRemove = (subjectId: string) => {
@@ -50,7 +54,7 @@ export const SubjectsView = () => {
             });
     }
 
-    if (!id)
+    if (!subjectId)
         return <Navigate to={'/error'}/>;
 
     if (getSubjectQuery.loading)
@@ -59,11 +63,8 @@ export const SubjectsView = () => {
     const subject = getSubjectQuery.data?.getSubject as Subject;
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
-            <Title level={2}>Перегляд предмету</Title>
-            <Link to="modal" state={{background: location}}>
-                Open Modal
-            </Link>
             <Outlet/>
+            <Title level={2}>Перегляд предмету</Title>
             <Space align={'center'}>
                 <Title level={3}>{subject?.name}</Title>
                 {subject.teacherId === currentUser?.id &&

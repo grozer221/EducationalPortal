@@ -1,7 +1,6 @@
 import React, {FC, useState} from 'react';
 import {Card, message, Pagination, Row, Space} from 'antd';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {SubjectPostsCreate} from '../SubjectPostsCreate/SubjectPostsCreate';
 import {Subject} from '../../../../../../graphQL/modules/subjects/subjects.types';
 import {useMutation} from '@apollo/client';
 import {
@@ -9,7 +8,6 @@ import {
     RemoveSubjectPostData,
     RemoveSubjectPostVars
 } from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
-import {SubjectPostsUpdate} from '../SubjectPostsUpdate/SubjectPostsUpdate';
 import {SubjectPost, SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {subjectPostTypeToTag} from '../../../../../../convertors/enumToTagConvertor';
 import Title from 'antd/es/typography/Title';
@@ -24,6 +22,7 @@ import {Chart, registerables} from 'chart.js'
 import s from './SubjectPostsIndex.module.css';
 import {useAppSelector} from "../../../../../../store/store";
 import {Role} from "../../../../../../graphQL/modules/users/users.types";
+import {Link, useLocation} from "react-router-dom";
 
 Chart.register(...registerables);
 
@@ -35,10 +34,8 @@ type Props = {
 };
 
 export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, postsPage, setPostsPage}) => {
+    const location = useLocation();
     const currentUser = useAppSelector(s => s.auth.me?.user)
-    const [isModalPostCreateVisible, setIsModalPostCreateVisible] = useState(false);
-    const [isModalPostUpdateVisible, setIsModalPostUpdateVisible] = useState(false);
-    const [inEditingPost, setInEditingPost] = useState<SubjectPost | null>(null);
     const [inViewHomeworksPost, setInViewHomeworksPost] = useState<SubjectPost | null>(null);
 
     const [removeSubjectPostMutation, removeSubjectPostMutationOptions] = useMutation<RemoveSubjectPostData, RemoveSubjectPostVars>(REMOVE_SUBJECT_POST_MUTATION);
@@ -57,20 +54,19 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
             });
     };
 
-    const onPostUpdate = (post: SubjectPost) => {
-        setInEditingPost(post);
-        setIsModalPostUpdateVisible(true);
-    };
-
     return (
         <>
             <Space direction={'vertical'} style={{width: '100%'}} size={20}>
                 {(currentUser?.id === subject.teacherId
                         || subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id)
                         || currentUser?.role === Role.Administrator)
-                    && <span onClick={() => setIsModalPostCreateVisible(true)}>
-                    <ButtonCreate>Створити пост</ButtonCreate>
-                </span>
+                    &&
+                    <ButtonCreate>
+                        <Link to="subject-posts/create" state={{background: location}}>
+                            Створити пост
+                        </Link>
+                    </ButtonCreate>
+
                 }
                 {subject?.posts?.entities.map(post => (
                     <Card
@@ -87,10 +83,12 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                                 || subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id)
                                 || currentUser?.role === Role.Administrator)
                             && <Space size={10}>
-                                {post.type === SubjectPostType.Homework
-                                    && <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>}
+                                {post.type === SubjectPostType.Homework &&
+                                    <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>
+                                }
                                 <ButtonsVUR
-                                    onUpdate={() => onPostUpdate(post)}
+                                    updateUrl={`subject-posts/update/${post.id}`}
+                                    updateState={{background: location}}
                                     onRemove={() => onPostRemove(post.id)}
                                 />
                             </Space>
@@ -135,19 +133,6 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                     </Row>
                 }
             </Space>
-            <SubjectPostsCreate
-                isModalPostCreateVisible={isModalPostCreateVisible}
-                setIsModalPostCreateVisible={setIsModalPostCreateVisible}
-                subjectId={subject.id}
-                refetchSubjectAsync={refetchSubjectAsync}
-            />
-            {inEditingPost && <SubjectPostsUpdate
-                isModalPostUpdateVisible={isModalPostUpdateVisible}
-                setIsModalPostUpdateVisible={setIsModalPostUpdateVisible}
-                refetchSubjectAsync={refetchSubjectAsync}
-                inEditingPost={inEditingPost}
-                setInEditingPost={setInEditingPost}
-            />}
             {inViewHomeworksPost && <Homeworks
                 homeworks={inViewHomeworksPost.homeworks}
                 isModalHomeworksVisible={!!inViewHomeworksPost}

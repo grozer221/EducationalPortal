@@ -9,12 +9,13 @@ type Props = {
     viewUrl?: string,
     onView?: () => void,
     updateUrl?: string,
+    updateState?: any,
     onUpdate?: () => void,
     removeUrl?: string,
     onRemove?: () => void,
 }
 
-export const ButtonsVUR: FC<Props> = ({viewUrlA, viewUrl, updateUrl, removeUrl, onView, onUpdate, onRemove}) => {
+export const ButtonsVUR: FC<Props> = ({viewUrlA, viewUrl, updateUrl, updateState, removeUrl, onView, onUpdate, onRemove}) => {
     return (
         <>
             <div className={s.buttonsVUR}>
@@ -45,7 +46,7 @@ export const ButtonsVUR: FC<Props> = ({viewUrlA, viewUrl, updateUrl, removeUrl, 
                     </Tooltip>
                     : updateUrl &&
                     <Tooltip title="Оновити">
-                        <Link to={updateUrl} className={s.buttonUpdate}>
+                        <Link to={updateUrl} state={updateState} className={s.buttonUpdate}>
                             <Avatar size={28} icon={<FormOutlined/>}/>
                         </Link>
                     </Tooltip>

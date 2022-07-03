@@ -1,46 +1,47 @@
 import React, {FC, useEffect, useState} from 'react';
 import {Form, Input, message, Modal, Select} from 'antd';
 import {sizeFormItem} from '../../../../../../styles/form';
-import {useMutation} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import {
     UPDATE_SUBJECT_POST_MUTATION,
     UpdateSubjectPostData,
     UpdateSubjectPostVars,
 } from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.mutations';
-import {SubjectPost, SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
+import {SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/subjectPosts.types';
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 import {subjectPostTypeWithTranslateToString} from "../../../../../../convertors/enumWithTranslateToStringConvertor";
+import {useNavigate, useParams} from "react-router-dom";
+import {
+    GET_SUBJECT_POST_QUERY,
+    GetSubjectPostData,
+    GetSubjectPostVars
+} from "../../../../../../graphQL/modules/subjectPosts/subjectPosts.queries";
 
-type Props = {
-    isModalPostUpdateVisible: boolean,
-    setIsModalPostUpdateVisible: (flag: boolean) => void,
-    refetchSubjectAsync: () => void,
-    inEditingPost: SubjectPost,
-    setInEditingPost: (post: SubjectPost | null) => void,
-};
-
-export const SubjectPostsUpdate: FC<Props> = ({
-                                                  isModalPostUpdateVisible,
-                                                  setIsModalPostUpdateVisible,
-                                                  refetchSubjectAsync,
-                                                  inEditingPost,
-                                                  setInEditingPost,
-                                              }) => {
+export const SubjectPostsUpdate: FC = () => {
+    const params = useParams();
+    const subjectPostId = params.subjectPostId as string;
+    const getSubjectPost = useQuery<GetSubjectPostData, GetSubjectPostVars>(GET_SUBJECT_POST_QUERY, {
+        variables: {id: subjectPostId, withStatistics: false, withHomeworks: false, withFiles: false}
+    });
     const [updateSubjectPostMutation, updateSubjectPostMutationOptions] = useMutation<UpdateSubjectPostData, UpdateSubjectPostVars>(UPDATE_SUBJECT_POST_MUTATION);
     const [form] = Form.useForm();
+    const [init, setInit] = useState(false);
     const [id, setId] = useState('');
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [type, setType] = useState<SubjectPostType>(SubjectPostType.Info);
-    const [init, setInit] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        setId(inEditingPost.id);
-        setTitle(inEditingPost.title);
-        setText(inEditingPost.text);
-        setType(inEditingPost.type);
-        setInit(true);
-    }, []);
+        if (getSubjectPost.data?.getSubjectPost) {
+            setId(getSubjectPost.data.getSubjectPost.id);
+            setTitle(getSubjectPost.data.getSubjectPost.title);
+            setText(getSubjectPost.data.getSubjectPost.text);
+            setType(getSubjectPost.data.getSubjectPost.type);
+            setInit(true)
+        }
+
+    }, [getSubjectPost.data]);
 
     const handleOk = async () => {
         try {
@@ -59,9 +60,7 @@ export const SubjectPostsUpdate: FC<Props> = ({
                 },
             })
                 .then(async (response) => {
-                    setInEditingPost(null);
-                    setIsModalPostUpdateVisible(false);
-                    await refetchSubjectAsync();
+                    handleCancel()
                 })
                 .catch(error => {
                     message.error(error.message);
@@ -71,8 +70,7 @@ export const SubjectPostsUpdate: FC<Props> = ({
     };
 
     const handleCancel = () => {
-        setInEditingPost(null);
-        setIsModalPostUpdateVisible(false);
+        navigate(-1);
     };
 
     if (!init)
@@ -82,7 +80,7 @@ export const SubjectPostsUpdate: FC<Props> = ({
         <Modal
             confirmLoading={updateSubjectPostMutationOptions.loading}
             title="Оновити пост"
-            visible={isModalPostUpdateVisible}
+            visible={true}
             onOk={handleOk}
             okText={'Оновити'}
             onCancel={handleCancel}
@@ -93,9 +91,9 @@ export const SubjectPostsUpdate: FC<Props> = ({
                 name="SubjectsPostUpdateForm"
                 form={form}
                 initialValues={{
-                    title: inEditingPost.title,
-                    text: inEditingPost.text,
-                    type: inEditingPost.type,
+                    title: getSubjectPost.data?.getSubjectPost.title,
+                    text: getSubjectPost.data?.getSubjectPost.text,
+                    type: getSubjectPost.data?.getSubjectPost.type,
                 }}
                 {...sizeFormItem}
             >
