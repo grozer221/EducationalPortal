@@ -5,12 +5,21 @@ import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
 import {Link, useSearchParams} from 'react-router-dom';
-import {GET_USERS_WITH_GRADE_QUERY, GetUsersWithGradeData, GetUsersWithGradeVars} from '../../../../../../graphQL/modules/users/users.queries';
+import {
+    GET_USERS_WITH_GRADE_QUERY,
+    GetUsersWithGradeData,
+    GetUsersWithGradeVars
+} from '../../../../../../graphQL/modules/users/users.queries';
 import {Role, User} from '../../../../../../graphQL/modules/users/users.types';
-import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../../../../../graphQL/modules/users/users.mutations';
+import {
+    REMOVE_USER_MUTATION,
+    RemoveUserData,
+    RemoveUserVars
+} from '../../../../../../graphQL/modules/users/users.mutations';
 import Title from 'antd/es/typography/Title';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
+import {isAdministrator} from "../../../../../../utils/permissions";
 
 export const StudentsIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -62,12 +71,11 @@ export const StudentsIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, student) => (
-                // isAdministrator()
-                //     ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                //                   onRemove={() => onRemove(student?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${student?.id}`}/>
-                <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
-                            onRemove={() => onRemove(student?.id)}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`${student?.id}`} updateUrl={`update/${student?.id}`}
+                                  onRemove={() => onRemove(student?.id)}/>
+                    : <ButtonsVUR viewUrl={`${student?.id}`}/>
+
             ),
         },
     ];
@@ -81,16 +89,14 @@ export const StudentsIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Учні</Title>
-            {/*{isAdministrator() &&*/}
-            {/*<Link to={'create'}>*/}
-            {/*    <ButtonCreate/>*/}
-            {/*</Link>*/}
-            {/*}*/}
+
             <Row justify="space-between">
                 <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
+                    {isAdministrator() &&
+                        <Link to={'create'}>
+                            <ButtonCreate/>
+                        </Link>
+                    }
                 </Col>
                 <Col>
                     <Search

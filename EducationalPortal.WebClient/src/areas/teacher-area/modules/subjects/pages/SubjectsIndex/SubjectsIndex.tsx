@@ -4,7 +4,7 @@ import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Col, message, Row, Space, Table, Tag} from 'antd';
 import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link, useSearchParams} from 'react-router-dom';
+import {Link, useLocation, useSearchParams} from 'react-router-dom';
 import {
     GET_SUBJECTS_QUERY,
     GetSubjectsData,
@@ -20,6 +20,7 @@ import Title from 'antd/es/typography/Title';
 import {useAppSelector} from '../../../../../../store/store';
 import Search from 'antd/es/input/Search';
 import debounce from 'lodash.debounce';
+import {Role} from "../../../../../../graphQL/modules/users/users.types";
 
 export const SubjectsIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -93,12 +94,11 @@ export const SubjectsIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, subject: Subject) => (
-                // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
-                //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
-                //                   onRemove={() => onRemove(subject?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
-                            onRemove={() => onRemove(subject?.id)}/>
+                (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
+                    ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
+                                  onRemove={() => onRemove(subject?.id)}/>
+                    : <ButtonsVUR viewUrl={`${subject?.id}`}/>
+
             ),
         },
     ];

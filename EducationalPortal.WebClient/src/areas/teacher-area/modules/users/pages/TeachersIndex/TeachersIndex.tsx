@@ -7,11 +7,16 @@ import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCrea
 import {Link, useSearchParams} from 'react-router-dom';
 import {GET_USERS_QUERY, GetUsersData, GetUsersVars} from '../../../../../../graphQL/modules/users/users.queries';
 import {Role, User} from '../../../../../../graphQL/modules/users/users.types';
-import {REMOVE_USER_MUTATION, RemoveUserData, RemoveUserVars} from '../../../../../../graphQL/modules/users/users.mutations';
+import {
+    REMOVE_USER_MUTATION,
+    RemoveUserData,
+    RemoveUserVars
+} from '../../../../../../graphQL/modules/users/users.mutations';
 import Title from 'antd/es/typography/Title';
 import {roleToTag} from '../../../../../../convertors/enumToTagConvertor';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
+import {isAdministrator} from "../../../../../../utils/permissions";
 
 export const TeachersIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -60,12 +65,11 @@ export const TeachersIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, teacher) => (
-                // isAdministrator()
-                //     ? <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
-                //                   onRemove={() => onRemove(teacher?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${teacher?.id}`}/>
-                <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
-                            onRemove={() => onRemove(teacher?.id)}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`${teacher?.id}`} updateUrl={`update/${teacher?.id}`}
+                                  onRemove={() => onRemove(teacher?.id)}/>
+                    : <ButtonsVUR viewUrl={`${teacher?.id}`}/>
+
             ),
         },
     ];
@@ -79,16 +83,14 @@ export const TeachersIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Вчителі</Title>
-            {/*{isAdministrator() &&*/}
-            {/*<Link to={'create'}>*/}
-            {/*    <ButtonCreate/>*/}
-            {/*</Link>*/}
-            {/*}*/}
+
             <Row justify="space-between">
                 <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
+                    {isAdministrator() &&
+                        <Link to={'create'}>
+                            <ButtonCreate/>
+                        </Link>
+                    }
                 </Col>
                 <Col>
                     <Search

@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
-import {Layout} from 'antd';
-import {Navigate, Route, Routes} from 'react-router-dom';
+import {Layout, Modal} from 'antd';
+import {Navigate, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {TeacherMenu} from '../components/TeacherMenu/TeacherMenu';
 import {AppBreadcrumb} from '../components/AppBreadcrumb/AppBreadcrumb';
 import {Error} from '../../../components/Error/Error';
@@ -32,10 +32,26 @@ import {TeachersUpdate} from '../modules/users/pages/TeachersUpdate/TeachersUpda
 import {WithAdministratorRoleOrRender} from '../../../hocs/WithAdministratorRoleOrRender';
 import s from './TeacherLayout.module.css';
 import {BackupsIndex} from "../modules/backups/pages/BackupsIndex/BackupsIndex";
+import {HomeworksMyIndex} from "../modules/homeworks/pages/HomeworksMyIndex/HomeworksMyIndex";
 
 const {Content} = Layout;
 
+
+const MyModal = () => {
+    const navigate = useNavigate();
+    return (
+        <Modal title="Basic Modal" visible={true} onCancel={() => navigate(-1)}>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+        </Modal>
+    )
+}
+
 export const TeacherLayout: FC = () => {
+    const location = useLocation();
+    // @ts-ignore
+    const background = location.state && location.state.background;
     return (
         <Layout className={s.layout}>
             <TeacherMenu/>
@@ -43,8 +59,7 @@ export const TeacherLayout: FC = () => {
                 <Content className={s.content}>
                     <AppBreadcrumb/>
                     <div className={s.siteLayoutBackground}>
-                        <Routes>
-
+                        <Routes location={background || location}>
                             <Route path={'educational-years/*'}>
                                 <Route index element={<EducationalYearsIndex/>}/>
                                 <Route path={':id'} element={<EducationalYearsView/>}/>
@@ -77,7 +92,12 @@ export const TeacherLayout: FC = () => {
                             </Route>
 
                             <Route path={'homeworks/*'}>
-                                <Route index element={<HomeworksIndex/>}/>
+                                <Route index element={
+                                    <WithAdministratorRoleOrRender render={<Error statusCode={403}/>}>
+                                        <HomeworksIndex/>
+                                    </WithAdministratorRoleOrRender>
+                                }/>
+                                <Route path={'my'} element={<HomeworksMyIndex/>}/>
                                 <Route path={'update/:id'} element={<HomeworksUpdate/>}/>
                             </Route>
 
@@ -95,6 +115,7 @@ export const TeacherLayout: FC = () => {
                                 <Route index element={<SubjectsIndex/>}/>
                                 <Route path={'my'} element={<SubjectsMyIndex/>}/>
                                 <Route path={':id'} element={<SubjectsView/>}/>
+                                <Route path={':id/modal'} element={<MyModal/>}/>
                                 <Route path={'create'} element={<SubjectsCreate/>}/>
                                 <Route path={'update/:id'} element={<SubjectsUpdate/>}/>
                                 <Route path={'*'} element={<Error/>}/>
@@ -140,6 +161,11 @@ export const TeacherLayout: FC = () => {
                             <Route index element={<Navigate to={'subjects/my'}/>}/>
                             <Route path={'*'} element={<Error/>}/>
                         </Routes>
+                        {background && (
+                            <Routes>
+                                <Route path="subjects/:id/modal" element={<MyModal/>}/>
+                            </Routes>
+                        )}
                     </div>
                 </Content>
             </Layout>

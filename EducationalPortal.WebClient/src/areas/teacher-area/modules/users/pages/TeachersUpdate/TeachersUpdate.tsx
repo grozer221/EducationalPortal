@@ -5,7 +5,11 @@ import {Loading} from '../../../../../../components/Loading/Loading';
 import {DatePicker, Form, Input, message, Select} from 'antd';
 import {ButtonUpdate} from '../../../../../../components/ButtonUpdate/ButtonUpdate';
 import {sizeButtonItem, sizeFormItem} from '../../../../../../styles/form';
-import {UPDATE_USER_MUTATION, UpdateUserData, UpdateUserVars} from '../../../../../../graphQL/modules/users/users.mutations';
+import {
+    UPDATE_USER_MUTATION,
+    UpdateUserData,
+    UpdateUserVars
+} from '../../../../../../graphQL/modules/users/users.mutations';
 import {GET_USER_QUERY, GetUserData, GetUserVars} from '../../../../../../graphQL/modules/users/users.queries';
 import moment from 'moment';
 import {Role} from '../../../../../../graphQL/modules/users/users.types';
@@ -152,7 +156,7 @@ export const TeachersUpdate = () => {
                 name="dateOfBirth"
                 label="Дата народження"
             >
-                {/*<DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>*/}
+                <DatePicker format={ukDateFormat} onChange={() => changeLogin()}/>
             </Form.Item>
             <Form.Item
                 name="role"

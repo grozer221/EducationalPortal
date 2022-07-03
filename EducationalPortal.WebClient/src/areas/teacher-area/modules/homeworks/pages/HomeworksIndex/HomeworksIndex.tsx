@@ -2,11 +2,14 @@ import React, {useEffect} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {Col, Row, Space, Table} from 'antd';
-import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCreate';
-import {Link, useSearchParams} from 'react-router-dom';
+import {Space, Table} from 'antd';
+import {useSearchParams} from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
-import {GET_HOMEWORKS_QUERY, GetHomeworksData, GetHomeworksVars} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
+import {
+    GET_HOMEWORKS_QUERY,
+    GetHomeworksData,
+    GetHomeworksVars
+} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
 import {Homework, HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homework.types';
 import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDatetimeConvertors';
 import {Order} from '../../../../../../graphQL/enums/order';
@@ -91,10 +94,6 @@ export const HomeworksIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, homework) => (
-                // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
-                //     ? <ButtonsVUR viewUrl={`${subject?.id}`} updateUrl={`update/${subject?.id}`}
-                //                   onRemove={() => onRemove(subject?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${subject?.id}`}/>
                 <ButtonsVUR updateUrl={`update/${homework?.id}`} onRemove={() => onRemove(homework?.id)}/>
             ),
         },
@@ -103,15 +102,6 @@ export const HomeworksIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Домашні роботи</Title>
-            <Row justify="space-between">
-                <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
-                </Col>
-                <Col>
-                </Col>
-            </Row>
             <Table
                 rowKey={'id'}
                 loading={getHomeworksOptions.loading /*|| removeSubjectMutationOptions.loading*/}

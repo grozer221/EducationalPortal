@@ -1,4 +1,5 @@
-﻿using EducationalPortal.Business.Models;
+﻿using EducationalPortal.Business.Enums;
+using EducationalPortal.Business.Models;
 using EducationalPortal.Business.Repositories;
 using EducationalPortal.Server.Extensions;
 using EducationalPortal.Server.GraphQL.Abstraction;
@@ -45,10 +46,17 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("UpdateHomework")
                 .Argument<NonNullGraphType<UpdateHomeworkInputType>, HomeworkModel>("UpdateHomeworkInputType", "Argument for update Grade")
-                .ResolveAsync(async (context) =>
+                .ResolveAsync(async context =>
                 {
-                    HomeworkModel homework = context.GetArgument<HomeworkModel>("UpdateHomeworkInputType");
-                    return await homeworkRepository.UpdateAsync(homework);
+                    HomeworkModel newHomework = context.GetArgument<HomeworkModel>("UpdateHomeworkInputType");
+                    Guid currentTeacherId = httpContextAccessor.HttpContext.GetUserId();
+                    UserRoleEnum currentTeacherRole = httpContextAccessor.HttpContext.GetRole();
+                    HomeworkModel oldHomework = await homeworkRepository.GetByIdAsync(newHomework.Id, h => h.SubjectPost.Subject.TeachersHaveAccessCreatePosts);
+                    if (currentTeacherId != oldHomework.SubjectPost.Subject.TeacherId 
+                        && !oldHomework.SubjectPost.Subject.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentTeacherId)
+                        && currentTeacherRole != UserRoleEnum.Administrator)
+                        throw new Exception("Ви не маєте прав на редагування данного доманьої роботи");
+                    return await homeworkRepository.UpdateAsync(newHomework);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 

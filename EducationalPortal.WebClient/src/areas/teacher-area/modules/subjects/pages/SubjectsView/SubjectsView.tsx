@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
-import {Link, Navigate, useNavigate, useParams} from 'react-router-dom';
+import {Link, Navigate, Outlet, useLocation, useNavigate, useParams} from 'react-router-dom';
 import {Loading} from '../../../../../../components/Loading/Loading';
 import {
     GET_SUBJECT_WITH_POSTS_QUERY,
@@ -18,17 +18,19 @@ import {
     RemoveSubjectVars
 } from "../../../../../../graphQL/modules/subjects/subjects.mutations";
 import {Subject} from "../../../../../../graphQL/modules/subjects/subjects.types";
+import {useAppSelector} from "../../../../../../store/store";
 
 export const SubjectsView = () => {
     const params = useParams();
     const id = params.id as string;
     const navigate = useNavigate();
     const [postsPage, setPostsPage] = useState(1);
-
+    const currentUser = useAppSelector(s => s.auth.me?.user);
     const getSubjectQuery = useQuery<GetSubjectWithPostsData, GetSubjectWithPostsVars>(GET_SUBJECT_WITH_POSTS_QUERY,
         {variables: {id: id, postsPage: postsPage, withHomeworks: true, withFiles: true, withStatistics: true}},
     );
     const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
+    const location = useLocation();
 
     useEffect(() => {
         getSubjectQuery.error && message.error(getSubjectQuery.error.message)
@@ -58,9 +60,15 @@ export const SubjectsView = () => {
     return (
         <Space direction={'vertical'} size={20} style={{width: '100%'}}>
             <Title level={2}>Перегляд предмету</Title>
+            <Link to="modal" state={{background: location}}>
+                Open Modal
+            </Link>
+            <Outlet/>
             <Space align={'center'}>
                 <Title level={3}>{subject?.name}</Title>
-                <ButtonsVUR updateUrl={`../update/${subject?.id}`} onRemove={() => onRemove(subject?.id)}/>
+                {subject.teacherId === currentUser?.id &&
+                    <ButtonsVUR updateUrl={`../update/${subject?.id}`} onRemove={() => onRemove(subject?.id)}/>
+                }
             </Space>
             <table className="infoTable">
                 <tbody>
@@ -77,7 +85,7 @@ export const SubjectsView = () => {
                     <td>Вчителі:</td>
                     <td>
                         {subject?.teachersHaveAccessCreatePosts?.map(teacher => (
-                            <Tag>
+                            <Tag key={teacher.id}>
                                 <Link to={`../../teachers/${teacher.id}`}>{teacher?.lastName} {teacher.firstName}</Link>
                             </Tag>
                         ))}
@@ -102,7 +110,7 @@ export const SubjectsView = () => {
                     <td>Класи:</td>
                     <td>
                         {subject?.gradesHaveAccessRead.map(grade => (
-                            <Tag>
+                            <Tag key={grade.id}>
                                 <Link to={`../../grades/${grade.id}`}>{grade?.name}</Link>
                             </Tag>
                         ))}

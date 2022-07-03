@@ -22,6 +22,8 @@ import {Homeworks} from "../../../homeworks/components/Homeworks/Homeworks";
 import {Doughnut} from "react-chartjs-2";
 import {Chart, registerables} from 'chart.js'
 import s from './SubjectPostsIndex.module.css';
+import {useAppSelector} from "../../../../../../store/store";
+import {Role} from "../../../../../../graphQL/modules/users/users.types";
 
 Chart.register(...registerables);
 
@@ -33,6 +35,7 @@ type Props = {
 };
 
 export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, postsPage, setPostsPage}) => {
+    const currentUser = useAppSelector(s => s.auth.me?.user)
     const [isModalPostCreateVisible, setIsModalPostCreateVisible] = useState(false);
     const [isModalPostUpdateVisible, setIsModalPostUpdateVisible] = useState(false);
     const [inEditingPost, setInEditingPost] = useState<SubjectPost | null>(null);
@@ -62,14 +65,13 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
     return (
         <>
             <Space direction={'vertical'} style={{width: '100%'}} size={20}>
-                {/*{(currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&*/}
-                {/*<span onClick={() => setIsModalPostCreateVisible(true)}>*/}
-                {/*    <ButtonCreate>Створити пост</ButtonCreate>*/}
-                {/*    </span>*/}
-                {/*}*/}
-                <span onClick={() => setIsModalPostCreateVisible(true)}>
+                {(currentUser?.id === subject.teacherId
+                        || subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id)
+                        || currentUser?.role === Role.Administrator)
+                    && <span onClick={() => setIsModalPostCreateVisible(true)}>
                     <ButtonCreate>Створити пост</ButtonCreate>
                 </span>
+                }
                 {subject?.posts?.entities.map(post => (
                     <Card
                         key={post.id}
@@ -81,12 +83,10 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                             </Space>
                         }
                         extra={
-                            // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator) &&
-                            // <ButtonsVUR
-                            //     onUpdate={() => onPostUpdate(post)}
-                            //     onRemove={() => onPostRemove(post.id)}
-                            // />
-                            <Space size={10}>
+                            (currentUser?.id === subject.teacherId
+                                || subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id)
+                                || currentUser?.role === Role.Administrator)
+                            && <Space size={10}>
                                 {post.type === SubjectPostType.Homework
                                     && <HomeOutlined onClick={() => setInViewHomeworksPost(post)}/>}
                                 <ButtonsVUR

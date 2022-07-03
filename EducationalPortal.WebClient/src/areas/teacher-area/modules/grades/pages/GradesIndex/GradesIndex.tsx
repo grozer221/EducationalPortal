@@ -7,10 +7,15 @@ import {ButtonCreate} from '../../../../../../components/ButtonCreate/ButtonCrea
 import {Link, useNavigate, useSearchParams} from 'react-router-dom';
 import {GET_GRADES_QUERY, GetGradesData, GetGradesVars} from '../../../../../../graphQL/modules/grades/grades.queries';
 import {Grade} from '../../../../../../graphQL/modules/grades/grades.types';
-import {REMOVE_GRADE_MUTATION, RemoveGradeData, RemoveGradeVars} from '../../../../../../graphQL/modules/grades/grades.mutations';
+import {
+    REMOVE_GRADE_MUTATION,
+    RemoveGradeData,
+    RemoveGradeVars
+} from '../../../../../../graphQL/modules/grades/grades.mutations';
 import Title from 'antd/es/typography/Title';
 import debounce from 'lodash.debounce';
 import Search from 'antd/es/input/Search';
+import {isAdministrator} from "../../../../../../utils/permissions";
 
 export const GradesIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -52,12 +57,11 @@ export const GradesIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, grade) => (
-                // isAdministrator()
-                //     ? <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
-                //                   onRemove={() => onRemove(grade?.id)}/>
-                //     : <ButtonsVUR viewUrl={`${grade?.id}`}/>
-                <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
-                            onRemove={() => onRemove(grade?.id)}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`${grade?.id}`} updateUrl={`update/${grade?.id}`}
+                                  onRemove={() => onRemove(grade?.id)}/>
+                    : <ButtonsVUR viewUrl={`${grade?.id}`}/>
+
             ),
         },
     ];
@@ -71,16 +75,14 @@ export const GradesIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Класи</Title>
-            {/*{isAdministrator() &&*/}
-            {/*<Link to={'create'}>*/}
-            {/*    <ButtonCreate/>*/}
-            {/*</Link>*/}
-            {/*}*/}
+
             <Row justify="space-between">
                 <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
+                    {isAdministrator() &&
+                        <Link to={'create'}>
+                            <ButtonCreate/>
+                        </Link>
+                    }
                 </Col>
                 <Col>
                     <Search

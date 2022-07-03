@@ -27,6 +27,9 @@ export const EDUCATIONAL_YEAR_WITH_SUBJECTS_FRAGMENT = gql`
                 teacher {
                     ...UserFragment
                 }
+                teachersHaveAccessCreatePosts {
+                    ...UserFragment
+                }
                 educationalYearId
                 createdAt
                 updatedAt

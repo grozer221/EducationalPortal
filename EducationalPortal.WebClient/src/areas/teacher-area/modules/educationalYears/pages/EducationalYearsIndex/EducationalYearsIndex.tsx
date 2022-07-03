@@ -21,6 +21,7 @@ import Title from 'antd/es/typography/Title';
 import Search from 'antd/es/input/Search';
 import debounce from 'lodash.debounce';
 import '../../../../../../styles/controls.css';
+import {isAdministrator} from "../../../../../../utils/permissions";
 
 export const EducationalYearsIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -84,12 +85,10 @@ export const EducationalYearsIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text: string, educationalYear: EducationalYear) => (
-                // isAdministrator()
-                //     ? <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
-                //                   onRemove={() => onRemove(educationalYear.id)}/>
-                //     : <ButtonsVUR viewUrl={`${educationalYear.id}`}/>
-                <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
-                            onRemove={() => onRemove(educationalYear.id)}/>
+                isAdministrator()
+                    ? <ButtonsVUR viewUrl={`${educationalYear.id}`} updateUrl={`update/${educationalYear.id}`}
+                                  onRemove={() => onRemove(educationalYear.id)}/>
+                    : <ButtonsVUR viewUrl={`${educationalYear.id}`}/>
             ),
         },
     ];
@@ -104,16 +103,13 @@ export const EducationalYearsIndex = () => {
     return (
         <Space size={20} direction={'vertical'} style={{width: '100%'}}>
             <Title level={2}>Навчальні роки</Title>
-            {/*{isAdministrator() &&*/}
-            {/*<Link to={'create'}>*/}
-            {/*    <ButtonCreate/>*/}
-            {/*</Link>*/}
-            {/*}*/}
             <Row justify="space-between">
                 <Col>
-                    <Link to={'create'}>
-                        <ButtonCreate/>
-                    </Link>
+                    {isAdministrator() &&
+                        <Link to={'create'}>
+                            <ButtonCreate/>
+                        </Link>
+                    }
                 </Col>
                 <Col>
                     <Search

@@ -94,22 +94,17 @@ export const TeacherMenu: FC = () => {
                     <Link to={'subjects/my'}>Мої предмети</Link>
                 </Menu.Item>
                 <Menu.Item key="homeworks/my" icon={<BookOutlined/>}>
-                    {/*<Link to={'homeworks/my'}>Мої ДЗ</Link>*/}
-                    Мої домашні роботи
+                    <Link to={'homeworks/my'}>Мої домашні роботи</Link>
                 </Menu.Item>
-                {/*{isAdministrator() &&*/}
-                {/*<SubMenu key="sub1" icon={<AppstoreAddOutlined/>} title="Сайт">*/}
-                {/*    <Menu.Item key="sub1_1" icon={<QuestionOutlined/>}>Модуль 1</Menu.Item>*/}
-                {/*    <Menu.Item key="sub1_2" icon={<QuestionOutlined/>}>Модуль 2</Menu.Item>*/}
-                {/*</SubMenu>*/}
-                {/*}*/}
                 <SubMenu key="portal" icon={<ShopOutlined/>} title="Портал">
                     <Menu.Item key="subjects" icon={<BookOutlined/>}>
                         <Link to={'subjects'}>Предмети</Link>
                     </Menu.Item>
-                    <Menu.Item key="homeworks" icon={<BookOutlined/>}>
-                        <Link to={'homeworks'}>Домашні роботи</Link>
-                    </Menu.Item>
+                    {isAdministrator() &&
+                        <Menu.Item key="homeworks" icon={<BookOutlined/>}>
+                            <Link to={'homeworks'}>Домашні роботи</Link>
+                        </Menu.Item>
+                    }
                     <Menu.Item key="grades" icon={<BoxPlotOutlined/>}>
                         <Link to={'grades'}>Класи</Link>
                     </Menu.Item>

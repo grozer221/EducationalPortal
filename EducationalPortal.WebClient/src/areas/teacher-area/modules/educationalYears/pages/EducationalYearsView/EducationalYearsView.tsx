@@ -15,6 +15,7 @@ import {ColumnsType} from 'antd/es/table';
 import {Subject} from '../../../../../../graphQL/modules/subjects/subjects.types';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {useAppSelector} from '../../../../../../store/store';
+import {Role} from "../../../../../../graphQL/modules/users/users.types";
 
 export const EducationalYearsView = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -39,7 +40,7 @@ export const EducationalYearsView = () => {
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
                         {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&
-                        <Tag color={'cyan'}>Надано доступ</Tag>}
+                            <Tag color={'cyan'}>Надано доступ</Tag>}
                     </div>
                 </Space>
             ),
@@ -60,12 +61,11 @@ export const EducationalYearsView = () => {
             key: 'actions',
             width: '130px',
             render: (text: string, subject: Subject) => (
-                // (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
-                //     ? <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`} updateUrl={`../../subjects/update/${subject?.id}`}
-                //                   onRemove={() => onRemove(subject?.id)}/>
-                //     : <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}/>
-                <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}
-                            updateUrl={`../../subjects/update/${subject?.id}`}/>
+                (currentUser?.id === subject.teacherId || currentUser?.role === Role.Administrator)
+                    ? <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}
+                                  updateUrl={`../../subjects/update/${subject?.id}`}/>
+                    : <ButtonsVUR viewUrl={`../../subjects/${subject?.id}`}/>
+
             ),
         },
     ];

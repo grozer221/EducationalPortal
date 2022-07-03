@@ -33,3 +33,22 @@ export const GET_HOMEWORKS_QUERY = gql`
         }
     }
 `;
+
+
+export type GetMyHomeworksData = { getMyHomeworks: getMyHomeworksType }
+export type getMyHomeworksType = { entities: Homework[], total: number, pageSize: number }
+
+export type GetMyHomeworksVars = { page: number, statuses: HomeworkStatus[] | null | undefined, order: Order, withFiles: boolean}
+
+export const GET_MY_HOMEWORKS_QUERY = gql`
+    ${HOMEWORK_FRAGMENT}
+    query GetMyHomeworks($page: Int!, $statuses: [HomeworkStatus], $order: Order!, $withFiles: Boolean!) {
+        getMyHomeworks(page: $page, statuses: $statuses, order: $order) {
+            entities {
+                ...HomeworkFragment
+            }
+            total
+            pageSize
+        }
+    }
+`;

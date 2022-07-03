@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useLazyQuery, useMutation} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
@@ -60,7 +60,8 @@ export const SubjectsMyIndex = () => {
                     <div>
                         {subject.teacherId === currentUser?.id && <Tag color={'green'}>Мій</Tag>}
                         {subject.teachersHaveAccessCreatePosts?.some(t => t.id === currentUser?.id) &&
-                        <Tag color={'cyan'}>Надано доступ</Tag>}
+                            <Tag color={'cyan'}>Надано доступ</Tag>
+                        }
                     </div>
                 </Space>
             ),
@@ -82,9 +83,12 @@ export const SubjectsMyIndex = () => {
             dataIndex: 'actions',
             key: 'actions',
             width: '130px',
-            render: (text: string, subject: Subject) => (
-                <ButtonsVUR viewUrl={`../${subject?.id}`} updateUrl={`../update/${subject?.id}`}
-                            onRemove={() => onRemove(subject?.id)}/>
+            render: (text, subject) => (
+                subject.teacherId === currentUser?.id
+                    ? <ButtonsVUR viewUrl={`../${subject?.id}`} updateUrl={`../update/${subject?.id}`}
+                                  onRemove={() => onRemove(subject?.id)}/>
+                    : <ButtonsVUR viewUrl={`../${subject?.id}`}/>
+
             ),
         },
     ];
