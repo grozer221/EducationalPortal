@@ -11,6 +11,7 @@ import {SubjectPostType} from '../../../../../../graphQL/modules/subjectPosts/su
 import {WysiwygEditor} from '../../../../components/WysiwygEditor/WysiwygEditor';
 import {subjectPostTypeWithTranslateToString} from "../../../../../../convertors/enumWithTranslateToStringConvertor";
 import {useNavigate, useParams} from "react-router-dom";
+import {GET_SUBJECT_WITH_POSTS_QUERY} from "../../../../../../graphQL/modules/subjects/subjects.queries";
 
 type Props = {
     onSuccess?: () => void,
@@ -41,6 +42,9 @@ export const SubjectPostsCreate: FC<Props> = ({onSuccess}) => {
                     withFiles: false,
                     withStatistics: false,
                 },
+                refetchQueries: [
+                    GET_SUBJECT_WITH_POSTS_QUERY
+                ]
             })
                 .then(async (response) => {
                     handleCancel()

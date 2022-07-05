@@ -54,6 +54,8 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
             });
     };
 
+    console.log(subject.posts)
+
     return (
         <>
             <Space direction={'vertical'} style={{width: '100%'}} size={20}>
@@ -129,7 +131,7 @@ export const SubjectPostsIndex: FC<Props> = ({subject, refetchSubjectAsync, post
                 ))}
                 {subject?.posts?.total > 0 &&
                     <Row justify={'end'}>
-                        <Pagination defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>
+                        <Pagination pageSize={subject.posts.pageSize} defaultCurrent={postsPage} onChange={setPostsPage} total={subject?.posts.total}/>
                     </Row>
                 }
             </Space>

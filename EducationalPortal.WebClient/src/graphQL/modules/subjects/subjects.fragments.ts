@@ -41,6 +41,7 @@ export const SUBJECT_WITH_POSTS_FRAGMENT = gql`
                 ...SubjectPostFragment
             }
             total
+            pageSize
         }
     }
 `;

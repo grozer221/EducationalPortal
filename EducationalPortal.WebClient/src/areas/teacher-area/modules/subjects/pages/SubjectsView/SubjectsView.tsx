@@ -32,9 +32,9 @@ export const SubjectsView = () => {
     const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
     const location = useLocation();
 
-    useEffect(() => {
-        getSubjectQuery.refetch();
-    }, [location])
+    // useEffect(() => {
+    //     getSubjectQuery.refetch();
+    // }, [location])
 
     useEffect(() => {
         getSubjectQuery.error && message.error(getSubjectQuery.error.message)

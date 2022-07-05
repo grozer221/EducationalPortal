@@ -58,8 +58,11 @@ export const SubjectPostsUpdate: FC = () => {
                     withFiles: false,
                     withStatistics: false,
                 },
+                onQueryUpdated(observableQuery) {
+                    return observableQuery.refetch();
+                }
             })
-                .then(async (response) => {
+                .then(async response => {
                     handleCancel()
                 })
                 .catch(error => {
