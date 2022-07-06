@@ -111,7 +111,8 @@ namespace EducationalPortal.Server.Extensions
         {
             services.AddTransient<AuthService>();
             services.AddSingleton<CloudinaryService>();
-            services.AddSingleton<IHostedService, AutoBackupService>();
+            if(!isDevelopment)
+                services.AddSingleton<IHostedService, AutoBackupService>();
             return services;
         }
     }
