@@ -45,7 +45,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
 
             Field<NonNullGraphType<HomeworkType>, HomeworkModel>()
                 .Name("UpdateHomework")
-                .Argument<NonNullGraphType<UpdateHomeworkInputType>, HomeworkModel>("UpdateHomeworkInputType", "Argument for update Grade")
+                .Argument<NonNullGraphType<UpdateHomeworkInputType>, HomeworkModel>("UpdateHomeworkInputType", "Argument for update Homework")
                 .ResolveAsync(async context =>
                 {
                     HomeworkModel newHomework = context.GetArgument<HomeworkModel>("UpdateHomeworkInputType");
@@ -55,21 +55,26 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                     if (currentTeacherId != oldHomework.SubjectPost.Subject.TeacherId 
                         && !oldHomework.SubjectPost.Subject.TeachersHaveAccessCreatePosts.Any(t => t.Id == currentTeacherId)
                         && currentTeacherRole != UserRoleEnum.Administrator)
-                        throw new Exception("Ви не маєте прав на редагування данного доманьої роботи");
+                        throw new Exception("Ви не маєте прав на редагування даної доманьої роботи");
                     return await homeworkRepository.UpdateAsync(newHomework);
                 })
                 .AuthorizeWith(AuthPolicies.Teacher);
 
-            //Field<NonNullGraphType<BooleanGraphType>, bool>()
-            //   .Name("RemoveGrade")
-            //   .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for remove Grade")
-            //   .ResolveAsync(async (context) =>
-            //   {
-            //       Guid id = context.GetArgument<Guid>("Id");
-            //       await gradeRepository.RemoveAsync(id);
-            //       return true;
-            //   })
-            //   .AuthorizeWith(AuthPolicies.Administrator);
+            Field<NonNullGraphType<BooleanGraphType>, bool>()
+               .Name("RemoveHomework")
+               .Argument<NonNullGraphType<IdGraphType>, Guid>("Id", "Argument for remove Homework")
+               .ResolveAsync(async (context) =>
+               {
+                   Guid id = context.GetArgument<Guid>("Id");
+                   var homework = await homeworkRepository.GetByIdAsync(id);
+                   var userId = httpContextAccessor.HttpContext.GetUserId();
+                   var userRole = httpContextAccessor.HttpContext.GetRole();
+                   if (homework.StudentId != userId && userRole != UserRoleEnum.Administrator)
+                       throw new Exception("Ви не маєте прав на видалення даної доманьої роботи");
+                   await homeworkRepository.RemoveAsync(id);
+                   return true;
+               })
+               .AuthorizeWith(AuthPolicies.Student);
         }
     }
 }

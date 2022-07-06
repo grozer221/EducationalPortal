@@ -8,6 +8,8 @@ import {StudentMenu} from '../components/StudentMenu/StudentMenu';
 import {SubjectsMyIndex} from '../modules/subjects/pages/SubjectsMyIndex/SubjectsMyIndex';
 import {SubjectsView} from '../modules/subjects/pages/SubjectsView/SubjectsView';
 import {Settings} from "../modules/Settings/Settings";
+import {HomeworksMyIndex} from "../modules/homeworks/pages/HomeworksMyIndex/HomeworksMyIndex";
+import {HomeworksView} from "../modules/homeworks/pages/HomeworksView/HomeworksView";
 
 const {Content} = Layout;
 
@@ -23,6 +25,11 @@ export const StudentLayout: FC = () => {
                             <Route path={'subjects/*'}>
                                 <Route path={'my'} element={<SubjectsMyIndex/>}/>
                                 <Route path={':id'} element={<SubjectsView/>}/>
+                                <Route path={'*'} element={<Error/>}/>
+                            </Route>
+                            <Route path={'homeworks/*'}>
+                                <Route path={'my'} element={<HomeworksMyIndex/>}/>
+                                <Route path={':id'} element={<HomeworksView/>}/>
                                 <Route path={'*'} element={<Error/>}/>
                             </Route>
                             <Route path={'settings/*'} element={<Settings/>}/>

@@ -1,5 +1,6 @@
 import {User} from '../users/users.types';
 import {Homework} from "../homeworks/homework.types";
+import {Subject} from "../subjects/subjects.types";
 
 export type SubjectPost = {
     id: string,
@@ -8,6 +9,8 @@ export type SubjectPost = {
     type: SubjectPostType,
     teacherId: string,
     teacher: User,
+    subjectId: string,
+    subject: Subject,
     homeworks: Homework[],
     statistics: SubjectPostStatistic[],
     createdAt: string,

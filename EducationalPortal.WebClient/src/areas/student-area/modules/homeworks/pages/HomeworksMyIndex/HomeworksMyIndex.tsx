@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
-import {useLazyQuery} from '@apollo/client';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
-import {Space, Table} from 'antd';
+import {message, Space, Table} from 'antd';
 import {Link, useSearchParams} from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import {
@@ -15,15 +15,20 @@ import {stringToUkraineDatetime} from '../../../../../../convertors/stringToDate
 import {Order} from '../../../../../../graphQL/enums/order';
 import {homeworkStatusToTag} from '../../../../../../convertors/enumToTagConvertor';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
+import {
+    REMOVE_HOMEWORK_MUTATION,
+    RemoveHomeworkData,
+    RemoveHomeworkVars
+} from "../../../../../../graphQL/modules/homeworks/homeworks.mutations";
 
 export const HomeworksMyIndex = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [getMyHomeworks, getMyHomeworksOptions] = useLazyQuery<GetMyHomeworksData, GetMyHomeworksVars>(GET_MY_HOMEWORKS_QUERY,
         {fetchPolicy: 'network-only'},
     );
-    // const [removeSubjectMutation, removeSubjectMutationOptions] = useMutation<RemoveSubjectData, RemoveSubjectVars>(REMOVE_SUBJECT_MUTATION);
+    const [removeHomework, removeHomeworkOptions] = useMutation<RemoveHomeworkData, RemoveHomeworkVars>(REMOVE_HOMEWORK_MUTATION);
 
-    useEffect(() => {
+    const refetchMyHomeworks = async () => {
         const page = parseInt(searchParams.get('page') || '') || 1;
         const statuses = searchParams.get('statuses')?.split('|').filter(s => Object.values(HomeworkStatus).includes(s as HomeworkStatus)) as HomeworkStatus[];
         const orderString = searchParams.get('order') || '';
@@ -38,18 +43,20 @@ export const HomeworksMyIndex = () => {
                 withFiles: true,
             },
         });
+    }
+
+    useEffect(() => {
+        refetchMyHomeworks()
     }, [searchParams]);
 
-    const onRemove = (subjectId: string) => {
-        // removeSubjectMutation({variables: {id: subjectId}})
-        //     .then(async (response) => {
-        //         const page = parseInt(searchParams.get('page') || '') || 1;
-        //         const like = searchParams.get('like') || '';
-        //         await getSubjects({variables: {page, like}});
-        //     })
-        //     .catch(error => {
-        //         message.error(error.message);
-        //     });
+    const onRemove = (homeworkId: string) => {
+        removeHomework({variables: {id: homeworkId}})
+            .then(async (response) => {
+                refetchMyHomeworks()
+            })
+            .catch(error => {
+                message.error(error.message);
+            });
     };
 
     const columns: ColumnsType<Homework> = [
@@ -57,19 +64,14 @@ export const HomeworksMyIndex = () => {
             title: 'Предмет',
             dataIndex: 'subject',
             key: 'subject',
-            render: (text, homework) => <Link to={`../../subjects/${homework?.subjectPost?.subjectId}`}>{homework?.subjectPost?.subject.name}</Link>,
+            render: (text, homework) => <Link
+                to={`../../subjects/${homework?.subjectPost?.subjectId}`}>{homework?.subjectPost?.subject.name}</Link>,
         },
         {
             title: 'Пост',
             dataIndex: 'subjectPost',
             key: 'subjectPost',
             render: (text, homework) => <>{homework?.subjectPost?.title}</>,
-        },
-        {
-            title: 'Виконав',
-            dataIndex: 'student',
-            key: 'student',
-            render: (text, homework) => <>{homework?.student?.lastName} {homework?.student?.firstName}</>,
         },
         {
             title: 'Оцінка',
@@ -100,7 +102,7 @@ export const HomeworksMyIndex = () => {
             key: 'actions',
             width: '130px',
             render: (text, homework) => (
-                <ButtonsVUR updateUrl={`../update/${homework?.id}`} onRemove={() => onRemove(homework?.id)}/>
+                <ButtonsVUR viewUrl={`../${homework.id}`} onRemove={() => onRemove(homework?.id)}/>
             ),
         },
     ];

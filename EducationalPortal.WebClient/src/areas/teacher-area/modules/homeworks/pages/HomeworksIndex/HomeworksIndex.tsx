@@ -3,7 +3,7 @@ import {useLazyQuery} from '@apollo/client';
 import {ColumnsType} from 'antd/es/table';
 import {ButtonsVUR} from '../../../../../../components/ButtonsVUD/ButtonsVUR';
 import {Space, Table} from 'antd';
-import {useSearchParams} from 'react-router-dom';
+import {Link, useSearchParams} from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import {
     GET_HOMEWORKS_QUERY,
@@ -53,6 +53,12 @@ export const HomeworksIndex = () => {
     };
 
     const columns: ColumnsType<Homework> = [
+        {
+            title: 'Предмет',
+            dataIndex: 'subject',
+            key: 'subject',
+            render: (text, homework) => <Link to={`../../subjects/${homework?.subjectPost?.subjectId}`}>{homework?.subjectPost?.subject.name}</Link>,
+        },
         {
             title: 'Пост',
             dataIndex: 'subjectPost',

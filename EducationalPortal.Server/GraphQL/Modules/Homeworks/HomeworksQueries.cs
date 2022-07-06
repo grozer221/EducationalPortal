@@ -56,7 +56,7 @@ namespace EducationalPortal.Server.GraphQL.Modules.Homeworks
                     {
                         case UserRoleEnum.Student:
                             return await homeworkRepository.WhereAsync(s => s.CreatedAt, order, page,
-                                h => (statuses == null || statuses.Count == 0) ? true : statuses.Contains(h.Status)
+                                h => ((statuses == null || statuses.Count == 0) ? true : statuses.Contains(h.Status))
                                 && h.StudentId == currentUserId);
                         case UserRoleEnum.Teacher:
                         case UserRoleEnum.Administrator:

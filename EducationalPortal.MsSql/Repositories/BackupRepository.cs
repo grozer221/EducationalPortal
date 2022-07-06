@@ -17,7 +17,7 @@ namespace EducationalPortal.MsSql.Repositories
         public async Task<string> BackupDatabase()
         {
             string database = context.Database.GetDbConnection().Database;
-            string name = $"{DateTime.Now.ToString("dd.MM.yyyy_HH-mm-ss-fff")}.bak";
+            string name = $"{DateTime.Now.ToString("yyyy.MM.dd_HH-mm-ss-fff")}.bak";
             string fullPath = $@"{Environment.GetEnvironmentVariable("BACKUPS_FOLDER_PATH")}\{name}";
             await context.Database.ExecuteSqlRawAsync($@"
                 BACKUP DATABASE [{database}]

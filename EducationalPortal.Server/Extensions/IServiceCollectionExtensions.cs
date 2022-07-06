@@ -107,10 +107,11 @@ namespace EducationalPortal.Server.Extensions
             return services;
         }
         
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, bool isDevelopment)
         {
             services.AddTransient<AuthService>();
-            services.AddTransient<CloudinaryService>();
+            services.AddSingleton<CloudinaryService>();
+            services.AddSingleton<IHostedService, AutoBackupService>();
             return services;
         }
     }

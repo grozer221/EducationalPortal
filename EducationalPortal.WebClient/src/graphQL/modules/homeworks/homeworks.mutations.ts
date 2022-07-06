@@ -34,12 +34,12 @@ export const UPDATE_HOMEWORK_MUTATION = gql`
     }
 
 `;
-//
-// export type RemoveSubjectData = { removeSubject: boolean }
-// export type RemoveSubjectVars = { id: string }
-//
-// export const REMOVE_SUBJECT_MUTATION = graphQL`
-//     mutation RemoveSubject($id: ID!) {
-//         removeSubject(id: $id)
-//     }
-// `;
+
+export type RemoveHomeworkData = { removeHomework: boolean }
+export type RemoveHomeworkVars = { id: string }
+
+export const REMOVE_HOMEWORK_MUTATION = gql`
+     mutation RemoveHomework($id: ID!) {
+         removeHomework(id: $id)
+     }
+ `;

@@ -10,43 +10,15 @@ import {HomeworkStatus} from '../../../../../../graphQL/modules/homeworks/homewo
 import {UPDATE_HOMEWORK_MUTATION, UpdateHomeworkData, UpdateHomeworkVars} from '../../../../../../graphQL/modules/homeworks/homeworks.mutations';
 import {GET_HOMEWORK_QUERY, GetHomeworkData, GetHomeworkVars} from '../../../../../../graphQL/modules/homeworks/homeworks.queries';
 import {homeworkStatusWithTranslateToString} from '../../../../../../convertors/enumWithTranslateToStringConvertor';
+import {homeworkStatusToTag} from "../../../../../../convertors/enumToTagConvertor";
 
-type FormValues = {
-    id: string,
-    mark: string,
-    reviewResult: string,
-    status: HomeworkStatus,
-}
-
-export const HomeworksUpdate = () => {
+export const HomeworksView = () => {
     const params = useParams();
     const id = params.id as string;
     const getHomeworkQuery = useQuery<GetHomeworkData, GetHomeworkVars>(GET_HOMEWORK_QUERY,
         {variables: {id: id, withFiles: true}},
     );
-    const [updateHomework, updateHomeworkOptions] = useMutation<UpdateHomeworkData, UpdateHomeworkVars>(UPDATE_HOMEWORK_MUTATION);
-    const [form] = Form.useForm();
     const navigate = useNavigate();
-
-    const onFinish = async ({id, mark, reviewResult, status}: FormValues) => {
-        updateHomework({
-            variables: {
-                updateHomeworkInputType: {
-                    id,
-                    mark,
-                    reviewResult,
-                    status,
-                },
-                withFiles: false
-            },
-        })
-            .then(response => {
-                navigate(-1);
-            })
-            .catch(error => {
-                message.error(error.message);
-            });
-    };
 
     if (!id)
         return <Navigate to={'/error'}/>;
@@ -58,9 +30,6 @@ export const HomeworksUpdate = () => {
     const homework = getHomeworkQuery.data?.getHomework;
     return (
         <Form
-            name="HomeworkUpdateForm"
-            onFinish={onFinish}
-            form={form}
             initialValues={{
                 id: homework?.id,
                 mark: homework?.mark,
@@ -69,7 +38,7 @@ export const HomeworksUpdate = () => {
             }}
             {...sizeFormItem}
         >
-            <Title level={2}>Редагування домашньої роботи для {homework?.subjectPost.title} ({homework?.subjectPost.subject.name})</Title>
+            <Title level={2}>Перегляд доманьої роботи для {homework?.subjectPost.title} ({homework?.subjectPost.subject.name})</Title>
             <Form.Item name="id" style={{display: 'none'}}>
                 <Input type={'hidden'}/>
             </Form.Item>
@@ -90,28 +59,19 @@ export const HomeworksUpdate = () => {
                 name="mark"
                 label="Оцінка"
             >
-                <Input placeholder="Оцінка"/>
+                <div>{homework?.mark}</div>
             </Form.Item>
             <Form.Item
                 name="reviewResult"
                 label="Результат"
             >
-                <Input placeholder="Результат"/>
+                <div>{homework?.reviewResult}</div>
             </Form.Item>
             <Form.Item
                 name="status"
                 label="Статус"
             >
-                <Radio.Group
-                    options={(Object.values(HomeworkStatus) as Array<HomeworkStatus>).map((value) => ({
-                        label: homeworkStatusWithTranslateToString(value),
-                        value: value,
-                    }))}
-                    optionType="button"
-                />
-            </Form.Item>
-            <Form.Item {...sizeButtonItem}>
-                <ButtonUpdate loading={updateHomeworkOptions.loading} isSubmit={true}/>
+                <div>{homework && homeworkStatusToTag(homework.status)}</div>
             </Form.Item>
         </Form>
     );

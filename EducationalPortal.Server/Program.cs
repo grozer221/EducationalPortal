@@ -21,7 +21,7 @@ builder.Services.AddJwtAuthorization();
 builder.Services.AddMsSql();
 //builder.Services.AddPostgres();
 builder.Services.AddGraphQLApi();
-builder.Services.AddServices();
+builder.Services.AddServices(builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
