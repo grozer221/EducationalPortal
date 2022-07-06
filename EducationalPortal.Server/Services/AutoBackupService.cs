@@ -34,11 +34,15 @@ namespace EducationalPortal.Server.Services
             using var scope = serviceScopeFactory.CreateScope();
             var backupRepository = scope.ServiceProvider.GetRequiredService<IBackupRepository>();
             var cloudinaryService = scope.ServiceProvider.GetRequiredService<CloudinaryService>();
-            string backupFullPath = await backupRepository.BackupDatabase();
-            using var stream = new MemoryStream(File.ReadAllBytes(backupFullPath).ToArray());
-            string backupName = Path.GetFileName(backupFullPath);
-            FormFile formFile = new FormFile(stream, 0, stream.Length, backupName, backupName);
-            string urlPath = await cloudinaryService.UploadFileAsync(formFile, false);
+            try
+            {
+                string backupFullPath = await backupRepository.BackupDatabase();
+                using var stream = new MemoryStream(File.ReadAllBytes(backupFullPath).ToArray());
+                string backupName = Path.GetFileName(backupFullPath);
+                FormFile formFile = new FormFile(stream, 0, stream.Length, backupName, backupName);
+                string urlPath = await cloudinaryService.UploadFileAsync(formFile, false);
+            }
+            catch { }
         }
     }
 }
