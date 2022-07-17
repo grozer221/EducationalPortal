@@ -12,13 +12,6 @@ namespace EducationalPortal.Server.Services
 {
     public class AuthService
     {
-        private readonly IUserRepository _usersRepository;
-
-        public AuthService(IUserRepository usersRepository)
-        {
-            _usersRepository = usersRepository;
-        }
-
         public string GenerateAccessToken(Guid userId, string userLogin, UserRoleEnum userRole)
         {
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("AuthIssuerSigningKey")));

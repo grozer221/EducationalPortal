@@ -12,7 +12,6 @@ namespace EducationalPortal.MsSql
             Database.Migrate();
         }
 
-        //public DbSet<BackupModel> Backups { get; set; }
         public DbSet<EducationalYearModel> EducationalYears { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<GradeModel> Grades { get; set; }
@@ -29,9 +28,6 @@ namespace EducationalPortal.MsSql
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<FileModel>().HasOne(f => f.Backup).WithOne(b => b.File).HasForeignKey<BackupModel>(b => b.FileId);
-            //builder.Entity<BackupModel>().HasOne(b => b.File).WithOne(f => f.Backup).OnDelete(DeleteBehavior.Cascade);
-
             builder.Entity<EducationalYearModel>(y => y.HasIndex(e => e.Name).IsUnique());
             builder.Entity<EducationalYearModel>().HasMany(y => y.Subjects).WithOne(s => s.EducationalYear).OnDelete(DeleteBehavior.Cascade);
 
